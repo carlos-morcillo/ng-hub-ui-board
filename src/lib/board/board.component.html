@@ -1,0 +1,86 @@
+<div
+	*ngIf="board"
+	class="board h-100"
+	cdkDropList
+	cdkDropListOrientation="horizontal"
+	[cdkDropListData]="board.columns"
+	(cdkDropListDropped)="dropColumn($event)"
+>
+	<div
+		cdkDropListGroup
+		class="board__columns columns-container d-flex flex-nowrap w-100 h-100 gap-3"
+	>
+		<div
+			*ngFor="let column of board.columns; let index = index"
+			class="board__column-container h-100"
+			cdkDrag
+			[cdkDragData]="column"
+		>
+			<div
+				class="board__column card d-flex flex-column mh-100"
+				style="width: 256px"
+				[ngClass]="column.classlist"
+				[ngStyle]="column.style"
+			>
+				<div
+					class="board__column-header card-header bg-transparent border-bottom-0 d-flex align-items-center"
+				>
+					<ng-container
+						[ngTemplateOutlet]="columnHeaderTpt || defaultColumnHeaderTpt"
+						[ngTemplateOutletContext]="{ column: column }"
+					>
+					</ng-container>
+				</div>
+				<div
+					class="board__column-body card-body cards overflow-auto"
+					cdkDropList
+					[cdkDropListData]="column"
+					(cdkDropListDropped)="dropCard($event)"
+					(scroll)="onScroll(index, $event)"
+					[cdkDropListEnterPredicate]="
+						column.predicate ?? defaultEnterPredicateFn
+					"
+				>
+					<div
+						class="card"
+						*ngFor="let card of column.cards; let last = last"
+						cdkDrag
+						[cdkDragData]="card"
+						[class.mb-3]="!last"
+						(click)="cardClick(card)"
+					>
+						<div class="card-body">
+							<ng-container
+								[ngTemplateOutlet]="cardTpt || defaultCardTpt"
+								[ngTemplateOutletContext]="{ item: card, column }"
+							>
+							</ng-container>
+						</div>
+					</div>
+				</div>
+
+				<div
+					*ngIf="columnFooterTpt"
+					class="board__column-footer card-footer bg-transparent border-top-0 d-flex justify-content-end"
+				>
+					<ng-container
+						[ngTemplateOutlet]="columnFooterTpt"
+						[ngTemplateOutletContext]="{ column: column }"
+					>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #defaultCardTpt let-item="item">
+	<h6>{{ item.title }}</h6>
+	<p class="card-text">{{ item.description }}</p>
+</ng-template>
+
+<ng-template #defaultColumnHeaderTpt let-column="column">
+	<h5 class="card-title mb-0" [style.color]="column.style?.color ?? '#000'">
+		{{ column.title }}
+	</h5>
+</ng-template>
