@@ -84,8 +84,8 @@ The `BoardColumn` interface represents a column on a board. Its properties are:
 ## Inputs
 | Input | Description |
 | ------ | ------ |
-|cardSortingDisabled | a boolean to disable the sorting of columns in the board|
 |board (required) | an instance of Board that defines the structure of the board|
+|columnSortingDisabled | a boolean to disable the sorting of columns in the board|
 
 ## Outputs
 | Output | Description |
