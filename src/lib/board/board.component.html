@@ -5,6 +5,7 @@
 	cdkDropListOrientation="horizontal"
 	[cdkDropListData]="board.columns"
 	(cdkDropListDropped)="dropColumn($event)"
+	[cdkDropListSortingDisabled]="columnSortingDisabled"
 >
 	<div
 		cdkDropListGroup
@@ -15,6 +16,7 @@
 			class="board__column-container h-100"
 			cdkDrag
 			[cdkDragData]="column"
+			[cdkDragDisabled]="column.disabled"
 		>
 			<div
 				class="board__column card d-flex flex-column mh-100"
@@ -32,7 +34,7 @@
 					</ng-container>
 				</div>
 				<div
-					class="board__column-body card-body cards overflow-auto"
+					class="board__column-body card-body cards overflow-auto d-flex flex-column gap-3"
 					cdkDropList
 					[cdkDropListData]="column"
 					(cdkDropListDropped)="dropCard($event)"
@@ -40,13 +42,14 @@
 					[cdkDropListEnterPredicate]="
 						column.predicate ?? defaultEnterPredicateFn
 					"
+					[cdkDropListSortingDisabled]="column.cardSortingDisabled"
 				>
 					<div
-						class="card"
+						class="board__card card"
 						*ngFor="let card of column.cards; let last = last"
 						cdkDrag
 						[cdkDragData]="card"
-						[class.mb-3]="!last"
+						[cdkDragDisabled]="card.disabled"
 						(click)="cardClick(card)"
 					>
 						<div class="card-body">

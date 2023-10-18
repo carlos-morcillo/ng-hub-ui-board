@@ -7,4 +7,5 @@ export interface BoardCard<T = any> {
 	data?: T;
 	classlist?: string[];
 	style?: { [key: string]: any };
+	disabled?: boolean;
 }

@@ -29,6 +29,9 @@ import { CardTemplateDirective } from '../card-template.directive';
 export class BoardComponent {
 	@Input() board!: Board;
 
+	// Used to disable the sorting of columns in the board
+	@Input() columnSortingDisabled: boolean = false;
+
 	// A template reference for the card template
 	@ContentChild(CardTemplateDirective, { read: TemplateRef<unknown> })
 	cardTpt!: TemplateRef<CardTemplateDirective>;

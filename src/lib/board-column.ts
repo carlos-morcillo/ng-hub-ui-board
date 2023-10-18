@@ -14,5 +14,6 @@ export interface BoardColumn<T = any> {
 	classlist?: string[] | string;
 	disabled?: boolean;
 	data?: any;
+	cardSortingDisabled?: boolean;
 	predicate?: (item?: CdkDrag<T>) => boolean;
 }

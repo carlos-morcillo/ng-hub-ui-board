@@ -67,6 +67,7 @@ The `BoardColumn` interface represents a column on a board. Its properties are:
 - **classlist** (optional): array or string of CSS classes for the column.
 - **disabled** (optional): boolean indicating if the column is disabled. 
 - **data** (optional): any additional data to associate with the column.
+- **cardSortingDisabled** (optional): boolean that disable the sorting of cards in the column
 - **predicate** (optional): function that returns a boolean to control if an item can be moved into the column.
 
 ### BoardCard Interface
@@ -77,11 +78,13 @@ The `BoardColumn` interface represents a column on a board. Its properties are:
 - **data** (optional): any custom data to associate with the card.
 - **classlist** (optional): array of CSS classes for the card.
 - **style** (optional): CSS styles object for the card.
+- **disabled** (optional): boolean indicating if the card is disabled.
 
 
 ## Inputs
 | Input | Description |
 | ------ | ------ |
+|cardSortingDisabled | a boolean to disable the sorting of columns in the board|
 |board (required) | an instance of Board that defines the structure of the board|
 
 ## Outputs
