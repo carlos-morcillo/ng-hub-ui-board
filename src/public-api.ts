@@ -17,3 +17,4 @@ export * from './lib/board/board.component';
 export * from './lib/board';
 export * from './lib/board-column';
 export * from './lib/board-card';
+export { ReachedEndEvent } from './lib/reached-end-event';

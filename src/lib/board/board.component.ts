@@ -17,6 +17,7 @@ import { BoardColumn } from '../board-column';
 import { BoardColumnFooterDirective } from '../board-column-footer.directive';
 import { BoardColumnHeaderDirective } from '../board-column-header.directive';
 import { CardTemplateDirective } from '../card-template.directive';
+import { ReachedEndEvent } from '../reached-end-event';
 
 @Component({
 	selector: 'ng80-board',
@@ -56,7 +57,7 @@ export class BoardComponent {
 	@Output() onColumnMoved = new EventEmitter<CdkDragDrop<BoardColumn[]>>();
 
 	// emit an event when the user has scrolled to the end of a specific column in the board.
-	@Output() reachedEnd = new EventEmitter<BoardColumn>();
+	@Output() reachedEnd = new EventEmitter<ReachedEndEvent>();
 
 	/* Defines a default enter predicate function for the drag and drop operation. */
 	defaultEnterPredicateFn = () => true;
@@ -122,7 +123,10 @@ export class BoardComponent {
 			event.srcElement['scrollTop'] + event.srcElement['clientHeight'] >=
 			event.srcElement['scrollHeight']
 		) {
-			this.reachedEnd.emit({ ...this.board.columns[index], index });
+			this.reachedEnd.emit({
+				index,
+				data: this.board.columns[index]
+			});
 		}
 	}
 }

@@ -1,5 +1,6 @@
 # ngx-board
 A customizable Kanban-style board component built with Angular.
+
 ## Description
 The ng80-board component provides a Kanban-style board that allows users to move cards between columns and reorder columns. The component uses the Angular CDK's drag and drop functionality to handle the card and column moves.
 
@@ -47,7 +48,6 @@ The `Board` interface represents a complete board. Its properties are:
 - **id** (optional): unique number that identifies the board.
 - **title**: title of the board (required).
 - **description** (optional): description of the board.  
-- **color** (optional): background color of the board.
 - **columns** (optional): array of columns (typed as `BoardColumn[]`) on the board.
 - **classlist** (optional): array of CSS classes for the board.
 - **style** (optional): CSS styles object for the board.
@@ -57,16 +57,13 @@ The `Board` interface represents a complete board. Its properties are:
 The `BoardColumn` interface represents a column on a board. Its properties are:
 
 - **id** (optional): unique number that identifies the column.
-- **index** (optional): position of the column on the board.
 - **boardId** (optional): id of the board the column belongs to.
 - **title**: title of the column (required).
 - **description** (optional): description of the column.
-- **color** (optional): background color of the column.
 - **cards**: array of cards (typed as `BoardCard[]`) in the column (required).
 - **style** (optional): CSS styles object for the column.
 - **classlist** (optional): array or string of CSS classes for the column.
 - **disabled** (optional): boolean indicating if the column is disabled. 
-- **data** (optional): any additional data to associate with the column.
 - **cardSortingDisabled** (optional): boolean that disable the sorting of cards in the column
 - **predicate** (optional): function that returns a boolean to control if an item can be moved into the column.
 
@@ -75,7 +72,6 @@ The `BoardColumn` interface represents a column on a board. Its properties are:
 - **id** (optional): unique number that identifies the card.
 - **title**: title of the card (required).
 - **description** (optional): description of the card.
-- **data** (optional): any custom data to associate with the card.
 - **classlist** (optional): array of CSS classes for the card.
 - **style** (optional): CSS styles object for the card.
 - **disabled** (optional): boolean indicating if the card is disabled.

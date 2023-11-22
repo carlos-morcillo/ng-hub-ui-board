@@ -51,8 +51,11 @@
 						[cdkDragData]="card"
 						[cdkDragDisabled]="card.disabled"
 						(click)="cardClick(card)"
+						[ngClass]="card.classlist"
+						[ngStyle]="card.style"
 					>
 						<div class="card-body">
+							<pre>{{ card.classlist | json }}</pre>
 							<ng-container
 								[ngTemplateOutlet]="cardTpt || defaultCardTpt"
 								[ngTemplateOutletContext]="{ item: card, column }"
@@ -83,7 +86,12 @@
 </ng-template>
 
 <ng-template #defaultColumnHeaderTpt let-column="column">
-	<h5 class="card-title mb-0" [style.color]="column.style?.color ?? '#000'">
-		{{ column.title }}
-	</h5>
+	<div class="d-flex flex-column">
+		<h5 class="board__column-header-title card-title mb-0">
+			{{ column.title }}
+		</h5>
+		<p class="board__column-header-description card-text">
+			{{ column.description }}
+		</p>
+	</div>
 </ng-template>

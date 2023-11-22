@@ -1,6 +1,5 @@
 export interface BoardCard<T = any> {
 	id?: number;
-	// index?: number;
 	columnId?: number;
 	title: string;
 	description?: string;
