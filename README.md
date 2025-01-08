@@ -273,7 +273,7 @@ Contributions are welcome! Here's how you can help:
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin feature/my-new-feature`
 5. Submit a pull request
-6. 
+
 ## Support the Project
 
 If you find this project helpful and would like to support its development, you can buy me a coffee:
