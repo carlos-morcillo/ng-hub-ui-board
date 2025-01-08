@@ -1,5 +1,6 @@
 import {
 	CdkDragDrop,
+	DragDropModule,
 	moveItemInArray,
 	transferArrayItem
 } from '@angular/cdk/drag-drop';
@@ -18,17 +19,20 @@ import { BoardColumnFooterDirective } from '../board-column-footer.directive';
 import { BoardColumnHeaderDirective } from '../board-column-header.directive';
 import { CardTemplateDirective } from '../card-template.directive';
 import { ReachedEndEvent } from '../reached-end-event';
+import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 
 @Component({
-	selector: 'ng80-board',
+	selector: 'hub-board, hub-ui-board',
 	templateUrl: './board.component.html',
 	styleUrls: ['./board.component.scss'],
+	standalone: true,
+	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule],
 	host: {
 		class: 'd-block'
 	}
 })
-export class BoardComponent {
-	@Input() board!: Board;
+export class HubBoardComponent {
+	@Input({ required: true }) board: Board;
 
 	// Used to disable the sorting of columns in the board
 	@Input() columnSortingDisabled: boolean = false;
@@ -119,13 +123,11 @@ export class BoardComponent {
 	 * of the scrollable area.
 	 */
 	onScroll(index: number, event: Event) {
-		if (
-			event.srcElement['scrollTop'] + event.srcElement['clientHeight'] >=
-			event.srcElement['scrollHeight']
-		) {
+		const el = event.target as HTMLElement;
+		if (el && el.scrollTop + el.clientHeight >= el.scrollHeight) {
 			this.reachedEnd.emit({
 				index,
-				data: this.board.columns[index]
+				data: this.board.columns?.[index] ?? []
 			});
 		}
 	}

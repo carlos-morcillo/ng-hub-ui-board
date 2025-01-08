@@ -1,6 +1,6 @@
+@if (board) {
 <div
-	*ngIf="board"
-	class="board h-100"
+	class="hub-board h-100"
 	cdkDropList
 	cdkDropListOrientation="horizontal"
 	[cdkDropListData]="board.columns"
@@ -9,32 +9,34 @@
 >
 	<div
 		cdkDropListGroup
-		class="board__columns columns-container d-flex flex-nowrap w-100 h-100 gap-3"
+		class="hub-board__columns columns-container d-flex flex-nowrap w-100 h-100 gap-3"
 	>
+		@for (column of board.columns; let index = $index; track column) {
 		<div
-			*ngFor="let column of board.columns; let index = index"
-			class="board__column-container h-100"
+			class="hub-board__column-container h-100"
 			cdkDrag
 			[cdkDragData]="column"
 			[cdkDragDisabled]="column.disabled"
 		>
 			<div
-				class="board__column card d-flex flex-column mh-100"
+				class="hub-board__column card d-flex flex-column mh-100"
 				style="width: 256px"
 				[ngClass]="column.classlist"
 				[ngStyle]="column.style"
 			>
 				<div
-					class="board__column-header card-header bg-transparent border-bottom-0 d-flex align-items-center"
+					class="hub-board__column-header card-header bg-transparent border-bottom-0 d-flex align-items-center"
 				>
 					<ng-container
-						[ngTemplateOutlet]="columnHeaderTpt || defaultColumnHeaderTpt"
+						[ngTemplateOutlet]="
+							columnHeaderTpt || defaultColumnHeaderTpt
+						"
 						[ngTemplateOutletContext]="{ column: column }"
 					>
 					</ng-container>
 				</div>
 				<div
-					class="board__column-body card-body cards overflow-auto d-flex flex-column gap-3"
+					class="hub-board__column-body card-body cards overflow-auto d-flex flex-column gap-3"
 					cdkDropList
 					[cdkDropListData]="column"
 					(cdkDropListDropped)="dropCard($event)"
@@ -44,9 +46,11 @@
 					"
 					[cdkDropListSortingDisabled]="column.cardSortingDisabled"
 				>
+					@for (card of column.cards; let index = $index; track card)
+					{
+
 					<div
-						class="board__card card"
-						*ngFor="let card of column.cards; let last = last"
+						class="hub-board__card card"
 						cdkDrag
 						[cdkDragData]="card"
 						[cdkDragDisabled]="card.disabled"
@@ -55,19 +59,23 @@
 						[ngStyle]="card.style"
 					>
 						<div class="card-body">
-							<pre>{{ card.classlist | json }}</pre>
 							<ng-container
 								[ngTemplateOutlet]="cardTpt || defaultCardTpt"
-								[ngTemplateOutletContext]="{ item: card, column }"
+								[ngTemplateOutletContext]="{
+									item: card,
+									column
+								}"
 							>
 							</ng-container>
 						</div>
 					</div>
+					}
 				</div>
 
+				@if (columnFooterTpt) {
+
 				<div
-					*ngIf="columnFooterTpt"
-					class="board__column-footer card-footer bg-transparent border-top-0 d-flex justify-content-end"
+					class="hub-board__column-footer card-footer bg-transparent border-top-0 d-flex justify-content-end"
 				>
 					<ng-container
 						[ngTemplateOutlet]="columnFooterTpt"
@@ -75,10 +83,13 @@
 					>
 					</ng-container>
 				</div>
+				}
 			</div>
 		</div>
+		}
 	</div>
 </div>
+}
 
 <ng-template #defaultCardTpt let-item="item">
 	<h6>{{ item.title }}</h6>
@@ -87,10 +98,10 @@
 
 <ng-template #defaultColumnHeaderTpt let-column="column">
 	<div class="d-flex flex-column">
-		<h5 class="board__column-header-title card-title mb-0">
+		<h5 class="hub-board__column-header-title card-title mb-0">
 			{{ column.title }}
 		</h5>
-		<p class="board__column-header-description card-text">
+		<p class="hub-board__column-header-description card-text">
 			{{ column.description }}
 		</p>
 	</div>

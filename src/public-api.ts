@@ -13,8 +13,12 @@ export * from './lib/board-column-footer.directive';
 // components
 export * from './lib/board/board.component';
 
+// pipes
+export * from './lib/pipes/invert-color.pipe';
+
 // interfaces
 export * from './lib/board';
 export * from './lib/board-column';
 export * from './lib/board-card';
-export { ReachedEndEvent } from './lib/reached-end-event';
+
+export * from './lib/reached-end-event';
