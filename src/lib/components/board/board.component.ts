@@ -4,22 +4,24 @@ import {
 	moveItemInArray,
 	transferArrayItem
 } from '@angular/cdk/drag-drop';
+import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
-	ContentChild,
 	EventEmitter,
-	Input,
 	Output,
-	TemplateRef
+	Signal,
+	TemplateRef,
+	computed,
+	contentChild,
+	input
 } from '@angular/core';
-import { Board } from '../board';
-import { BoardCard } from '../board-card';
-import { BoardColumn } from '../board-column';
-import { BoardColumnFooterDirective } from '../board-column-footer.directive';
-import { BoardColumnHeaderDirective } from '../board-column-header.directive';
-import { CardTemplateDirective } from '../card-template.directive';
-import { ReachedEndEvent } from '../reached-end-event';
-import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { Board } from '../../board';
+import { BoardCard } from '../../board-card';
+import { BoardColumn } from '../../board-column';
+import { BoardColumnFooterDirective } from '../../board-column-footer.directive';
+import { BoardColumnHeaderDirective } from '../../board-column-header.directive';
+import { CardTemplateDirective } from '../../card-template.directive';
+import { ReachedEndEvent } from '../../reached-end-event';
 
 @Component({
 	selector: 'hub-board, hub-ui-board',
@@ -32,22 +34,29 @@ import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 	}
 })
 export class HubBoardComponent {
-	@Input({ required: true }) board: Board;
+	readonly board = input<Board>();
+
+	columns: Signal<Array<BoardColumn>> = computed(() => {
+		return this.board()?.columns ?? [];
+	});
 
 	// Used to disable the sorting of columns in the board
-	@Input() columnSortingDisabled: boolean = false;
+	readonly columnSortingDisabled = input<boolean>(false);
 
 	// A template reference for the card template
-	@ContentChild(CardTemplateDirective, { read: TemplateRef<unknown> })
-	cardTpt!: TemplateRef<CardTemplateDirective>;
+	readonly cardTpt = contentChild(CardTemplateDirective, {
+		read: TemplateRef<unknown>
+	});
 
 	// A template reference for the column header template
-	@ContentChild(BoardColumnHeaderDirective, { read: TemplateRef<unknown> })
-	columnHeaderTpt!: TemplateRef<BoardColumnHeaderDirective>;
+	readonly columnHeaderTpt = contentChild(BoardColumnHeaderDirective, {
+		read: TemplateRef<unknown>
+	});
 
 	// A template reference for the column footer template
-	@ContentChild(BoardColumnFooterDirective, { read: TemplateRef<unknown> })
-	columnFooterTpt!: TemplateRef<BoardColumnFooterDirective>;
+	readonly columnFooterTpt = contentChild(BoardColumnFooterDirective, {
+		read: TemplateRef<unknown>
+	});
 
 	// triggered when a card is clicked
 	@Output() onCardClick = new EventEmitter<BoardCard>();
@@ -81,7 +90,7 @@ export class HubBoardComponent {
 	 *
 	 * @param event - represents the drag and drop event that occurred.
 	 */
-	dropColumn(event: CdkDragDrop<BoardColumn[]>) {
+	dropColumn(event: CdkDragDrop<any>) {
 		moveItemInArray(
 			event.container.data,
 			event.previousIndex,
@@ -127,7 +136,7 @@ export class HubBoardComponent {
 		if (el && el.scrollTop + el.clientHeight >= el.scrollHeight) {
 			this.reachedEnd.emit({
 				index,
-				data: this.board.columns?.[index] ?? []
+				data: this.board()?.columns?.[index] ?? []
 			});
 		}
 	}

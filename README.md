@@ -10,6 +10,7 @@ This component is part of the ng-hub-ui ecosystem, which includes:
 - [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
 - [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
 - [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
+- [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion)
 
 ## Description
 
