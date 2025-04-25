@@ -49,10 +49,17 @@
 							) {
 								<div
 									class="hub-board__card"
+									[class.hub-board__card--disabled]="
+										card.disabled
+									"
 									cdkDrag
 									[cdkDragData]="card"
 									[cdkDragDisabled]="card.disabled"
 									(click)="cardClick(card)"
+									(mousedown)="
+										card.disabled &&
+											$event.stopPropagation()
+									"
 									[ngClass]="card.classlist"
 									[ngStyle]="card.style"
 								>

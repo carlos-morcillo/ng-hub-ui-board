@@ -216,54 +216,89 @@ interface BoardCard<T = any> {
 }
 ```
 
-## Styling
+## 🧩 Styling
 
-The component uses BEM (Block Element Modifier) methodology for its CSS classes, making it easy to customize specific elements:
+The `ng-hub-ui-board` library is fully style-configurable through **CSS custom properties (CSS variables)**, defined with a consistent naming convention and designed to be easily overridden in consuming applications. It is built with flexibility in mind and integrates seamlessly with **Bootstrap** or any design system that supports custom properties.
+
+### 🌱 Base styles and integration
+
+The base styles for the board component are located in the `base.scss` file within the library:
 
 ```scss
-.hub-board { }
-.hub-board__column-container {}
-.hub-board__column { }
-.hub-board__column-header { }
-.hub-board__column-header-title { }
-.hub-board__column-header-description { }
-.hub-board__column-content { }
-.hub-board__column-footer { }
-.hub-board__card { }
+// projects/board/src/lib/styles/base.scss
+$boardPrefix: hub- !default;
 
-// Modifiers
-.hub-board__column--disabled { }
-.hub-board__card--dragging { }
+// Example CSS custom properties defined in .hub-board__column
+.hub-board__column {
+  --#{$boardPrefix}column-border-color: rgba(0, 0, 0, 0.175);
+  --#{$boardPrefix}column-border-radius: 0.375rem;
+  --#{$boardPrefix}column-bg: #fff;
+  ...
+}
 ```
 
-You can also apply custom styles through:
-- CSS classes via `classlist` property
-- Inline styles via `style` property
-- Custom templates for complete visual control
+These styles follow the naming convention `--hub-<element>-<property>`, making it simple to identify and override individual variables.
 
-You can apply styles at board, column, and card level:
+### 🔗 How to include the styles in your application
 
-```typescript
-const board = {
-  title: 'Styled Board',
-  classlist: ['custom-board', 'shadow'],
-  style: { backgroundColor: '#f5f5f5' },
-  columns: [
-    {
-      title: 'Column 1',
-      classlist: ['custom-column'],
-      style: { minWidth: '300px' },
-      cards: [
-        {
-          title: 'Card 1',
-          classlist: ['custom-card', 'priority-high'],
-          style: { borderLeft: '3px solid red' }
-        }
-      ]
-    }
-  ]
-};
+To use the styles from `ng-hub-ui-board`, you need to import the base SCSS file from the compiled library into your main application’s `styles.scss` (or wherever you define your global styles).
+
+Example `styles.scss` in the consuming application:
+
+```scss
+@use 'bootstrap'; // Optional but recommended
+@use '../dist/board/src/lib/styles/base.scss' as boardBase;
 ```
+
+> ✅ **Tip**: Using `@use` instead of `@import` ensures proper scoping and avoids global leakage.
+
+### 🎛 Customizing styles via CSS variables
+
+Once the styles are imported, you can customize any of the exposed CSS variables using your own class selectors, CSS scopes, or directly at the root level.
+
+Example: Overriding the column border width and background color
+
+```scss
+.hub-board__column {
+  --hub-column-border-width: 0;
+  --hub-column-bg: #f8f9fa;
+}
+```
+
+This approach allows for theme-level overrides without needing to fork or modify the library source code.
+
+### ⚙️ Seamless Bootstrap integration
+
+Because the board components are designed to align visually and structurally with **Bootstrap 5**, you can:
+
+- Use spacing (`gap`, `padding`) and color schemes consistent with Bootstrap.
+- Integrate the board layout into Bootstrap grids or utilities.
+- Customize the variables with Bootstrap's own SCSS variables if needed.
+
+Example override using Bootstrap color variables:
+
+```scss
+.hub-board__column {
+  --hub-column-cap-bg: var(--bs-light);
+  --hub-column-border-color: var(--bs-border-color);
+}
+```
+
+### 🎨 Theming and scalability
+
+You can define different visual themes by grouping variable overrides under custom CSS classes or even media queries.
+
+Example of dark mode support:
+
+```scss
+.dark-theme .hub-board__column {
+  --hub-column-bg: #1e1e1e;
+  --hub-column-color: #f1f1f1;
+  --hub-column-border-color: #333;
+}
+```
+
+This makes `ng-hub-ui-board` a great fit for design systems that need scalable and adaptable UI building blocks.
 
 ## Contributing
 

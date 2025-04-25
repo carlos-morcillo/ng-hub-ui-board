@@ -28,10 +28,7 @@ import { ReachedEndEvent } from '../../reached-end-event';
 	templateUrl: './board.component.html',
 	styleUrls: ['./board.component.scss'],
 	standalone: true,
-	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule],
-	host: {
-		class: 'd-block'
-	}
+	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule]
 })
 export class HubBoardComponent {
 	readonly board = input<Board>();
