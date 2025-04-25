@@ -15,13 +15,13 @@ import {
 	contentChild,
 	input
 } from '@angular/core';
-import { Board } from '../../board';
-import { BoardCard } from '../../board-card';
-import { BoardColumn } from '../../board-column';
-import { BoardColumnFooterDirective } from '../../board-column-footer.directive';
-import { BoardColumnHeaderDirective } from '../../board-column-header.directive';
-import { CardTemplateDirective } from '../../card-template.directive';
-import { ReachedEndEvent } from '../../reached-end-event';
+import { BoardColumnFooterDirective } from '../../directives/board-column-footer.directive';
+import { BoardColumnHeaderDirective } from '../../directives/board-column-header.directive';
+import { CardTemplateDirective } from '../../directives/card-template.directive';
+import { Board } from '../../models/board';
+import { BoardCard } from '../../models/board-card';
+import { BoardColumn } from '../../models/board-column';
+import { ReachedEndEvent } from '../../models/reached-end-event';
 
 @Component({
 	selector: 'hub-board, hub-ui-board',
