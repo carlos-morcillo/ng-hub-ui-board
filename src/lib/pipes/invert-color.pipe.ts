@@ -33,6 +33,6 @@ export class InvertColorPipe implements PipeTransform {
 		g = (255 - g).toString(16);
 		b = (255 - b).toString(16);
 		// pad each with zeros and return
-		return '#' + r.padStart(2, 0) + g.padStart(2, 0) + b.padStart(2, 0);
+		return '#' + r.padStart(2, '0') + g.padStart(2, '0') + b.padStart(2, '0');
 	}
 }
