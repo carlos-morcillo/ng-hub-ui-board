@@ -69,25 +69,31 @@ export class HubBoardComponent {
 	// emit an event when the user has scrolled to the end of a specific column in the board.
 	@Output() reachedEnd = new EventEmitter<ReachedEndEvent>();
 
-	/* Defines a default enter predicate function for the drag and drop operation. */
+	/**
+	 * Default predicate function that allows all drag and drop operations.
+	 * This function is used when no custom predicate is provided for a column.
+	 * 
+	 * @returns Always returns true, allowing any card to be dropped in any column
+	 */
 	defaultEnterPredicateFn = () => true;
 
 	/**
-	 * Emits an event with the clicked item as a parameter.
+	 * Handles card click events and emits the clicked card data.
+	 * This method is triggered when a user clicks on a card within the board.
 	 *
-	 * @param {any} item - Represents the item that was clicked on the card.
+	 * @param item - The card data object that was clicked
 	 */
-	cardClick(item: any) {
+	cardClick(item: BoardCard) {
 		this.onCardClick.next(item);
 	}
 
 	/**
-	 * Used to handle the event when a column is dropped in a drag and drop operation, and it moves the column in the array and
-	 * emits an event.
+	 * Handles column reordering when a column is dropped after being dragged.
+	 * This method updates the column positions in the array and emits a column moved event.
 	 *
-	 * @param event - represents the drag and drop event that occurred.
+	 * @param event - The drag and drop event containing information about the moved column
 	 */
-	dropColumn(event: CdkDragDrop<any>) {
+	dropColumn(event: CdkDragDrop<BoardColumn[]>) {
 		moveItemInArray(
 			event.container.data,
 			event.previousIndex,
@@ -97,19 +103,22 @@ export class HubBoardComponent {
 	}
 
 	/**
-	 * Used to handle the dropping of a card in a drag and drop operation, either moving the card within the same container or
-	 * transferring it to a different container.
+	 * Handles card drag and drop operations, supporting both reordering within the same column
+	 * and transferring cards between different columns.
 	 *
-	 * @param event - a generic type that takes three arguments:
+	 * @param event - The drag and drop event containing source/target containers and card data
 	 */
 	dropCard(event: CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>) {
+		// Check if the card was moved within the same column
 		if (event.previousContainer === event.container) {
+			// Reorder the card within the same column
 			moveItemInArray(
 				event.container.data.cards,
 				event.previousIndex,
 				event.currentIndex
 			);
 		} else {
+			// Transfer the card from one column to another
 			transferArrayItem(
 				event.previousContainer.data.cards,
 				event.container.data.cards,
@@ -121,16 +130,18 @@ export class HubBoardComponent {
 	}
 
 	/**
-	 * Checks if the user has scrolled to the end of a specific element and emits an event if so.
+	 * Detects when a column has been scrolled to the bottom and emits a reachedEnd event.
+	 * This is useful for implementing lazy loading or infinite scroll functionality.
 	 *
-	 * @param {number} index - The index parameter is a number that represents the index of the column being scrolled.
-	 * @param {Event} event - The event parameter is an object that represents the scroll event. It contains information about the
-	 * scroll event, such as the source element that triggered the event, the amount of scrolling that has occurred, and the dimensions
-	 * of the scrollable area.
+	 * @param index - The index of the column that was scrolled
+	 * @param event - The scroll event containing target element and scroll position information
 	 */
 	onScroll(index: number, event: Event) {
 		const el = event.target as HTMLElement;
+		
+		// Check if the element exists and if we've scrolled to the bottom
 		if (el && el.scrollTop + el.clientHeight >= el.scrollHeight) {
+			// Emit event with column index and data for lazy loading purposes
 			this.reachedEnd.emit({
 				index,
 				data: this.board()?.columns?.[index] ?? []

@@ -20,14 +20,16 @@ A flexible and powerful board component for Angular applications, perfect for im
 
 ## Features
 
-- 🎯 Standalone component
-- 🔄 Drag and drop support for both cards and columns
-- 📱 Responsive design
-- 🎨 Highly customizable with templates
-- 🔧 Bootstrap compatible
-- ⚡ Virtual scrolling support with end-detection
-- 🎭 Custom styling support for boards, columns, and cards
-- 🔒 Disable/enable functionality for cards and columns
+- 🎯 **Standalone component** - Modern Angular approach with minimal setup
+- 🔄 **Drag and drop support** - Full drag-and-drop for both cards and columns using Angular CDK
+- 📱 **Responsive design** - Works seamlessly across desktop, tablet, and mobile devices
+- 🎨 **Highly customizable** - Custom templates for cards, headers, and footers
+- 🔧 **Bootstrap compatible** - Integrates perfectly with Bootstrap 5 design system
+- ⚡ **Virtual scrolling** - Supports infinite scroll with end-detection for performance
+- 🎭 **Custom styling** - CSS custom properties for easy theming and customization
+- 🔒 **Granular control** - Enable/disable functionality at board, column, or card level
+- 🏷️ **TypeScript support** - Full type safety with generic interfaces
+- ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
 
 ## Installation
 
@@ -114,7 +116,7 @@ export class BoardDemoComponent {
 </hub-board>
 ```
 
-Este bloque de código ofrece un ejemplo mínimo y funcional tanto para principiantes como para usuarios intermedios.
+This code block provides a minimal and functional example for both beginners and intermediate users.
 
 ## Usage
 
@@ -261,7 +263,7 @@ handleCardMoved(event: CdkDragDrop<BoardColumn, BoardColumn, BoardCard>) {
 Emitted when a column is reordered via drag and drop.
 
 ```html
-<hub-board [board]="board" (reachedEnd)="handleReachedEnd($event)"> </hub-board>
+<hub-board [board]="board" (onColumnMoved)="handleColumnMoved($event)"> </hub-board>
 ```
 
 **Type:** `EventEmitter<CdkDragDrop<BoardColumn[]>>`
@@ -471,23 +473,42 @@ Each case benefits from customizable columns, card templates, and event outputs 
 Here are some common issues and how to resolve them:
 
 ### 🔄 Drag and drop not working
-Make sure you have imported `@angular/cdk` and the necessary `DragDropModule`. Also check that your board and column data is reactive (e.g. using `signal()` or `RxJS`).
+- **Check dependencies**: Ensure `@angular/cdk` is installed and imported
+- **Reactive data**: Verify your board data is reactive (using `signal()`, `Observable`, or proper change detection)
+- **Browser compatibility**: Ensure your target browsers support the HTML5 Drag and Drop API
 
 ### 📏 Scroll detection not triggering `reachedEnd`
-Ensure the `<hub-board>` element or one of its parents has a `max-height` or fixed height defined and `overflow: auto` to enable scrolling.
+- **Height constraints**: The `<hub-board>` element or its parent must have a `max-height` or fixed height
+- **Overflow setting**: Ensure `overflow: auto` or `overflow-y: scroll` is applied to enable scrolling
+- **Content length**: Make sure there's enough content to actually trigger scrolling
 
 ### 🎨 Styles not applying
-Confirm you've imported the SCSS base styles in your global `styles.scss`:
-
-```scss
-@use '../dist/board/src/lib/styles/base.scss' as boardBase;
-```
+- **Import path**: Confirm you've imported the SCSS base styles in your global `styles.scss`:
+  ```scss
+  @use '../dist/board/src/lib/styles/base.scss' as boardBase;
+  ```
+- **CSS custom properties**: Check that your custom CSS variables follow the `--hub-*` naming convention
+- **Style specificity**: Ensure your custom styles have sufficient specificity to override defaults
 
 ### 🧩 Templates not rendering
-If you’re using `cardTpt`, `columnHeaderTpt`, or `columnFooterTpt`, ensure you've also imported the corresponding directives into your component.
+- **Import directives**: When using standalone components, import the template directives:
+  ```typescript
+  imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective]
+  ```
+- **Template syntax**: Verify you're using the correct template selectors (`cardTpt`, `columnHeaderTpt`, `columnFooterTpt`)
 
-### 🛠️ Error: "Cannot read property 'cards' of undefined"
-Make sure your `board` signal is initialized and its `columns` array is not `undefined`.
+### 🛠️ Runtime errors
+- **"Cannot read property 'cards' of undefined"**: Initialize your board signal properly:
+  ```typescript
+  board = signal<Board>({ title: 'My Board', columns: [] });
+  ```
+- **Type errors**: Ensure your data matches the `Board`, `BoardColumn`, and `BoardCard` interfaces
+- **Signal updates**: Use `.set()` or `.update()` methods to modify signal values
+
+### 🎯 Performance issues
+- **Large datasets**: Consider implementing virtual scrolling for columns with many cards
+- **Memory leaks**: Ensure proper cleanup of event listeners and subscriptions
+- **Change detection**: Use `OnPush` change detection strategy when possible
 
 If problems persist, open an issue at: https://github.com/carlos-morcillo/ng-hub-ui-board/issues
 
