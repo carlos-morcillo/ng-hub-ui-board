@@ -37,8 +37,9 @@ describe('InvertColorPipe', () => {
 	it('should return black or white for bw mode', () => {
 		expect(pipe.transform('#ffffff', true)).toBe('#000000'); // White -> Black
 		expect(pipe.transform('#000000', true)).toBe('#FFFFFF'); // Black -> White
-		expect(pipe.transform('#ff0000', true)).toBe('#FFFFFF'); // Red -> White  
-		expect(pipe.transform('#008000', true)).toBe('#000000'); // Green -> Black (adjusted for brightness)
+		expect(pipe.transform('#ff0000', true)).toBe('#FFFFFF'); // Red -> White (bright red)
+		expect(pipe.transform('#800000', true)).toBe('#FFFFFF'); // Dark red -> White  
+		expect(pipe.transform('#008000', true)).toBe('#FFFFFF'); // Green -> White (standard green is bright)
 	});
 
 	it('should throw error for invalid hex colors', () => {

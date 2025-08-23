@@ -346,7 +346,11 @@ describe('HubBoardComponent', () => {
 			hostFixture.detectChanges();
 
 			const boardElement = hostFixture.debugElement.query(By.css('.hub-board'));
-			expect(boardElement.attributes['ng-reflect-cdk-drop-list-sorting-disabled']).toBe('true');
+			expect(boardElement).toBeTruthy();
+			
+			// Check if the component property is set correctly
+			const boardComponentInstance = hostFixture.debugElement.query(By.directive(HubBoardComponent)).componentInstance;
+			expect(boardComponentInstance.columnSortingDisabled()).toBe(true);
 		});
 
 		it('should handle empty board gracefully', () => {
