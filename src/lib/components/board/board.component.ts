@@ -6,14 +6,13 @@ import {
 } from '@angular/cdk/drag-drop';
 import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 import {
-	Component,
-	EventEmitter,
-	Output,
-	Signal,
-	TemplateRef,
-	computed,
-	contentChild,
-	input
+  Component,
+  Signal,
+  TemplateRef,
+  computed,
+  contentChild,
+  input,
+  output
 } from '@angular/core';
 import { BoardColumnFooterDirective } from '../../directives/board-column-footer.directive';
 import { BoardColumnHeaderDirective } from '../../directives/board-column-header.directive';
@@ -56,18 +55,16 @@ export class HubBoardComponent {
 	});
 
 	// triggered when a card is clicked
-	@Output() onCardClick = new EventEmitter<BoardCard>();
+	readonly onCardClick = output<BoardCard>();
 
 	// triggered when a card is moved
-	@Output() onCardMoved = new EventEmitter<
-		CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>
-	>();
+	readonly onCardMoved = output<CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>>();
 
 	// triggered when a column is moved
-	@Output() onColumnMoved = new EventEmitter<CdkDragDrop<BoardColumn[]>>();
+	readonly onColumnMoved = output<CdkDragDrop<BoardColumn[]>>();
 
 	// emit an event when the user has scrolled to the end of a specific column in the board.
-	@Output() reachedEnd = new EventEmitter<ReachedEndEvent>();
+	readonly reachedEnd = output<ReachedEndEvent>();
 
 	/**
 	 * Default predicate function that allows all drag and drop operations.
@@ -84,7 +81,7 @@ export class HubBoardComponent {
 	 * @param item - The card data object that was clicked
 	 */
 	cardClick(item: BoardCard) {
-		this.onCardClick.next(item);
+		this.onCardClick.emit(item);
 	}
 
 	/**

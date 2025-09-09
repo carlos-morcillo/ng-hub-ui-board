@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 
@@ -10,74 +10,83 @@ import { BoardColumnFooterDirective } from './board-column-footer.directive';
 @Component({
 	template: `
 		<ng-template columnFooterTpt let-column="column" #footerTemplate>
-			<div class="test-footer-template" [attr.data-column-id]="column?.id">
-				<div class="footer-summary">
-					<span class="total-cards">Total: {{ column?.cards?.length || 0 }}</span>
-					<span class="completed-cards" *ngIf="getCompletedCards(column) > 0">
-						Completed: {{ getCompletedCards(column) }}
-					</span>
-					<span class="priority-cards" *ngIf="getPriorityCards(column) > 0">
-						High Priority: {{ getPriorityCards(column) }}
-					</span>
-				</div>
-				<div class="footer-actions">
-					<button class="quick-add-btn" *ngIf="!column?.disabled">Quick Add</button>
-					<button class="clear-all-btn" *ngIf="(column?.cards?.length || 0) > 0 && !column?.disabled">
-						Clear All
-					</button>
-					<span class="disabled-footer" *ngIf="column?.disabled">Column Disabled</span>
-				</div>
-				<div class="footer-metadata" *ngIf="column.data">
-					<small class="last-updated">Updated: {{ column.data.lastUpdated | date }}</small>
-					<small class="column-owner">Owner: {{ column.data.owner }}</small>
-				</div>
-			</div>
+		  <div class="test-footer-template" [attr.data-column-id]="column?.id">
+		    <div class="footer-summary">
+		      <span class="total-cards">Total: {{ column?.cards?.length || 0 }}</span>
+		      @if (getCompletedCards(column) > 0) {
+		        <span class="completed-cards">
+		          Completed: {{ getCompletedCards(column) }}
+		        </span>
+		      }
+		      @if (getPriorityCards(column) > 0) {
+		        <span class="priority-cards">
+		          High Priority: {{ getPriorityCards(column) }}
+		        </span>
+		      }
+		    </div>
+		    <div class="footer-actions">
+		      @if (!column?.disabled) {
+		        <button class="quick-add-btn">Quick Add</button>
+		      }
+		      @if ((column?.cards?.length || 0) > 0 && !column?.disabled) {
+		        <button class="clear-all-btn">
+		          Clear All
+		        </button>
+		      }
+		      @if (column?.disabled) {
+		        <span class="disabled-footer">Column Disabled</span>
+		      }
+		    </div>
+		    @if (column.data) {
+		      <div class="footer-metadata">
+		        <small class="last-updated">Updated: {{ column.data.lastUpdated | date }}</small>
+		        <small class="column-owner">Owner: {{ column.data.owner }}</small>
+		      </div>
+		    }
+		  </div>
 		</ng-template>
-
+		
 		<ng-template columnFooterTpt #simpleFooterTemplate>
-			<div class="simple-footer">
-				<span>Simple Footer</span>
-			</div>
+		  <div class="simple-footer">
+		    <span>Simple Footer</span>
+		  </div>
 		</ng-template>
-
+		
 		<ng-template columnFooterTpt let-column="column" #statsFooterTemplate>
-			<div class="stats-footer" [attr.data-stats]="true">
-				<div class="stats-grid">
-					<div class="stat-item">
-						<span class="stat-value">{{ column?.cards?.length || 0 }}</span>
-						<span class="stat-label">Cards</span>
-					</div>
-					<div class="stat-item" *ngIf="column?.data?.estimatedHours">
-						<span class="stat-value">{{ column.data.estimatedHours }}h</span>
-						<span class="stat-label">Hours</span>
-					</div>
-				</div>
-			</div>
+		  <div class="stats-footer" [attr.data-stats]="true">
+		    <div class="stats-grid">
+		      <div class="stat-item">
+		        <span class="stat-value">{{ column?.cards?.length || 0 }}</span>
+		        <span class="stat-label">Cards</span>
+		      </div>
+		      @if (column?.data?.estimatedHours) {
+		        <div class="stat-item">
+		          <span class="stat-value">{{ column.data.estimatedHours }}h</span>
+		          <span class="stat-label">Hours</span>
+		        </div>
+		      }
+		    </div>
+		  </div>
 		</ng-template>
-
+		
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-			<div class="regular-template">Regular template</div>
+		  <div class="regular-template">Regular template</div>
 		</ng-template>
-	`,
+		`,
 	standalone: true,
 	imports: [BoardColumnFooterDirective, CommonModule]
 })
 class TestComponent {
-	@ViewChild('footerTemplate', { read: BoardColumnFooterDirective }) 
-	footerDirective!: BoardColumnFooterDirective;
+	readonly footerDirective = viewChild.required('footerTemplate', { read: BoardColumnFooterDirective });
 
-	@ViewChild('footerTemplate', { read: TemplateRef }) 
-	templateRef!: TemplateRef<any>;
+	readonly templateRef = viewChild.required('footerTemplate', { read: TemplateRef });
 
-	@ViewChild('simpleFooterTemplate', { read: BoardColumnFooterDirective })
-	simpleFooterDirective!: BoardColumnFooterDirective;
+	readonly simpleFooterDirective = viewChild.required('simpleFooterTemplate', { read: BoardColumnFooterDirective });
 
-	@ViewChild('statsFooterTemplate', { read: BoardColumnFooterDirective })
-	statsFooterDirective!: BoardColumnFooterDirective;
+	readonly statsFooterDirective = viewChild.required('statsFooterTemplate', { read: BoardColumnFooterDirective });
 
-	@ViewChild('regularTemplate', { read: TemplateRef })
-	regularTemplateRef!: TemplateRef<any>;
+	readonly regularTemplateRef = viewChild.required('regularTemplate', { read: TemplateRef });
 
 	// Test data
 	mockColumn = {
@@ -138,7 +147,7 @@ describe('BoardColumnFooterDirective', () => {
 		fixture = TestBed.createComponent(TestComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		directive = component.footerDirective;
+		directive = component.footerDirective();
 	});
 
 	describe('Basic Functionality', () => {
@@ -157,7 +166,7 @@ describe('BoardColumnFooterDirective', () => {
 
 		it('should have templateRef that is accessible', () => {
 			expect(directive.templateRef).toBeTruthy();
-			expect(component.templateRef).toBeTruthy();
+			expect(component.templateRef()).toBeTruthy();
 			expect(directive.templateRef.constructor.name).toBe('TemplateRef');
 		});
 	});
@@ -230,9 +239,9 @@ describe('BoardColumnFooterDirective', () => {
 
 	describe('Multiple Template Instances', () => {
 		it('should handle multiple template instances with the same directive', () => {
-			const firstDirective = component.footerDirective;
-			const secondDirective = component.simpleFooterDirective;
-			const thirdDirective = component.statsFooterDirective;
+			const firstDirective = component.footerDirective();
+			const secondDirective = component.simpleFooterDirective();
+			const thirdDirective = component.statsFooterDirective();
 
 			expect(firstDirective).toBeTruthy();
 			expect(secondDirective).toBeTruthy();
@@ -246,13 +255,13 @@ describe('BoardColumnFooterDirective', () => {
 		});
 
 		it('should create different embedded views from different template instances', () => {
-			const detailedView = component.footerDirective.templateRef.createEmbeddedView({
+			const detailedView = component.footerDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
 
-			const simpleView = component.simpleFooterDirective.templateRef.createEmbeddedView({});
+			const simpleView = component.simpleFooterDirective().templateRef.createEmbeddedView({});
 			
-			const statsView = component.statsFooterDirective.templateRef.createEmbeddedView({
+			const statsView = component.statsFooterDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
 
@@ -272,21 +281,21 @@ describe('BoardColumnFooterDirective', () => {
 
 	describe('Directive Selector', () => {
 		it('should create directive instances correctly', () => {
-			expect(component.footerDirective).toBeTruthy();
-			expect(component.simpleFooterDirective).toBeTruthy();
-			expect(component.statsFooterDirective).toBeTruthy();
+			expect(component.footerDirective()).toBeTruthy();
+			expect(component.simpleFooterDirective()).toBeTruthy();
+			expect(component.statsFooterDirective()).toBeTruthy();
 		});
 
 		it('should have template references available', () => {
-			expect(component.footerDirective.templateRef).toBeTruthy();
-			expect(component.simpleFooterDirective.templateRef).toBeTruthy();
-			expect(component.statsFooterDirective.templateRef).toBeTruthy();
-			expect(component.regularTemplateRef).toBeTruthy();
+			expect(component.footerDirective().templateRef).toBeTruthy();
+			expect(component.simpleFooterDirective().templateRef).toBeTruthy();
+			expect(component.statsFooterDirective().templateRef).toBeTruthy();
+			expect(component.regularTemplateRef()).toBeTruthy();
 		});
 
 		it('should have different template refs for different directives', () => {
-			expect(component.footerDirective.templateRef).not.toBe(component.simpleFooterDirective.templateRef);
-			expect(component.simpleFooterDirective.templateRef).not.toBe(component.statsFooterDirective.templateRef);
+			expect(component.footerDirective().templateRef).not.toBe(component.simpleFooterDirective().templateRef);
+			expect(component.simpleFooterDirective().templateRef).not.toBe(component.statsFooterDirective().templateRef);
 		});
 	});
 
@@ -338,7 +347,7 @@ describe('BoardColumnFooterDirective', () => {
 		});
 
 		it('should show statistics footer with custom data', () => {
-			const embeddedView = component.statsFooterDirective.templateRef.createEmbeddedView({
+			const embeddedView = component.statsFooterDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
 

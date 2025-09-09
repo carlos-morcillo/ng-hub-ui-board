@@ -1,7 +1,7 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+
 
 import { BoardColumnHeaderDirective } from './board-column-header.directive';
 
@@ -11,56 +11,59 @@ import { BoardColumnHeaderDirective } from './board-column-header.directive';
 @Component({
 	template: `
 		<ng-template columnHeaderTpt let-column="column" #headerTemplate>
-			<div class="test-header-template" [attr.data-column-id]="column?.id">
-				<div class="header-title">
-					<h3>{{ column.title }}</h3>
-					<span class="header-subtitle" *ngIf="column.description">{{ column.description }}</span>
-				</div>
-				<div class="header-actions">
-					<span class="card-count badge">{{ column?.cards?.length || 0 }}</span>
-					<button class="add-card-btn" *ngIf="!column?.disabled">Add Card</button>
-					<span class="disabled-indicator" *ngIf="column?.disabled">Disabled</span>
-				</div>
-				<div class="custom-data" *ngIf="column.data">
-					<span class="priority">{{ column.data.priority }}</span>
-					<span class="owner">{{ column.data.owner }}</span>
-				</div>
-			</div>
+		  <div class="test-header-template" [attr.data-column-id]="column?.id">
+		    <div class="header-title">
+		      <h3>{{ column.title }}</h3>
+		      @if (column.description) {
+		        <span class="header-subtitle">{{ column.description }}</span>
+		      }
+		    </div>
+		    <div class="header-actions">
+		      <span class="card-count badge">{{ column?.cards?.length || 0 }}</span>
+		      @if (!column?.disabled) {
+		        <button class="add-card-btn">Add Card</button>
+		      }
+		      @if (column?.disabled) {
+		        <span class="disabled-indicator">Disabled</span>
+		      }
+		    </div>
+		    @if (column.data) {
+		      <div class="custom-data">
+		        <span class="priority">{{ column.data.priority }}</span>
+		        <span class="owner">{{ column.data.owner }}</span>
+		      </div>
+		    }
+		  </div>
 		</ng-template>
-
+		
 		<ng-template columnHeaderTpt #simpleHeaderTemplate>
-			<div class="simple-header">
-				<span>Simple Column Header</span>
-			</div>
+		  <div class="simple-header">
+		    <span>Simple Column Header</span>
+		  </div>
 		</ng-template>
-
+		
 		<ng-template columnHeaderTpt let-column="column" #emptyHeaderTemplate>
-			<div class="empty-header" [attr.data-empty]="true"></div>
+		  <div class="empty-header" [attr.data-empty]="true"></div>
 		</ng-template>
-
+		
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-			<div class="regular-template">Regular template</div>
+		  <div class="regular-template">Regular template</div>
 		</ng-template>
-	`,
+		`,
 	standalone: true,
-	imports: [BoardColumnHeaderDirective, CommonModule]
+	imports: [BoardColumnHeaderDirective]
 })
 class TestComponent {
-	@ViewChild('headerTemplate', { read: BoardColumnHeaderDirective }) 
-	headerDirective!: BoardColumnHeaderDirective;
+	readonly headerDirective = viewChild.required('headerTemplate', { read: BoardColumnHeaderDirective });
 
-	@ViewChild('headerTemplate', { read: TemplateRef }) 
-	templateRef!: TemplateRef<any>;
+	readonly templateRef = viewChild.required('headerTemplate', { read: TemplateRef });
 
-	@ViewChild('simpleHeaderTemplate', { read: BoardColumnHeaderDirective })
-	simpleHeaderDirective!: BoardColumnHeaderDirective;
+	readonly simpleHeaderDirective = viewChild.required('simpleHeaderTemplate', { read: BoardColumnHeaderDirective });
 
-	@ViewChild('emptyHeaderTemplate', { read: BoardColumnHeaderDirective })
-	emptyHeaderDirective!: BoardColumnHeaderDirective;
+	readonly emptyHeaderDirective = viewChild.required('emptyHeaderTemplate', { read: BoardColumnHeaderDirective });
 
-	@ViewChild('regularTemplate', { read: TemplateRef })
-	regularTemplateRef!: TemplateRef<any>;
+	readonly regularTemplateRef = viewChild.required('regularTemplate', { read: TemplateRef });
 
 	// Test data
 	mockColumn = {
@@ -107,7 +110,7 @@ describe('BoardColumnHeaderDirective', () => {
 		fixture = TestBed.createComponent(TestComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		directive = component.headerDirective;
+		directive = component.headerDirective();
 	});
 
 	describe('Basic Functionality', () => {
@@ -126,7 +129,7 @@ describe('BoardColumnHeaderDirective', () => {
 
 		it('should have templateRef that is accessible', () => {
 			expect(directive.templateRef).toBeTruthy();
-			expect(component.templateRef).toBeTruthy();
+			expect(component.templateRef()).toBeTruthy();
 			expect(directive.templateRef.constructor.name).toBe('TemplateRef');
 		});
 	});
@@ -195,9 +198,9 @@ describe('BoardColumnHeaderDirective', () => {
 
 	describe('Multiple Template Instances', () => {
 		it('should handle multiple template instances with the same directive', () => {
-			const firstDirective = component.headerDirective;
-			const secondDirective = component.simpleHeaderDirective;
-			const thirdDirective = component.emptyHeaderDirective;
+			const firstDirective = component.headerDirective();
+			const secondDirective = component.simpleHeaderDirective();
+			const thirdDirective = component.emptyHeaderDirective();
 
 			expect(firstDirective).toBeTruthy();
 			expect(secondDirective).toBeTruthy();
@@ -211,13 +214,13 @@ describe('BoardColumnHeaderDirective', () => {
 		});
 
 		it('should create different embedded views from different template instances', () => {
-			const detailedView = component.headerDirective.templateRef.createEmbeddedView({
+			const detailedView = component.headerDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
 
-			const simpleView = component.simpleHeaderDirective.templateRef.createEmbeddedView({});
+			const simpleView = component.simpleHeaderDirective().templateRef.createEmbeddedView({});
 			
-			const emptyView = component.emptyHeaderDirective.templateRef.createEmbeddedView({
+			const emptyView = component.emptyHeaderDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
 
@@ -237,21 +240,21 @@ describe('BoardColumnHeaderDirective', () => {
 
 	describe('Directive Selector', () => {
 		it('should create directive instances correctly', () => {
-			expect(component.headerDirective).toBeTruthy();
-			expect(component.simpleHeaderDirective).toBeTruthy();
-			expect(component.emptyHeaderDirective).toBeTruthy();
+			expect(component.headerDirective()).toBeTruthy();
+			expect(component.simpleHeaderDirective()).toBeTruthy();
+			expect(component.emptyHeaderDirective()).toBeTruthy();
 		});
 
 		it('should have template references available', () => {
-			expect(component.headerDirective.templateRef).toBeTruthy();
-			expect(component.simpleHeaderDirective.templateRef).toBeTruthy();
-			expect(component.emptyHeaderDirective.templateRef).toBeTruthy();
-			expect(component.regularTemplateRef).toBeTruthy();
+			expect(component.headerDirective().templateRef).toBeTruthy();
+			expect(component.simpleHeaderDirective().templateRef).toBeTruthy();
+			expect(component.emptyHeaderDirective().templateRef).toBeTruthy();
+			expect(component.regularTemplateRef()).toBeTruthy();
 		});
 
 		it('should have different template refs for different directives', () => {
-			expect(component.headerDirective.templateRef).not.toBe(component.simpleHeaderDirective.templateRef);
-			expect(component.simpleHeaderDirective.templateRef).not.toBe(component.emptyHeaderDirective.templateRef);
+			expect(component.headerDirective().templateRef).not.toBe(component.simpleHeaderDirective().templateRef);
+			expect(component.simpleHeaderDirective().templateRef).not.toBe(component.emptyHeaderDirective().templateRef);
 		});
 	});
 

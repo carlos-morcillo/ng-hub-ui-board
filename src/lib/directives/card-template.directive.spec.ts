@@ -1,6 +1,6 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
+
 
 import { CardTemplateDirective } from './card-template.directive';
 
@@ -10,40 +10,38 @@ import { CardTemplateDirective } from './card-template.directive';
 @Component({
 	template: `
 		<ng-template cardTpt let-card="item" let-column="column" #testTemplate>
-			<div class="test-card-template" [attr.data-card-title]="card?.title">
-				<h4>{{ card?.title }}</h4>
-				<p>{{ card?.description }}</p>
-				<span class="column-info">Column: {{ column?.title }}</span>
-				<div class="card-data" *ngIf="card?.data">
-					<span class="priority">{{ card.data.priority }}</span>
-				</div>
-			</div>
+		  <div class="test-card-template" [attr.data-card-title]="card?.title">
+		    <h4>{{ card?.title }}</h4>
+		    <p>{{ card?.description }}</p>
+		    <span class="column-info">Column: {{ column?.title }}</span>
+		    @if (card?.data) {
+		      <div class="card-data">
+		        <span class="priority">{{ card.data.priority }}</span>
+		      </div>
+		    }
+		  </div>
 		</ng-template>
-
+		
 		<ng-template cardTpt #anotherTemplate>
-			<div class="simple-card">Simple template</div>
+		  <div class="simple-card">Simple template</div>
 		</ng-template>
-
+		
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-			<div class="regular-template">Regular template</div>
+		  <div class="regular-template">Regular template</div>
 		</ng-template>
-	`,
+		`,
 	standalone: true,
-	imports: [CardTemplateDirective, CommonModule]
+	imports: [CardTemplateDirective]
 })
 class TestComponent {
-	@ViewChild('testTemplate', { read: CardTemplateDirective }) 
-	cardDirective!: CardTemplateDirective;
+	readonly cardDirective = viewChild.required('testTemplate', { read: CardTemplateDirective });
 
-	@ViewChild('testTemplate', { read: TemplateRef }) 
-	templateRef!: TemplateRef<any>;
+	readonly templateRef = viewChild.required('testTemplate', { read: TemplateRef });
 
-	@ViewChild('anotherTemplate', { read: CardTemplateDirective })
-	anotherCardDirective!: CardTemplateDirective;
+	readonly anotherCardDirective = viewChild.required('anotherTemplate', { read: CardTemplateDirective });
 
-	@ViewChild('regularTemplate', { read: TemplateRef })
-	regularTemplateRef!: TemplateRef<any>;
+	readonly regularTemplateRef = viewChild.required('regularTemplate', { read: TemplateRef });
 
 	// Test data
 	mockCard = {
@@ -76,7 +74,7 @@ describe('CardTemplateDirective', () => {
 		fixture = TestBed.createComponent(TestComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		directive = component.cardDirective;
+		directive = component.cardDirective();
 	});
 
 	describe('Basic Functionality', () => {
@@ -95,7 +93,7 @@ describe('CardTemplateDirective', () => {
 
 		it('should have templateRef that is accessible', () => {
 			expect(directive.templateRef).toBeTruthy();
-			expect(component.templateRef).toBeTruthy();
+			expect(component.templateRef()).toBeTruthy();
 			expect(directive.templateRef.constructor.name).toBe('TemplateRef');
 		});
 	});
@@ -152,8 +150,8 @@ describe('CardTemplateDirective', () => {
 
 	describe('Multiple Template Instances', () => {
 		it('should handle multiple template instances with the same directive', () => {
-			const firstDirective = component.cardDirective;
-			const secondDirective = component.anotherCardDirective;
+			const firstDirective = component.cardDirective();
+			const secondDirective = component.anotherCardDirective();
 
 			expect(firstDirective).toBeTruthy();
 			expect(secondDirective).toBeTruthy();
@@ -162,12 +160,12 @@ describe('CardTemplateDirective', () => {
 		});
 
 		it('should create different embedded views from different template instances', () => {
-			const firstView = component.cardDirective.templateRef.createEmbeddedView({
+			const firstView = component.cardDirective().templateRef.createEmbeddedView({
 				item: component.mockCard,
 				column: component.mockColumn
 			});
 
-			const secondView = component.anotherCardDirective.templateRef.createEmbeddedView({});
+			const secondView = component.anotherCardDirective().templateRef.createEmbeddedView({});
 
 			firstView.detectChanges();
 			secondView.detectChanges();
@@ -182,18 +180,18 @@ describe('CardTemplateDirective', () => {
 
 	describe('Directive Selector', () => {
 		it('should create directive instances correctly', () => {
-			expect(component.cardDirective).toBeTruthy();
-			expect(component.anotherCardDirective).toBeTruthy();
+			expect(component.cardDirective()).toBeTruthy();
+			expect(component.anotherCardDirective()).toBeTruthy();
 		});
 
 		it('should have template references available', () => {
-			expect(component.cardDirective.templateRef).toBeTruthy();
-			expect(component.anotherCardDirective.templateRef).toBeTruthy();
-			expect(component.regularTemplateRef).toBeTruthy();
+			expect(component.cardDirective().templateRef).toBeTruthy();
+			expect(component.anotherCardDirective().templateRef).toBeTruthy();
+			expect(component.regularTemplateRef()).toBeTruthy();
 		});
 
 		it('should have different template refs for different directives', () => {
-			expect(component.cardDirective.templateRef).not.toBe(component.anotherCardDirective.templateRef);
+			expect(component.cardDirective().templateRef).not.toBe(component.anotherCardDirective().templateRef);
 		});
 	});
 
