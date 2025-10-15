@@ -7,6 +7,8 @@ import { Directive, TemplateRef } from '@angular/core';
  * perfect for displaying summary information, quick actions, statistics,
  * or any column-specific controls at the bottom of each column.
  * 
+ * @publicApi
+ * 
  * @example
  * ```html
  * <ng-template columnFooterTpt let-column="column">

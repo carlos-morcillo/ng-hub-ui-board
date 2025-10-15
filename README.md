@@ -6,7 +6,7 @@
 
 This component is part of the ng-hub-ui ecosystem, which includes:
 
-- [ng-hub-ui-table](https://www.npmjs.com/package/ng-hub-ui-table)
+- [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
 - [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
 - [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
 - [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)

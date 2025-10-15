@@ -11,6 +11,7 @@ import { CardTemplateDirective } from './directives/card-template.directive';
  * Kanban-style boards with customizable columns, cards, and templates.
  * 
  * @deprecated Use standalone components instead. Import individual components and directives directly.
+ * @publicApi
  * 
  * @example
  * ```typescript

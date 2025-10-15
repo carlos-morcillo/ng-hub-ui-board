@@ -259,6 +259,23 @@ describe('HubBoardComponent', () => {
 
 				expect(component.reachedEnd.emit).not.toHaveBeenCalled();
 			});
+
+			it('should not emit reachedEnd when column data is missing', () => {
+				spyOn(component.reachedEnd, 'emit');
+				fixture.componentRef.setInput('board', { title: 'Empty Board', columns: [] });
+				fixture.detectChanges();
+
+				const mockElement = {
+					scrollTop: 100,
+					clientHeight: 100,
+					scrollHeight: 200
+				};
+				const mockEvent = { target: mockElement } as any;
+
+				component.onScroll(0, mockEvent);
+
+				expect(component.reachedEnd.emit).not.toHaveBeenCalled();
+			});
 		});
 
 		describe('Drag and Drop Logic', () => {

@@ -1,6 +1,5 @@
 import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
 
 import { BoardColumnFooterDirective } from './board-column-footer.directive';
 
@@ -75,7 +74,7 @@ import { BoardColumnFooterDirective } from './board-column-footer.directive';
 		</ng-template>
 		`,
 	standalone: true,
-	imports: [BoardColumnFooterDirective, CommonModule]
+	imports: [BoardColumnFooterDirective]
 })
 class TestComponent {
 	readonly footerDirective = viewChild.required('footerTemplate', { read: BoardColumnFooterDirective });

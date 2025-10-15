@@ -2,6 +2,7 @@
  * Represents a card within a board column, containing the core data and behavior.
  * 
  * @template T The type of custom data attached to the card (defaults to `any`).
+ * @publicApi
  */
 export interface BoardCard<T = any> {
 	/**

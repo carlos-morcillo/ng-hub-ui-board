@@ -4,6 +4,7 @@ import { BoardColumn } from './board-column';
  * Represents a board that can be composed of multiple columns.
  *
  * @template T - The type of data handled by each column (defaults to `any`).
+ * @publicApi
  */
 export interface Board<T = any> {
 	/**

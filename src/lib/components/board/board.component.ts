@@ -6,13 +6,13 @@ import {
 } from '@angular/cdk/drag-drop';
 import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 import {
-  Component,
-  Signal,
-  TemplateRef,
-  computed,
-  contentChild,
-  input,
-  output
+	Component,
+	Signal,
+	TemplateRef,
+	computed,
+	contentChild,
+	input,
+	output
 } from '@angular/core';
 import { BoardColumnFooterDirective } from '../../directives/board-column-footer.directive';
 import { BoardColumnHeaderDirective } from '../../directives/board-column-header.directive';
@@ -22,6 +22,12 @@ import { BoardCard } from '../../models/board-card';
 import { BoardColumn } from '../../models/board-column';
 import { ReachedEndEvent } from '../../models/reached-end-event';
 
+/**
+ * Standalone Kanban-style board component that provides column-based drag-and-drop,
+ * custom templates and infinite-scroll detection.
+ *
+ * @publicApi
+ */
 @Component({
 	selector: 'hub-board, hub-ui-board',
 	templateUrl: './board.component.html',
@@ -30,65 +36,90 @@ import { ReachedEndEvent } from '../../models/reached-end-event';
 	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule]
 })
 export class HubBoardComponent {
+	/**
+	 * Reactive input containing the full board definition (columns and cards).
+	 */
 	readonly board = input<Board>();
 
+	/**
+	 * Pixel threshold used when determining whether a column has reached scroll end.
+	 * Allows for fractional scroll values across different browsers.
+	 */
+	private readonly scrollDetectionPadding = 1;
+
+	/**
+	 * Derived list of board columns exposed as a signal to the template.
+	 */
 	columns: Signal<Array<BoardColumn>> = computed(() => {
 		return this.board()?.columns ?? [];
 	});
 
-	// Used to disable the sorting of columns in the board
+	/**
+	 * When true, column reordering via drag-and-drop is disabled.
+	 */
 	readonly columnSortingDisabled = input<boolean>(false);
 
-	// A template reference for the card template
+	/**
+	 * Custom card template supplied via the `cardTpt` structural directive.
+	 */
 	readonly cardTpt = contentChild(CardTemplateDirective, {
 		read: TemplateRef<unknown>
 	});
 
-	// A template reference for the column header template
+	/**
+	 * Custom column header template supplied via the `columnHeaderTpt` structural directive.
+	 */
 	readonly columnHeaderTpt = contentChild(BoardColumnHeaderDirective, {
 		read: TemplateRef<unknown>
 	});
 
-	// A template reference for the column footer template
+	/**
+	 * Custom column footer template supplied via the `columnFooterTpt` structural directive.
+	 */
 	readonly columnFooterTpt = contentChild(BoardColumnFooterDirective, {
 		read: TemplateRef<unknown>
 	});
 
-	// triggered when a card is clicked
+	/**
+	 * Emits each time a card is clicked within the board.
+	 */
 	readonly onCardClick = output<BoardCard>();
 
-	// triggered when a card is moved
+	/**
+	 * Emits when a card has been repositioned, either within the same column or into another column.
+	 */
 	readonly onCardMoved = output<CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>>();
 
-	// triggered when a column is moved
+	/**
+	 * Emits when columns are reordered through drag-and-drop.
+	 */
 	readonly onColumnMoved = output<CdkDragDrop<BoardColumn[]>>();
 
-	// emit an event when the user has scrolled to the end of a specific column in the board.
+	/**
+	 * Emits when a column body is scrolled to its end, enabling infinite-scroll behaviour.
+	 */
 	readonly reachedEnd = output<ReachedEndEvent>();
 
 	/**
-	 * Default predicate function that allows all drag and drop operations.
-	 * This function is used when no custom predicate is provided for a column.
-	 * 
-	 * @returns Always returns true, allowing any card to be dropped in any column
+	 * Default predicate that allows any card to be dropped into any column.
+	 *
+	 * @returns Always `true`, indicating that drop operations are permitted.
 	 */
 	defaultEnterPredicateFn = () => true;
 
 	/**
-	 * Handles card click events and emits the clicked card data.
-	 * This method is triggered when a user clicks on a card within the board.
+	 * Emits the clicked card through {@link onCardClick}.
 	 *
-	 * @param item - The card data object that was clicked
+	 * @param item - The card that triggered the click event.
 	 */
 	cardClick(item: BoardCard) {
 		this.onCardClick.emit(item);
 	}
 
 	/**
-	 * Handles column reordering when a column is dropped after being dragged.
-	 * This method updates the column positions in the array and emits a column moved event.
+	 * Updates column order when a drag-and-drop operation completes and emits the resulting event.
 	 *
-	 * @param event - The drag and drop event containing information about the moved column
+	 * @param event - Drag-and-drop metadata describing the column movement.
 	 */
 	dropColumn(event: CdkDragDrop<BoardColumn[]>) {
 		moveItemInArray(
@@ -100,13 +131,12 @@ export class HubBoardComponent {
 	}
 
 	/**
-	 * Handles card drag and drop operations, supporting both reordering within the same column
-	 * and transferring cards between different columns.
+	 * Applies card reordering or transfer logic depending on the drag-drop target,
+	 * then emits the corresponding drag event metadata.
 	 *
-	 * @param event - The drag and drop event containing source/target containers and card data
+	 * @param event - Drag-and-drop metadata describing the card movement.
 	 */
 	dropCard(event: CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>) {
-		// Check if the card was moved within the same column
 		if (event.previousContainer === event.container) {
 			// Reorder the card within the same column
 			moveItemInArray(
@@ -127,22 +157,32 @@ export class HubBoardComponent {
 	}
 
 	/**
-	 * Detects when a column has been scrolled to the bottom and emits a reachedEnd event.
-	 * This is useful for implementing lazy loading or infinite scroll functionality.
+	 * Emits {@link reachedEnd} once a column body is scrolled to its bottom.
 	 *
-	 * @param index - The index of the column that was scrolled
-	 * @param event - The scroll event containing target element and scroll position information
+	 * @param index - Index of the scrolled column within the board.
+	 * @param event - Browser scroll event originating from the column body element.
 	 */
 	onScroll(index: number, event: Event) {
-		const el = event.target as HTMLElement;
-		
-		// Check if the element exists and if we've scrolled to the bottom
-		if (el && el.scrollTop + el.clientHeight >= el.scrollHeight) {
-			// Emit event with column index and data for lazy loading purposes
-			this.reachedEnd.emit({
-				index,
-				data: this.board()?.columns?.[index] ?? []
-			});
+		const el = event.target as HTMLElement | null;
+		if (!el) {
+			return;
 		}
+
+		const scrolledToBottom =
+			el.scrollTop + el.clientHeight >= el.scrollHeight - this.scrollDetectionPadding;
+
+		if (!scrolledToBottom) {
+			return;
+		}
+
+		const column = this.board()?.columns?.[index];
+		if (!column) {
+			return;
+		}
+
+		this.reachedEnd.emit({
+			index,
+			data: column
+		});
 	}
 }

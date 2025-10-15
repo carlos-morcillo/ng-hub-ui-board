@@ -7,6 +7,8 @@ import { Directive, TemplateRef } from '@angular/core';
  * It provides access to the template reference that can be used by the board component
  * to render cards with custom layouts and styling.
  * 
+ * @publicApi
+ * 
  * @example
  * ```html
  * <ng-template cardTpt let-card="item" let-column="column">

@@ -5,6 +5,7 @@ import { BoardCard } from './board-card';
  * Represents a column within a board layout.
  *
  * @template T The data type associated with the column (defaults to `any`).
+ * @publicApi
  */
 export interface BoardColumn<T = any> {
 	/**

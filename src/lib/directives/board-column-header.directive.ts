@@ -7,6 +7,8 @@ import { Directive, TemplateRef } from '@angular/core';
  * giving developers full control over the appearance and functionality of column headers
  * including titles, descriptions, actions, and metadata display.
  * 
+ * @publicApi
+ * 
  * @example
  * ```html
  * <ng-template columnHeaderTpt let-column="column">
