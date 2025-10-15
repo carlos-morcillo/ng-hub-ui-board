@@ -283,21 +283,52 @@ handleColumnMoved(event: CdkDragDrop<BoardColumn[]>) {
 Emitted when a user scrolls to the end of a column. Useful for triggering lazy-loading of additional cards.
 
 ```html
-<hub-board [board]="board" (reachedEnd)="handleReachedEnd($event)" style="max-height: 600px;"> </hub-board>
+<div style="height: 512px;">
+  <hub-board [board]="board" (reachedEnd)="loadMoreCards($event)"></hub-board>
+</div>
 ```
 
-**Type:** `EventEmitter<ReachedEndEvent>`
+**Type:** `EventEmitter<ReachedEndEvent<BoardColumn>>`
+
+**Event Structure:**
+```typescript
+interface ReachedEndEvent<T = any> {
+  index: number;    // Index of the column that reached the end
+  data: T;          // The BoardColumn object itself
+}
+```
 
 **Example:**
 
 ```ts
-handleReachedEnd(event: ReachedEndEvent) {
-  console.log('Reached end of column:', event.data.title);
-  this.loadMoreCards(event.index);
+loadMoreCards(event: ReachedEndEvent) {
+  const columnIndex = event.index;
+  const column = event.data;  // event.data is the BoardColumn object
+
+  if (!column) {
+    return;
+  }
+
+  console.log(`Loading more cards for column: ${column.title}`);
+
+  // Simulate API call to load more cards
+  setTimeout(() => {
+    const newCards = this.generateCards(5);
+
+    // Update the board with new cards
+    this.board.update(currentBoard => ({
+      ...currentBoard,
+      columns: currentBoard.columns?.map((col, index) =>
+        index === columnIndex
+          ? { ...col, cards: [...col.cards, ...newCards] }
+          : col
+      ) || []
+    }));
+  }, 1000);
 }
 ```
 
-> ℹ️ To enable scroll detection, set a `max-height` on the `hub-board` container.
+> ℹ️ **Important:** To enable scroll detection, the board must be placed inside a container with a fixed height constraint.
 
 ## Inputs
 
@@ -532,7 +563,30 @@ Your support is greatly appreciated and helps maintain and improve this project!
 
 ## License
 
-This project is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See the [LICENSE](LICENSE) file for details on attribution requirements.
+This project is licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+
+### What this means:
+
+✅ **You can:**
+- Use commercially and non-commercially
+- Modify, adapt, and create derivatives
+- Distribute and redistribute in any format
+- Use in private and public projects
+
+📋 **You must:**
+- Give appropriate credit to the original authors
+- Provide a link to the license
+- Indicate if changes were made
+
+### Example attribution:
+
+```
+Based on ng-hub-ui-board by Carlos Morcillo
+Original: https://github.com/carlos-morcillo/ng-hub-ui-board
+License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+```
+
+For full license details, see the [LICENSE](LICENSE) file.
 
 ---
 
