@@ -93,7 +93,7 @@
 		"type": "buymeacoffee",
 		"url": "https://www.buymeacoffee.com/carlosmorcillo"
 	},
-	"license": "MIT",
+	"license": "CC-BY-4.0",
 	"engines": {
 		"node": ">=18.13.0",
 		"npm": ">=9.0.0"
