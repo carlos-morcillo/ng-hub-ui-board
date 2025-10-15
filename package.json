@@ -1,111 +1,111 @@
 {
-	"name": "ng-hub-ui-board",
-	"version": "19.3.1",
-	"description": "An Angular-based Kanban board component with Trello-like drag-and-drop, customizable columns, and straightforward event handling.",
-	"main": "bundles/ng-hub-ui-board.umd.js",
-	"module": "fesm2022/ng-hub-ui-board.mjs",
-	"typings": "index.d.ts",
-	"exports": {
-		"./package.json": {
-			"default": "./package.json"
-		},
-		".": {
-			"types": "./index.d.ts",
-			"default": "./bundles/ng-hub-ui-board.umd.js"
-		}
-	},
-	"peerDependencies": {
-		"@angular/common": ">=18.0.0",
-		"@angular/core": ">=18.0.0",
-		"@angular/cdk": ">=18.0.0"
-	},
-	"dependencies": {
-		"tslib": "^2.3.0"
-	},
-	"sideEffects": false,
-	"scripts": {
-		"build": "ng build board",
-		"build:prod": "ng build board --configuration production",
-		"test": "ng test board",
-		"test:watch": "ng test board --watch",
-		"test:coverage": "ng test board --code-coverage",
-		"lint": "ng lint board",
-		"pack": "npm pack",
-		"publish:npm": "npm publish"
-	},
-	"files": [
-		"**/*",
-		"!**/*.spec.ts",
-		"!**/*.spec.js",
-		"!**/*.test.ts",
-		"!**/*.test.js",
-		"!src/**/*"
-	],
-	"keywords": [
-		"angular",
-		"kanban",
-		"board",
-		"trello",
-		"drag-drop",
-		"dnd",
-		"columns",
-		"cards",
-		"tasks",
-		"todo",
-		"productivity",
-		"collaboration",
-		"organization",
-		"project-management",
-		"workflow",
-		"agile",
-		"scrum",
-		"component",
-		"reusable",
-		"open-source",
-		"typescript",
-		"standalone",
-		"cdk",
-		"ui-library",
-		"ng-hub-ui"
-	],
-	"author": {
-		"name": "Carlos Morcillo Fernández",
-		"email": "carlos.morcillo@me.com",
-		"url": "https://www.carlosmorcillo.com"
-	},
-	"maintainers": [
-		{
-			"name": "Carlos Morcillo Fernández",
-			"email": "carlos.morcillo@me.com",
-			"url": "https://www.carlosmorcillo.com"
-		}
-	],
-	"homepage": "https://github.com/carlos-morcillo/ng-hub-ui-board#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/carlos-morcillo/ng-hub-ui-board.git"
-	},
-	"bugs": {
-		"url": "https://github.com/carlos-morcillo/ng-hub-ui-board/issues",
-		"email": "carlos.morcillo@me.com"
-	},
-	"funding": {
-		"type": "buymeacoffee",
-		"url": "https://www.buymeacoffee.com/carlosmorcillo"
-	},
-	"license": "CC-BY-4.0",
-	"engines": {
-		"node": ">=18.13.0",
-		"npm": ">=9.0.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
-	"ng-add": {
-		"save": "dependencies"
-	},
-	"contributors": [
-		"Carlos Morcillo Fernández <carlos.morcillo@me.com>"
-	]
+  "name": "ng-hub-ui-board",
+  "version": "19.3.2",
+  "description": "An Angular-based Kanban board component with Trello-like drag-and-drop, customizable columns, and straightforward event handling.",
+  "main": "bundles/ng-hub-ui-board.umd.js",
+  "module": "fesm2022/ng-hub-ui-board.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./bundles/ng-hub-ui-board.umd.js"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0",
+    "@angular/cdk": ">=18.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "ng build board",
+    "build:prod": "ng build board --configuration production",
+    "test": "ng test board",
+    "test:watch": "ng test board --watch",
+    "test:coverage": "ng test board --code-coverage",
+    "lint": "ng lint board",
+    "pack": "npm pack",
+    "publish:npm": "npm publish"
+  },
+  "files": [
+    "**/*",
+    "!**/*.spec.ts",
+    "!**/*.spec.js",
+    "!**/*.test.ts",
+    "!**/*.test.js",
+    "!src/**/*"
+  ],
+  "keywords": [
+    "angular",
+    "kanban",
+    "board",
+    "trello",
+    "drag-drop",
+    "dnd",
+    "columns",
+    "cards",
+    "tasks",
+    "todo",
+    "productivity",
+    "collaboration",
+    "organization",
+    "project-management",
+    "workflow",
+    "agile",
+    "scrum",
+    "component",
+    "reusable",
+    "open-source",
+    "typescript",
+    "standalone",
+    "cdk",
+    "ui-library",
+    "ng-hub-ui"
+  ],
+  "author": {
+    "name": "Carlos Morcillo Fernández",
+    "email": "carlos.morcillo@me.com",
+    "url": "https://www.carlosmorcillo.com"
+  },
+  "maintainers": [
+    {
+      "name": "Carlos Morcillo Fernández",
+      "email": "carlos.morcillo@me.com",
+      "url": "https://www.carlosmorcillo.com"
+    }
+  ],
+  "homepage": "https://github.com/carlos-morcillo/ng-hub-ui-board#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlos-morcillo/ng-hub-ui-board.git"
+  },
+  "bugs": {
+    "url": "https://github.com/carlos-morcillo/ng-hub-ui-board/issues",
+    "email": "carlos.morcillo@me.com"
+  },
+  "funding": {
+    "type": "buymeacoffee",
+    "url": "https://www.buymeacoffee.com/carlosmorcillo"
+  },
+  "license": "CC-BY-4.0",
+  "engines": {
+    "node": ">=18.13.0",
+    "npm": ">=9.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "ng-add": {
+    "save": "dependencies"
+  },
+  "contributors": [
+    "Carlos Morcillo Fernández <carlos.morcillo@me.com>"
+  ]
 }
