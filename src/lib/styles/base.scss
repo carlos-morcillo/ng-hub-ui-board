@@ -4,181 +4,229 @@
 $boardPrefix: hub- !default;
 
 .hub-board {
-  height: 100%;
+	// Core colors and borders
+	--#{$boardPrefix}body-color: #212529;
+	--#{$boardPrefix}body-bg: #fff;
+	--#{$boardPrefix}border-width: 1px;
+	--#{$boardPrefix}border-color: #dee2e6;
+	--#{$boardPrefix}border-radius: 0.375rem;
+
+	// Column tokens
+	--#{$boardPrefix}column-spacer-y: 0.75rem;
+	--#{$boardPrefix}column-spacer-x: 1rem;
+	--#{$boardPrefix}column-border-width: 1px;
+	--#{$boardPrefix}column-border-color: rgba(0, 0, 0, 0.175);
+	--#{$boardPrefix}column-border-radius: 0.375rem;
+	--#{$boardPrefix}column-box-shadow: null;
+	--#{$boardPrefix}column-inner-border-radius: var(--#{$boardPrefix}border-radius);
+	--#{$boardPrefix}column-cap-padding-y: 0.5rem;
+	--#{$boardPrefix}column-cap-padding-x: 1rem;
+	--#{$boardPrefix}column-cap-bg: rgba(0, 0, 0, 0.03);
+	--#{$boardPrefix}column-cap-color: null;
+	--#{$boardPrefix}column-header-title-color: inherit;
+	--#{$boardPrefix}column-header-title-spacer-y: 0.5rem;
+	--#{$boardPrefix}column-header-subtitle-color: #6c757d;
+	--#{$boardPrefix}column-height: 100%;
+	--#{$boardPrefix}column-color: null;
+	--#{$boardPrefix}column-bg: #fff;
+
+	// Card tokens
+	--#{$boardPrefix}card-spacer-y: 0.75rem;
+	--#{$boardPrefix}card-spacer-x: 1rem;
+	--#{$boardPrefix}card-title-spacer-y: 0.5rem;
+	--#{$boardPrefix}card-title-color: inherit;
+	--#{$boardPrefix}card-subtitle-color: #6c757d;
+	--#{$boardPrefix}card-border-width: 1px;
+	--#{$boardPrefix}card-border-color: rgba(0, 0, 0, 0.175);
+	--#{$boardPrefix}card-border-radius: var(--#{$boardPrefix}border-radius);
+	--#{$boardPrefix}card-box-shadow: null;
+	--#{$boardPrefix}card-inner-border-radius: calc(0.375rem - 1px);
+	--#{$boardPrefix}card-cap-padding-y: 0.5rem;
+	--#{$boardPrefix}card-cap-padding-x: 1rem;
+	--#{$boardPrefix}card-cap-bg: rgba(0, 0, 0, 0.03);
+	--#{$boardPrefix}card-cap-color: null;
+	--#{$boardPrefix}card-height: null;
+	--#{$boardPrefix}card-color: null;
+	--#{$boardPrefix}card-bg: #fff;
+
+	display: block;
+	overflow: auto;
+	width: 100%;
+	height: 100%;
+
+	&__drop-list {
+		height: 100%;
+	}
+
+	&__columns {
+		display: flex;
+		flex-wrap: nowrap;
+		width: 100%;
+		height: 100%;
+		gap: 1rem;
+		.hub-board__column-container {
+			height: 100%;
+		}
+	}
+
+	&__column {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+		height: var(--#{$boardPrefix}column-height);
+		color: var(--#{$boardPrefix}body-color);
+		word-wrap: break-word;
+		background-color: var(--#{$boardPrefix}column-bg);
+		background-clip: border-box;
+		border: var(--#{$boardPrefix}column-border-width) solid var(--#{$boardPrefix}column-border-color);
+		border-radius: var(--#{$boardPrefix}column-border-radius);
+		box-shadow: var(--#{$boardPrefix}column-box-shadow);
+
+		display: flex;
+		flex-direction: column;
+		max-height: 100%;
+		width: 256px;
+
+		&-body {
+			// Enable `flex-grow: 1` for decks and groups so that column blocks take up
+			// as much space as possible, ensuring footers are aligned to the bottom.
+			flex: 1 1 auto;
+			padding: var(--#{$boardPrefix}column-spacer-y) var(--#{$boardPrefix}column-spacer-x);
+			color: var(--#{$boardPrefix}column-color);
+			overflow: auto;
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+			min-height: 128px;
+		}
+
+		&-header {
+			background-color: var(--asdf);
+			padding: var(--#{$boardPrefix}column-cap-padding-y) var(--#{$boardPrefix}column-cap-padding-x);
+			margin-bottom: 0; // Removes the default margin-bottom of <hN>
+			color: var(--#{$boardPrefix}column-cap-color);
+			background-color: var(--#{$boardPrefix}column-cap-bg);
+			border-bottom: var(--#{$boardPrefix}column-border-width) solid var(--#{$boardPrefix}column-border-color);
+
+			&-title {
+				margin-bottom: var(--#{$boardPrefix}column-header-title-spacer-y);
+				color: var(--#{$boardPrefix}column-header-title-color);
+			}
+
+			&-subtitle {
+				margin-top: calc(
+					-0.5 * var(--#{$boardPrefix}column-header-title-spacer-y)
+				); // stylelint-disable-line function-disallowed-list
+				margin-bottom: 0;
+				color: var(--#{$boardPrefix}column-header-subtitle-color);
+			}
+
+			&:first-child {
+				border-top-left-radius: var(--#{$boardPrefix}column-inner-border-radius);
+				border-top-right-radius: var(--#{$boardPrefix}column-inner-border-radius);
+				border-bottom-right-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+		}
+
+		&-footer {
+			padding: var(--#{$boardPrefix}column-cap-padding-y) var(--#{$boardPrefix}column-cap-padding-x);
+			color: var(--#{$boardPrefix}column-cap-color);
+			background-color: var(--#{$boardPrefix}column-cap-bg);
+			border-top: var(--#{$boardPrefix}column-border-width) solid var(--#{$boardPrefix}column-border-color);
+
+			&:last-child {
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: var(--#{$boardPrefix}column-inner-border-radius);
+				border-bottom-left-radius: var(--#{$boardPrefix}column-inner-border-radius);
+			}
+		}
+	}
+
+	&__card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+		height: var(--#{$boardPrefix}card-height);
+		color: var(--#{$boardPrefix}body-color);
+		word-wrap: break-word;
+		background-color: var(--#{$boardPrefix}card-bg);
+		background-clip: border-box;
+		border: var(--#{$boardPrefix}card-border-width) solid var(--#{$boardPrefix}card-border-color);
+		border-radius: var(--#{$boardPrefix}card-border-radius);
+		box-shadow: var(--#{$boardPrefix}card-box-shadow);
+
+		> hr {
+			margin-right: 0;
+			margin-left: 0;
+		}
+
+		> .list-group {
+			border-top: inherit;
+			border-bottom: inherit;
+
+			&:first-child {
+				border-top-width: 0;
+				border-top-left-radius: var(--#{$boardPrefix}card-inner-border-radius);
+				border-top-right-radius: var(--#{$boardPrefix}card-inner-border-radius);
+			}
+
+			&:last-child {
+				border-bottom-width: 0;
+				border-bottom-left-radius: var(--#{$boardPrefix}card-inner-border-radius);
+				border-bottom-right-radius: var(--#{$boardPrefix}card-inner-border-radius);
+			}
+		}
+
+		// Due to specificity of the above selector (`.hub-board__card > .list-group`), we must
+		// use a child selector here to prevent double borders.
+		// Note: when nested, & refers to .hub-board, so &__card is .hub-board__card.
+		// Inside &__card { ... }, & refers to .hub-board__card
+		> &-header + .list-group,
+		> .list-group + &-footer {
+			border-top: 0;
+		}
+
+		&-body {
+			// Enable `flex-grow: 1` for decks and groups so that card blocks take up
+			// as much space as possible, ensuring footers are aligned to the bottom.
+			flex: 1 1 auto;
+			padding: var(--#{$boardPrefix}card-spacer-y) var(--#{$boardPrefix}card-spacer-x);
+			color: var(--#{$boardPrefix}card-color);
+		}
+
+		&-title {
+			margin-bottom: var(--#{$boardPrefix}card-title-spacer-y);
+			color: var(--#{$boardPrefix}card-title-color);
+		}
+
+		&-subtitle {
+			margin-top: calc(
+				-0.5 * var(--#{$boardPrefix}card-title-spacer-y)
+			); // stylelint-disable-line function-disallowed-list
+			margin-bottom: 0;
+			color: var(--#{$boardPrefix}card-subtitle-color);
+		}
+	}
 }
 
-.hub-board__columns {
-  display: flex;
-  flex-wrap: nowrap;
-  width: 100%;
-  height: 100%;
-  gap: 1rem;
-  .hub-board__column-container {
-    height: 100%;
-  }
+.cdk-drag-preview {
+	box-sizing: border-box;
+	border-radius: 4px;
+	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.hub-board__column {
-  // scss-docs-start column-css-vars
-  --#{$boardPrefix}column-spacer-y: 0.75rem;
-  --#{$boardPrefix}column-spacer-x: 1rem;
-  --#{$boardPrefix}column-border-width: 1px;
-  --#{$boardPrefix}column-border-color: rgba(0, 0, 0, 0.175);
-  --#{$boardPrefix}column-border-radius: 0.375rem;
-  --#{$boardPrefix}column-box-shadow: null;
-  --#{$boardPrefix}column-inner-border-radius: calc(0.375rem - 1px);
-  --#{$boardPrefix}column-cap-padding-y: 0.5rem;
-  --#{$boardPrefix}column-cap-padding-x: 1rem;
-  --#{$boardPrefix}column-cap-bg: rgba(0, 0, 0, 0.03);
-  --#{$boardPrefix}column-cap-color: null;
-  --#{$boardPrefix}column-height: 100%;
-  --#{$boardPrefix}column-color: null;
-  --#{$boardPrefix}column-bg: #fff;
-  // scss-docs-end column-css-vars
-
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
-  height: var(--#{$boardPrefix}column-height);
-  color: var(--#{$boardPrefix}body-color);
-  word-wrap: break-word;
-  background-color: var(--#{$boardPrefix}column-bg);
-  background-clip: border-box;
-  border: var(--#{$boardPrefix}column-border-width) solid var(--#{$boardPrefix}column-border-color);
-  border-radius: var(--#{$boardPrefix}column-border-radius);
-  box-shadow: var(--#{$boardPrefix}column-box-shadow);
-
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
-  width: 256px;
-
-  .hub-board__column-body {
-    // Enable `flex-grow: 1` for decks and groups so that column blocks take up
-    // as much space as possible, ensuring footers are aligned to the bottom.
-    flex: 1 1 auto;
-    padding: var(--#{$boardPrefix}column-spacer-y) var(--#{$boardPrefix}column-spacer-x);
-    color: var(--#{$boardPrefix}column-color);
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .hub-board__column-header {
-    padding: var(--#{$boardPrefix}column-cap-padding-y) var(--#{$boardPrefix}column-cap-padding-x);
-    margin-bottom: 0; // Removes the default margin-bottom of <hN>
-    color: var(--#{$boardPrefix}column-cap-color);
-    background-color: var(--#{$boardPrefix}column-cap-bg);
-    border-bottom: var(--#{$boardPrefix}column-border-width) solid
-      var(--#{$boardPrefix}column-border-color);
-
-    &:first-child {
-      border-top-left-radius: var(--#{$boardPrefix}column-inner-border-radius);
-      border-top-right-radius: var(--#{$boardPrefix}column-inner-border-radius);
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
-
-  .hub-board__column-footer {
-    padding: var(--#{$boardPrefix}column-cap-padding-y) var(--#{$boardPrefix}column-cap-padding-x);
-    color: var(--#{$boardPrefix}column-cap-color);
-    background-color: var(--#{$boardPrefix}column-cap-bg);
-    border-top: var(--#{$boardPrefix}column-border-width) solid
-      var(--#{$boardPrefix}column-border-color);
-
-    &:last-child {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: var(--#{$boardPrefix}column-inner-border-radius);
-      border-bottom-left-radius: var(--#{$boardPrefix}column-inner-border-radius);
-    }
-  }
+.cdk-drag-placeholder {
+	opacity: 0;
 }
 
-.hub-board__card {
-  // scss-docs-start card-css-vars
-  --#{$boardPrefix}card-spacer-y: 0.75rem;
-  --#{$boardPrefix}card-spacer-x: 1rem;
-  --#{$boardPrefix}card-title-spacer-y: 0.5rem;
-  --#{$boardPrefix}card-title-color: inherit;
-  --#{$boardPrefix}card-subtitle-color: #6c757d;
-  --#{$boardPrefix}card-border-width: 1px;
-  --#{$boardPrefix}card-border-color: rgba(0, 0, 0, 0.175);
-  --#{$boardPrefix}card-border-radius: 0.375rem;
-  --#{$boardPrefix}card-box-shadow: null;
-  --#{$boardPrefix}card-inner-border-radius: calc(0.375rem - 1px);
-  --#{$boardPrefix}card-cap-padding-y: 0.5rem;
-  --#{$boardPrefix}card-cap-padding-x: 1rem;
-  --#{$boardPrefix}card-cap-bg: rgba(0, 0, 0, 0.03);
-  --#{$boardPrefix}card-cap-color: null;
-  --#{$boardPrefix}card-height: null;
-  --#{$boardPrefix}card-color: null;
-  --#{$boardPrefix}card-bg: #fff;
-  // scss-docs-end card-css-vars
+.cdk-drag-animating {
+	transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
-  height: var(--#{$boardPrefix}card-height);
-  color: var(--#{$boardPrefix}body-color);
-  word-wrap: break-word;
-  background-color: var(--#{$boardPrefix}card-bg);
-  background-clip: border-box;
-  border: var(--#{$boardPrefix}card-border-width) solid var(--#{$boardPrefix}card-border-color);
-  border-radius: var(--#{$boardPrefix}card-border-radius);
-  box-shadow: var(--#{$boardPrefix}card-box-shadow);
-
-  > hr {
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  > .list-group {
-    border-top: inherit;
-    border-bottom: inherit;
-
-    &:first-child {
-      border-top-width: 0;
-      border-top-left-radius: var(--#{$boardPrefix}card-inner-border-radius);
-      border-top-right-radius: var(--#{$boardPrefix}card-inner-border-radius);
-    }
-
-    &:last-child {
-      border-bottom-width: 0;
-      border-bottom-left-radius: var(--#{$boardPrefix}card-inner-border-radius);
-      border-bottom-right-radius: var(--#{$boardPrefix}card-inner-border-radius);
-    }
-  }
-
-  // Due to specificity of the above selector (`.hub-board__card > .list-group`), we must
-  // use a child selector here to prevent double borders.
-  > .hub-board__card-header + .list-group,
-  > .list-group + .hub-board__card-footer {
-    border-top: 0;
-  }
-
-  .hub-board__card-body {
-    // Enable `flex-grow: 1` for decks and groups so that card blocks take up
-    // as much space as possible, ensuring footers are aligned to the bottom.
-    flex: 1 1 auto;
-    padding: var(--#{$boardPrefix}card-spacer-y) var(--#{$boardPrefix}card-spacer-x);
-    color: var(--#{$boardPrefix}card-color);
-  }
-
-  .hub-board__card-title {
-    margin-bottom: var(--#{$boardPrefix}card-title-spacer-y);
-    color: var(--#{$boardPrefix}card-title-color);
-  }
-
-  .hub-board__card-subtitle {
-    margin-top: calc(
-      -0.5 * var(--#{$boardPrefix}card-title-spacer-y)
-    ); // stylelint-disable-line function-disallowed-list
-    margin-bottom: 0;
-    color: var(--#{$boardPrefix}card-subtitle-color);
-  }
+.cards.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
+	transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

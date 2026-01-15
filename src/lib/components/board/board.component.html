@@ -1,107 +1,79 @@
 @if (columns().length) {
-	<div
-		class="hub-board"
-		cdkDropList
-		cdkDropListOrientation="horizontal"
-		[cdkDropListData]="columns()"
-		(cdkDropListDropped)="dropColumn($event)"
-		[cdkDropListSortingDisabled]="columnSortingDisabled()"
-	>
-		<div cdkDropListGroup class="hub-board__columns">
-			@for (column of columns(); let index = $index; track column) {
-				<div
-					class="hub-board__column-container"
-					cdkDrag
-					[cdkDragData]="column"
-					[cdkDragDisabled]="column.disabled"
-				>
-					<div
-						class="hub-board__column"
-						[ngClass]="column.classlist"
-						[ngStyle]="column.style"
+<div
+	class="hub-board__drop-list"
+	cdkDropList
+	cdkDropListOrientation="horizontal"
+	[cdkDropListData]="columns()"
+	(cdkDropListDropped)="dropColumn($event)"
+	[cdkDropListSortingDisabled]="columnSortingDisabled()"
+>
+	<div cdkDropListGroup class="hub-board__columns">
+		@for (column of columns(); let index = $index; track column) {
+		<div class="hub-board__column-container" cdkDrag [cdkDragData]="column" [cdkDragDisabled]="column.disabled">
+			<div class="hub-board__column" [ngClass]="column.classlist" [ngStyle]="column.style">
+				<div class="hub-board__column-header">
+					<ng-container
+						[ngTemplateOutlet]="columnHeaderTpt() || defaultColumnHeaderTpt"
+						[ngTemplateOutletContext]="{ column: column }"
 					>
-						<div class="hub-board__column-header">
+					</ng-container>
+				</div>
+				<div
+					class="hub-board__column-body"
+					cdkDropList
+					[cdkDropListData]="column"
+					(cdkDropListDropped)="dropCard($event)"
+					(scroll)="onScroll(index, $event)"
+					[cdkDropListEnterPredicate]="column.predicate ?? defaultEnterPredicateFn"
+					[cdkDropListSortingDisabled]="column.cardSortingDisabled"
+				>
+					@for ( card of column.cards; let index = $index; track card ) {
+					<div
+						class="hub-board__card"
+						[class.hub-board__card--disabled]="card.disabled"
+						cdkDrag
+						[cdkDragData]="card"
+						[cdkDragDisabled]="card.disabled"
+						(click)="cardClick(card)"
+						(mousedown)="card.disabled && $event.stopPropagation()"
+						[ngClass]="card.classlist"
+						[ngStyle]="card.style"
+					>
+						<div class="hub-board__card-body">
 							<ng-container
-								[ngTemplateOutlet]="
-									columnHeaderTpt() || defaultColumnHeaderTpt
-								"
-								[ngTemplateOutletContext]="{ column: column }"
+								[ngTemplateOutlet]="cardTpt() || defaultCardTpt"
+								[ngTemplateOutletContext]="{
+									item: card,
+									column
+								}"
 							>
 							</ng-container>
 						</div>
-						<div
-							class="hub-board__column-body"
-							cdkDropList
-							[cdkDropListData]="column"
-							(cdkDropListDropped)="dropCard($event)"
-							(scroll)="onScroll(index, $event)"
-							[cdkDropListEnterPredicate]="
-								column.predicate ?? defaultEnterPredicateFn
-							"
-							[cdkDropListSortingDisabled]="
-								column.cardSortingDisabled
-							"
-						>
-							@for (
-								card of column.cards;
-								let index = $index;
-								track card
-							) {
-								<div
-									class="hub-board__card"
-									[class.hub-board__card--disabled]="
-										card.disabled
-									"
-									cdkDrag
-									[cdkDragData]="card"
-									[cdkDragDisabled]="card.disabled"
-									(click)="cardClick(card)"
-									(mousedown)="
-										card.disabled &&
-											$event.stopPropagation()
-									"
-									[ngClass]="card.classlist"
-									[ngStyle]="card.style"
-								>
-									<div class="hub-board__card-body">
-										<ng-container
-											[ngTemplateOutlet]="
-												cardTpt() || defaultCardTpt
-											"
-											[ngTemplateOutletContext]="{
-												item: card,
-												column
-											}"
-										>
-										</ng-container>
-									</div>
-								</div>
-							}
-						</div>
-
-						@if (columnFooterTpt()) {
-							<div class="hub-board__column-footer">
-								<ng-container
-									[ngTemplateOutlet]="
-										columnFooterTpt() ?? null
-									"
-									[ngTemplateOutletContext]="{
-										column: column
-									}"
-								>
-								</ng-container>
-							</div>
-						}
 					</div>
+					}
 				</div>
-			}
+
+				@if (columnFooterTpt()) {
+				<div class="hub-board__column-footer">
+					<ng-container
+						[ngTemplateOutlet]="columnFooterTpt() ?? null"
+						[ngTemplateOutletContext]="{
+							column: column
+						}"
+					>
+					</ng-container>
+				</div>
+				}
+			</div>
 		</div>
+		}
 	</div>
+</div>
 }
 
 <ng-template #defaultCardTpt let-item="item">
-	<h6>{{ item.title }}</h6>
-	<p class="card-text">{{ item.description }}</p>
+	<h6 class="hub-board__card-title">{{ item.title }}</h6>
+	<p class="hub-board__card-subtitle">{{ item.description }}</p>
 </ng-template>
 
 <ng-template #defaultColumnHeaderTpt let-column="column">

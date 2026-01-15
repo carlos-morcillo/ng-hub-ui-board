@@ -1,19 +1,6 @@
-import {
-	CdkDragDrop,
-	DragDropModule,
-	moveItemInArray,
-	transferArrayItem
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
-import {
-	Component,
-	Signal,
-	TemplateRef,
-	computed,
-	contentChild,
-	input,
-	output
-} from '@angular/core';
+import { Component, Signal, TemplateRef, computed, contentChild, input, output } from '@angular/core';
 import { BoardColumnFooterDirective } from '../../directives/board-column-footer.directive';
 import { BoardColumnHeaderDirective } from '../../directives/board-column-header.directive';
 import { CardTemplateDirective } from '../../directives/card-template.directive';
@@ -31,9 +18,10 @@ import { ReachedEndEvent } from '../../models/reached-end-event';
 @Component({
 	selector: 'hub-board, hub-ui-board',
 	templateUrl: './board.component.html',
-	styleUrls: ['./board.component.scss'],
-	standalone: true,
-	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule]
+	imports: [NgClass, NgStyle, NgTemplateOutlet, DragDropModule],
+	host: {
+		class: 'hub-board'
+	}
 })
 export class HubBoardComponent {
 	/**
@@ -122,11 +110,7 @@ export class HubBoardComponent {
 	 * @param event - Drag-and-drop metadata describing the column movement.
 	 */
 	dropColumn(event: CdkDragDrop<BoardColumn[]>) {
-		moveItemInArray(
-			event.container.data,
-			event.previousIndex,
-			event.currentIndex
-		);
+		moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 		this.onColumnMoved.emit(event);
 	}
 
@@ -139,11 +123,7 @@ export class HubBoardComponent {
 	dropCard(event: CdkDragDrop<BoardColumn, BoardColumn, BoardCard<any>>) {
 		if (event.previousContainer === event.container) {
 			// Reorder the card within the same column
-			moveItemInArray(
-				event.container.data.cards,
-				event.previousIndex,
-				event.currentIndex
-			);
+			moveItemInArray(event.container.data.cards, event.previousIndex, event.currentIndex);
 		} else {
 			// Transfer the card from one column to another
 			transferArrayItem(
@@ -168,8 +148,7 @@ export class HubBoardComponent {
 			return;
 		}
 
-		const scrolledToBottom =
-			el.scrollTop + el.clientHeight >= el.scrollHeight - this.scrollDetectionPadding;
+		const scrolledToBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - this.scrollDetectionPadding;
 
 		if (!scrolledToBottom) {
 			return;

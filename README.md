@@ -6,13 +6,13 @@
 
 This component is part of the ng-hub-ui ecosystem, which includes:
 
-- [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
-- [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
-- [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
-- [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
-- [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
-- [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
-- [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion)
+-   [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
+-   [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
+-   [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
+-   [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
+-   [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
+-   [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
+-   [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion)
 
 ## Description
 
@@ -20,16 +20,16 @@ A flexible and powerful board component for Angular applications, perfect for im
 
 ## Features
 
-- 🎯 **Standalone component** - Modern Angular approach with minimal setup
-- 🔄 **Drag and drop support** - Full drag-and-drop for both cards and columns using Angular CDK
-- 📱 **Responsive design** - Works seamlessly across desktop, tablet, and mobile devices
-- 🎨 **Highly customizable** - Custom templates for cards, headers, and footers
-- 🔧 **Bootstrap compatible** - Integrates perfectly with Bootstrap 5 design system
-- ⚡ **Virtual scrolling** - Supports infinite scroll with end-detection for performance
-- 🎭 **Custom styling** - CSS custom properties for easy theming and customization
-- 🔒 **Granular control** - Enable/disable functionality at board, column, or card level
-- 🏷️ **TypeScript support** - Full type safety with generic interfaces
-- ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
+-   🎯 **Standalone component** - Modern Angular approach with minimal setup
+-   🔄 **Drag and drop support** - Full drag-and-drop for both cards and columns using Angular CDK
+-   📱 **Responsive design** - Works seamlessly across desktop, tablet, and mobile devices
+-   🎨 **Highly customizable** - Custom templates for cards, headers, and footers
+-   🔧 **Bootstrap compatible** - Integrates perfectly with Bootstrap 5 design system
+-   ⚡ **Virtual scrolling** - Supports infinite scroll with end-detection for performance
+-   🎭 **Custom styling** - CSS custom properties for easy theming and customization
+-   🔒 **Granular control** - Enable/disable functionality at board, column, or card level
+-   🏷️ **TypeScript support** - Full type safety with generic interfaces
+-   ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
 
 ## Installation
 
@@ -84,7 +84,13 @@ export const board = signal<Board>({
 
 ```ts
 import { Component } from '@angular/core';
-import { HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective, BoardColumnFooterDirective, BoardCard } from 'ng-hub-ui-board';
+import {
+	HubBoardComponent,
+	CardTemplateDirective,
+	BoardColumnHeaderDirective,
+	BoardColumnFooterDirective,
+	BoardCard
+} from 'ng-hub-ui-board';
 
 @Component({
 	selector: 'board-demo',
@@ -126,7 +132,12 @@ The component can be used in two ways:
 
 ```typescript
 import { Component } from '@angular/core';
-import { HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective, BoardColumnFooterDirective } from 'ng-hub-ui-board';
+import {
+	HubBoardComponent,
+	CardTemplateDirective,
+	BoardColumnHeaderDirective,
+	BoardColumnFooterDirective
+} from 'ng-hub-ui-board';
 
 @Component({
 	selector: 'app-my-component',
@@ -284,17 +295,18 @@ Emitted when a user scrolls to the end of a column. Useful for triggering lazy-l
 
 ```html
 <div style="height: 512px;">
-  <hub-board [board]="board" (reachedEnd)="loadMoreCards($event)"></hub-board>
+	<hub-board [board]="board" (reachedEnd)="loadMoreCards($event)"></hub-board>
 </div>
 ```
 
 **Type:** `EventEmitter<ReachedEndEvent<BoardColumn>>`
 
 **Event Structure:**
+
 ```typescript
 interface ReachedEndEvent<T = any> {
-  index: number;    // Index of the column that reached the end
-  data: T;          // The BoardColumn object itself
+	index: number; // Index of the column that reached the end
+	data: T; // The BoardColumn object itself
 }
 ```
 
@@ -334,21 +346,21 @@ loadMoreCards(event: ReachedEndEvent) {
 
 The following inputs are available on the `HubBoardComponent`:
 
-| Input                  | Type                          | Description                                                         | Default     |
-|------------------------|-------------------------------|---------------------------------------------------------------------|-------------|
-| `board`                | `Signal<Board>`               | The board object containing columns and cards                       | `undefined` |
-| `columnSortingDisabled`| `boolean`                     | Disables drag-and-drop sorting of columns                           | `false`     |
+| Input                   | Type            | Description                                   | Default     |
+| ----------------------- | --------------- | --------------------------------------------- | ----------- |
+| `board`                 | `Signal<Board>` | The board object containing columns and cards | `undefined` |
+| `columnSortingDisabled` | `boolean`       | Disables drag-and-drop sorting of columns     | `false`     |
 
 ## Outputs
 
 These outputs are emitted by the component during user interaction:
 
-| Output          | Type                                                      | Description                                                                 |
-|-----------------|-----------------------------------------------------------|-----------------------------------------------------------------------------|
-| `onCardClick`   | `EventEmitter<BoardCard>`                                 | Triggered when a card is clicked                                           |
+| Output          | Type                                                             | Description                                                               |
+| --------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `onCardClick`   | `EventEmitter<BoardCard>`                                        | Triggered when a card is clicked                                          |
 | `onCardMoved`   | `EventEmitter<CdkDragDrop<BoardColumn, BoardColumn, BoardCard>>` | Emitted when a card is moved (within or across columns)                   |
-| `onColumnMoved` | `EventEmitter<CdkDragDrop<BoardColumn[]>>`                | Emitted when a column is reordered via drag and drop                      |
-| `reachedEnd`    | `EventEmitter<ReachedEndEvent>`                           | Triggered when the user scrolls to the bottom of a column (for lazy load) |
+| `onColumnMoved` | `EventEmitter<CdkDragDrop<BoardColumn[]>>`                       | Emitted when a column is reordered via drag and drop                      |
+| `reachedEnd`    | `EventEmitter<ReachedEndEvent>`                                  | Triggered when the user scrolls to the bottom of a column (for lazy load) |
 
 ## Interfaces
 
@@ -407,24 +419,63 @@ interface BoardCard<T = any> {
 
 The `ng-hub-ui-board` library is fully style-configurable through **CSS custom properties (CSS variables)**, defined with a consistent naming convention and designed to be easily overridden in consuming applications. It is built with flexibility in mind and integrates seamlessly with **Bootstrap** or any design system that supports custom properties.
 
-### 🌱 Base styles and integration
+### 🎨 CSS Custom Properties (Variables)
 
-The base styles for the board component are located in the `base.scss` file within the library:
+You can customize the board's appearance by overriding these CSS variables. Examples of overrides are shown in the [Styling](#%F0%9F%8-customizing-styles-via-css-variables) section.
 
-```scss
-// projects/board/src/lib/styles/base.scss
-$boardPrefix: hub- !default;
+#### Core Colors & Borders
 
-// Example CSS custom properties defined in .hub-board__column
-.hub-board__column {
-  --#{$boardPrefix}column-border-color: rgba(0, 0, 0, 0.175);
-  --#{$boardPrefix}column-border-radius: 0.375rem;
-  --#{$boardPrefix}column-bg: #fff;
-  ...
-}
-```
+| Variable              | Default Value | Description                      |
+| --------------------- | ------------- | -------------------------------- |
+| `--hub-body-color`    | `#212529`     | Default text color for the board |
+| `--hub-body-bg`       | `#fff`        | Main background color            |
+| `--hub-border-width`  | `1px`         | Base border width                |
+| `--hub-border-color`  | `#dee2e6`     | Base border color                |
+| `--hub-border-radius` | `0.375rem`    | Base border radius               |
 
-These styles follow the naming convention `--hub-<element>-<property>`, making it simple to identify and override individual variables.
+#### Column specific
+
+| Variable                             | Default Value              | Description                               |
+| ------------------------------------ | -------------------------- | ----------------------------------------- |
+| `--hub-column-bg`                    | `#fff`                     | Background color of columns               |
+| `--hub-column-color`                 | `null`                     | Text color within columns                 |
+| `--hub-column-height`                | `100%`                     | Height of the column container            |
+| `--hub-column-border-width`          | `1px`                      | Width of column borders                   |
+| `--hub-column-border-color`          | `rgba(0, 0, 0, 0.175)`     | Color of column borders                   |
+| `--hub-column-border-radius`         | `0.375rem`                 | Border radius of columns                  |
+| `--hub-column-inner-border-radius`   | `var(--hub-border-radius)` | Inner border radius (for headers/footers) |
+| `--hub-column-box-shadow`            | `null`                     | Box shadow for columns                    |
+| `--hub-column-spacer-x`              | `1rem`                     | Horizontal padding inside columns         |
+| `--hub-column-spacer-y`              | `0.75rem`                  | Vertical padding inside columns           |
+| `--hub-column-cap-bg`                | `rgba(0, 0, 0, 0.03)`      | Background of column header/footer        |
+| `--hub-column-cap-color`             | `null`                     | Text color of column header/footer        |
+| `--hub-column-cap-padding-x`         | `1rem`                     | Horizontal padding of header/footer       |
+| `--hub-column-cap-padding-y`         | `0.5rem`                   | Vertical padding of header/footer         |
+| `--hub-column-header-title-color`    | `inherit`                  | Color of column header titles             |
+| `--hub-column-header-title-spacer-y` | `0.5rem`                   | Bottom margin of column header titles     |
+| `--hub-column-header-subtitle-color` | `#6c757d`                  | Color of column header subtitles          |
+
+#### Card specific
+
+| Variable                         | Default Value              | Description                              |
+| -------------------------------- | -------------------------- | ---------------------------------------- |
+| `--hub-card-bg`                  | `#fff`                     | Background color of cards                |
+| `--hub-card-color`               | `null`                     | Text color within cards                  |
+| `--hub-card-height`              | `null`                     | Height of cards                          |
+| `--hub-card-border-width`        | `1px`                      | Width of card borders                    |
+| `--hub-card-border-color`        | `rgba(0, 0, 0, 0.175)`     | Color of card borders                    |
+| `--hub-card-border-radius`       | `var(--hub-border-radius)` | Border radius of cards                   |
+| `--hub-card-inner-border-radius` | `calc(0.375rem - 1px)`     | Inner border radius                      |
+| `--hub-card-box-shadow`          | `null`                     | Box shadow for cards                     |
+| `--hub-card-spacer-x`            | `1rem`                     | Horizontal padding inside cards          |
+| `--hub-card-spacer-y`            | `0.75rem`                  | Vertical padding inside cards            |
+| `--hub-card-title-color`         | `inherit`                  | Color of card titles                     |
+| `--hub-card-title-spacer-y`      | `0.5rem`                   | Bottom margin of card titles             |
+| `--hub-card-subtitle-color`      | `#6c757d`                  | Color of card subtitles                  |
+| `--hub-card-cap-bg`              | `rgba(0, 0, 0, 0.03)`      | Background of card header/footer         |
+| `--hub-card-cap-color`           | `null`                     | Text color of card header/footer         |
+| `--hub-card-cap-padding-x`       | `1rem`                     | Horizontal padding of card header/footer |
+| `--hub-card-cap-padding-y`       | `0.5rem`                   | Vertical padding of card header/footer   |
 
 ### 🔗 How to include the styles in your application
 
@@ -458,9 +509,9 @@ This approach allows for theme-level overrides without needing to fork or modify
 
 Because the board components are designed to align visually and structurally with **Bootstrap 5**, you can:
 
-- Use spacing (`gap`, `padding`) and color schemes consistent with Bootstrap.
-- Integrate the board layout into Bootstrap grids or utilities.
-- Customize the variables with Bootstrap's own SCSS variables if needed.
+-   Use spacing (`gap`, `padding`) and color schemes consistent with Bootstrap.
+-   Integrate the board layout into Bootstrap grids or utilities.
+-   Customize the variables with Bootstrap's own SCSS variables if needed.
 
 Example override using Bootstrap color variables:
 
@@ -491,11 +542,11 @@ This makes `ng-hub-ui-board` a great fit for design systems that need scalable a
 
 The `ng-hub-ui-board` component is versatile and has been used in a variety of real-world applications, such as:
 
-- **Project Management Tools** – Visualize task progress across stages (To Do, In Progress, Done).
-- **Support Ticket Boards** – Organize support tickets by urgency, team, or status.
-- **Recruitment Pipelines** – Track candidates through different phases of hiring.
-- **CRM Systems** – Manage leads and customers in pipeline-style workflows.
-- **Editorial Calendars** – Schedule and organize content by publication status.
+-   **Project Management Tools** – Visualize task progress across stages (To Do, In Progress, Done).
+-   **Support Ticket Boards** – Organize support tickets by urgency, team, or status.
+-   **Recruitment Pipelines** – Track candidates through different phases of hiring.
+-   **CRM Systems** – Manage leads and customers in pipeline-style workflows.
+-   **Editorial Calendars** – Schedule and organize content by publication status.
 
 Each case benefits from customizable columns, card templates, and event outputs to integrate with your app logic.
 
@@ -504,42 +555,48 @@ Each case benefits from customizable columns, card templates, and event outputs 
 Here are some common issues and how to resolve them:
 
 ### 🔄 Drag and drop not working
-- **Check dependencies**: Ensure `@angular/cdk` is installed and imported
-- **Reactive data**: Verify your board data is reactive (using `signal()`, `Observable`, or proper change detection)
-- **Browser compatibility**: Ensure your target browsers support the HTML5 Drag and Drop API
+
+-   **Check dependencies**: Ensure `@angular/cdk` is installed and imported
+-   **Reactive data**: Verify your board data is reactive (using `signal()`, `Observable`, or proper change detection)
+-   **Browser compatibility**: Ensure your target browsers support the HTML5 Drag and Drop API
 
 ### 📏 Scroll detection not triggering `reachedEnd`
-- **Height constraints**: The `<hub-board>` element or its parent must have a `max-height` or fixed height
-- **Overflow setting**: Ensure `overflow: auto` or `overflow-y: scroll` is applied to enable scrolling
-- **Content length**: Make sure there's enough content to actually trigger scrolling
+
+-   **Height constraints**: The `<hub-board>` element or its parent must have a `max-height` or fixed height
+-   **Overflow setting**: Ensure `overflow: auto` or `overflow-y: scroll` is applied to enable scrolling
+-   **Content length**: Make sure there's enough content to actually trigger scrolling
 
 ### 🎨 Styles not applying
-- **Import path**: Confirm you've imported the SCSS base styles in your global `styles.scss`:
-  ```scss
-  @use '../dist/board/src/lib/styles/base.scss' as boardBase;
-  ```
-- **CSS custom properties**: Check that your custom CSS variables follow the `--hub-*` naming convention
-- **Style specificity**: Ensure your custom styles have sufficient specificity to override defaults
+
+-   **Import path**: Confirm you've imported the SCSS base styles in your global `styles.scss`:
+    ```scss
+    @use '../dist/board/src/lib/styles/base.scss' as boardBase;
+    ```
+-   **CSS custom properties**: Check that your custom CSS variables follow the `--hub-*` naming convention
+-   **Style specificity**: Ensure your custom styles have sufficient specificity to override defaults
 
 ### 🧩 Templates not rendering
-- **Import directives**: When using standalone components, import the template directives:
-  ```typescript
-  imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective]
-  ```
-- **Template syntax**: Verify you're using the correct template selectors (`cardTpt`, `columnHeaderTpt`, `columnFooterTpt`)
+
+-   **Import directives**: When using standalone components, import the template directives:
+    ```typescript
+    imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective];
+    ```
+-   **Template syntax**: Verify you're using the correct template selectors (`cardTpt`, `columnHeaderTpt`, `columnFooterTpt`)
 
 ### 🛠️ Runtime errors
-- **"Cannot read property 'cards' of undefined"**: Initialize your board signal properly:
-  ```typescript
-  board = signal<Board>({ title: 'My Board', columns: [] });
-  ```
-- **Type errors**: Ensure your data matches the `Board`, `BoardColumn`, and `BoardCard` interfaces
-- **Signal updates**: Use `.set()` or `.update()` methods to modify signal values
+
+-   **"Cannot read property 'cards' of undefined"**: Initialize your board signal properly:
+    ```typescript
+    board = signal<Board>({ title: 'My Board', columns: [] });
+    ```
+-   **Type errors**: Ensure your data matches the `Board`, `BoardColumn`, and `BoardCard` interfaces
+-   **Signal updates**: Use `.set()` or `.update()` methods to modify signal values
 
 ### 🎯 Performance issues
-- **Large datasets**: Consider implementing virtual scrolling for columns with many cards
-- **Memory leaks**: Ensure proper cleanup of event listeners and subscriptions
-- **Change detection**: Use `OnPush` change detection strategy when possible
+
+-   **Large datasets**: Consider implementing virtual scrolling for columns with many cards
+-   **Memory leaks**: Ensure proper cleanup of event listeners and subscriptions
+-   **Change detection**: Use `OnPush` change detection strategy when possible
 
 If problems persist, open an issue at: https://github.com/carlos-morcillo/ng-hub-ui-board/issues
 
@@ -557,7 +614,7 @@ Contributions are welcome! Here's how you can help:
 
 If you find this project helpful and would like to support its development, you can buy me a coffee:
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/carlosmorcillo)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/carlosmorcillo)
 
 Your support is greatly appreciated and helps maintain and improve this project!
 
@@ -568,15 +625,17 @@ This project is licensed under the **Creative Commons Attribution 4.0 Internatio
 ### What this means:
 
 ✅ **You can:**
-- Use commercially and non-commercially
-- Modify, adapt, and create derivatives
-- Distribute and redistribute in any format
-- Use in private and public projects
+
+-   Use commercially and non-commercially
+-   Modify, adapt, and create derivatives
+-   Distribute and redistribute in any format
+-   Use in private and public projects
 
 📋 **You must:**
-- Give appropriate credit to the original authors
-- Provide a link to the license
-- Indicate if changes were made
+
+-   Give appropriate credit to the original authors
+-   Provide a link to the license
+-   Indicate if changes were made
 
 ### Example attribution:
 
