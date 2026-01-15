@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.3.5] - 2026-01-15
+
+### Changed
+
+-   Complete refactoring of board styling to use CSS variables for enhanced customization.
+-   Documented all available CSS variables in README.
+-   Added `StylingBoardExampleComponent` to showcase custom styling capabilities.
+
 ## [19.3.4] - 2026-01-15
 
 ### Changed
