@@ -1,6 +1,6 @@
 {
 	"name": "ng-hub-ui-board",
-	"version": "19.3.5",
+	"version": "19.3.6",
 	"description": "An Angular-based Kanban board component with Trello-like drag-and-drop, customizable columns, and straightforward event handling.",
 	"main": "bundles/ng-hub-ui-board.umd.js",
 	"module": "fesm2022/ng-hub-ui-board.mjs",
@@ -12,6 +12,10 @@
 		".": {
 			"types": "./index.d.ts",
 			"default": "./bundles/ng-hub-ui-board.umd.js"
+		},
+		"./styles/*": {
+			"sass": "./src/lib/styles/*",
+			"default": "./src/lib/styles/*"
 		}
 	},
 	"peerDependencies": {
