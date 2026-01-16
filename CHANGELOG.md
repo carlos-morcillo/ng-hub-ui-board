@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.3.8] - 2026-01-16
+
+### Fixed
+
+-   Ensured correct publication of compiled artifacts by refining the release process.
+-   Reverted `exports` configuration to maintain consistency with other libraries.
+
 ## [19.3.7] - 2026-01-16
 
 ### Fixed
