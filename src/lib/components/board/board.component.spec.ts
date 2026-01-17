@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Component, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,14 +15,14 @@ import { BoardColumnFooterDirective } from '../../directives/board-column-footer
  */
 @Component({
 	template: `
-		<hub-board 
-			[board]="board()" 
+		<hub-board
+			[board]="board()"
 			[columnSortingDisabled]="columnSortingDisabled"
 			(onCardClick)="onCardClick($event)"
 			(onCardMoved)="onCardMoved($event)"
 			(onColumnMoved)="onColumnMoved($event)"
 			(reachedEnd)="onReachedEnd($event)">
-			
+
 			<ng-template cardTpt let-card="item" let-column="column">
 				<div class="test-card" [attr.data-title]="card.title">
 					<h4>{{ card.title }}</h4>
@@ -48,9 +47,9 @@ import { BoardColumnFooterDirective } from '../../directives/board-column-footer
 	`,
 	standalone: true,
 	imports: [
-		HubBoardComponent, 
-		CardTemplateDirective, 
-		BoardColumnHeaderDirective, 
+		HubBoardComponent,
+		CardTemplateDirective,
+		BoardColumnHeaderDirective,
 		BoardColumnFooterDirective
 	]
 })
@@ -139,7 +138,6 @@ describe('HubBoardComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HubBoardComponent,
-				DragDropModule,
 				NoopAnimationsModule,
 				TestHostComponent
 			]
@@ -163,10 +161,10 @@ describe('HubBoardComponent', () => {
 
 		it('should compute columns from board signal', () => {
 			expect(component.columns()).toEqual([]);
-			
+
 			fixture.componentRef.setInput('board', mockBoard);
 			fixture.detectChanges();
-			
+
 			expect(component.columns()).toEqual(mockBoard.columns || []);
 		});
 
@@ -174,14 +172,14 @@ describe('HubBoardComponent', () => {
 			const boardWithoutColumns: Board = { title: 'Test', columns: undefined };
 			fixture.componentRef.setInput('board', boardWithoutColumns);
 			fixture.detectChanges();
-			
+
 			expect(component.columns()).toEqual([]);
 		});
 
 		it('should handle undefined board gracefully', () => {
 			fixture.componentRef.setInput('board', undefined);
 			fixture.detectChanges();
-			
+
 			expect(component.columns()).toEqual([]);
 		});
 
@@ -191,39 +189,12 @@ describe('HubBoardComponent', () => {
 
 		describe('Event Emitters', () => {
 			it('should emit onCardClick when cardClick is called', () => {
-				spyOn(component.onCardClick, 'next');
+				spyOn(component.onCardClick, 'emit');
 				const mockCard: BoardCard = { title: 'Test Card' };
-				
+
 				component.cardClick(mockCard);
-				
-				expect(component.onCardClick.next).toHaveBeenCalledWith(mockCard);
-			});
 
-			it('should emit onColumnMoved when dropColumn is called', () => {
-				spyOn(component.onColumnMoved, 'emit');
-				const mockEvent = {
-					container: { data: [{ title: 'Col1' }, { title: 'Col2' }] },
-					previousIndex: 0,
-					currentIndex: 1
-				} as any;
-
-				component.dropColumn(mockEvent);
-
-				expect(component.onColumnMoved.emit).toHaveBeenCalledWith(mockEvent);
-			});
-
-			it('should emit onCardMoved when dropCard is called', () => {
-				spyOn(component.onCardMoved, 'emit');
-				const mockEvent = {
-					previousContainer: { data: { cards: [{ title: 'Card1' }] } },
-					container: { data: { cards: [] } },
-					previousIndex: 0,
-					currentIndex: 0
-				} as any;
-
-				component.dropCard(mockEvent);
-
-				expect(component.onCardMoved.emit).toHaveBeenCalledWith(mockEvent);
+				expect(component.onCardClick.emit).toHaveBeenCalledWith(mockCard);
 			});
 
 			it('should emit reachedEnd when onScroll reaches bottom', () => {
@@ -278,38 +249,100 @@ describe('HubBoardComponent', () => {
 			});
 		});
 
-		describe('Drag and Drop Logic', () => {
-			it('should move card within same column', () => {
-				const cards = [{ title: 'Card1' }, { title: 'Card2' }, { title: 'Card3' }];
-				const column = { cards };
-				const mockEvent = {
-					previousContainer: { data: column },
-					container: { data: column },
-					previousIndex: 0,
-					currentIndex: 2
-				} as any;
-
-				component.dropCard(mockEvent);
-
-				expect(cards[2].title).toBe('Card1');
-				expect(cards[0].title).toBe('Card2');
+		describe('Native Drag and Drop', () => {
+			beforeEach(() => {
+				fixture.componentRef.setInput('board', mockBoard);
+				fixture.detectChanges();
 			});
 
-			it('should transfer card between columns', () => {
-				const sourceCards = [{ title: 'Card1' }, { title: 'Card2' }];
-				const targetCards = [{ title: 'Card3' }];
+			it('should handle column drag start', () => {
+				const column = mockBoard.columns![0];
 				const mockEvent = {
-					previousContainer: { data: { cards: sourceCards } },
-					container: { data: { cards: targetCards } },
-					previousIndex: 0,
-					currentIndex: 1
+					preventDefault: jasmine.createSpy('preventDefault'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
 				} as any;
 
-				component.dropCard(mockEvent);
+				component.onColumnDragStart(mockEvent, column, 0);
 
-				expect(sourceCards.length).toBe(1);
-				expect(targetCards.length).toBe(2);
-				expect(targetCards[1].title).toBe('Card1');
+				expect(mockEvent.dataTransfer.effectAllowed).toBe('move');
+				expect(mockEvent.dataTransfer.setData).toHaveBeenCalledWith('text/plain', 'column:0');
+			});
+
+			it('should prevent drag start for disabled columns', () => {
+				const disabledColumn = mockBoard.columns![1]; // Column 2 is disabled
+				const mockEvent = {
+					preventDefault: jasmine.createSpy('preventDefault'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
+				} as any;
+
+				component.onColumnDragStart(mockEvent, disabledColumn, 1);
+
+				expect(mockEvent.preventDefault).toHaveBeenCalled();
+			});
+
+			it('should prevent drag start when column sorting is disabled', () => {
+				fixture.componentRef.setInput('columnSortingDisabled', true);
+				fixture.detectChanges();
+
+				const column = mockBoard.columns![0];
+				const mockEvent = {
+					preventDefault: jasmine.createSpy('preventDefault'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
+				} as any;
+
+				component.onColumnDragStart(mockEvent, column, 0);
+
+				expect(mockEvent.preventDefault).toHaveBeenCalled();
+			});
+
+			it('should handle card drag start', () => {
+				const card = mockBoard.columns![0].cards[0];
+				const mockEvent = {
+					preventDefault: jasmine.createSpy('preventDefault'),
+					stopPropagation: jasmine.createSpy('stopPropagation'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
+				} as any;
+
+				component.onCardDragStart(mockEvent, card, 0, 0);
+
+				expect(mockEvent.stopPropagation).toHaveBeenCalled();
+				expect(mockEvent.dataTransfer.effectAllowed).toBe('move');
+				expect(mockEvent.dataTransfer.setData).toHaveBeenCalledWith('text/plain', 'card:0:0');
+			});
+
+			it('should prevent drag start for disabled cards', () => {
+				const disabledCard = mockBoard.columns![0].cards[1]; // Card 2 is disabled
+				const mockEvent = {
+					preventDefault: jasmine.createSpy('preventDefault'),
+					stopPropagation: jasmine.createSpy('stopPropagation'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
+				} as any;
+
+				component.onCardDragStart(mockEvent, disabledCard, 0, 1);
+
+				expect(mockEvent.preventDefault).toHaveBeenCalled();
+			});
+
+			it('should show column drop indicator correctly', () => {
+				// Simulate column drag in progress
+				const column = mockBoard.columns![0];
+				const startEvent = {
+					preventDefault: jasmine.createSpy('preventDefault'),
+					currentTarget: document.createElement('div'),
+					dataTransfer: { effectAllowed: '', setData: jasmine.createSpy('setData') }
+				} as any;
+
+				component.onColumnDragStart(startEvent, column, 0);
+				component['columnDropIndicatorIndex'].set(1);
+
+				expect(component.shouldShowColumnDropIndicator(1)).toBe(true);
+				expect(component.shouldShowColumnDropIndicator(0)).toBe(false); // Source column
+				expect(component.shouldShowColumnDropIndicator(2)).toBe(false);
 			});
 		});
 	});
@@ -353,7 +386,7 @@ describe('HubBoardComponent', () => {
 		it('should handle card clicks', () => {
 			const cardElement = hostFixture.debugElement.query(By.css('.hub-board__card'));
 			cardElement.nativeElement.click();
-			
+
 			expect(hostComponent.cardClickEvents.length).toBe(1);
 			expect(hostComponent.cardClickEvents[0].title).toBe('Task 1');
 		});
@@ -364,7 +397,7 @@ describe('HubBoardComponent', () => {
 
 			const boardElement = hostFixture.debugElement.query(By.css('.hub-board'));
 			expect(boardElement).toBeTruthy();
-			
+
 			// Check if the component property is set correctly
 			const boardComponentInstance = hostFixture.debugElement.query(By.directive(HubBoardComponent)).componentInstance;
 			expect(boardComponentInstance.columnSortingDisabled()).toBe(true);
@@ -394,12 +427,25 @@ describe('HubBoardComponent', () => {
 			hostFixture.detectChanges();
 		});
 
-		it('should have proper drag and drop attributes', () => {
-			const dragElements = hostFixture.debugElement.queryAll(By.css('[cdkDrag]'));
-			expect(dragElements.length).toBeGreaterThan(0);
+		it('should have proper draggable attributes on columns', () => {
+			const columnContainers = hostFixture.debugElement.queryAll(By.css('.hub-board__column-container'));
+			expect(columnContainers.length).toBeGreaterThan(0);
 
-			const dropElements = hostFixture.debugElement.queryAll(By.css('[cdkDropList]'));
-			expect(dropElements.length).toBeGreaterThan(0);
+			// Check that draggable is set
+			columnContainers.forEach(container => {
+				expect(container.nativeElement.getAttribute('draggable')).toBeTruthy();
+			});
+		});
+
+		it('should have proper draggable attributes on cards', () => {
+			const cards = hostFixture.debugElement.queryAll(By.css('.hub-board__card'));
+			expect(cards.length).toBeGreaterThan(0);
+
+			// Check that draggable is set on non-disabled cards
+			cards.forEach(card => {
+				const draggable = card.nativeElement.getAttribute('draggable');
+				expect(draggable).toBeTruthy();
+			});
 		});
 
 		it('should disable dragging for disabled cards', () => {
@@ -415,12 +461,13 @@ describe('HubBoardComponent', () => {
 					}
 				]
 			};
-			
+
 			hostComponent.board.set(boardWithDisabledCard);
 			hostFixture.detectChanges();
 
 			const disabledCard = hostFixture.debugElement.query(By.css('.hub-board__card--disabled'));
 			expect(disabledCard).toBeTruthy();
+			expect(disabledCard.nativeElement.getAttribute('draggable')).toBe('false');
 		});
 	});
 
@@ -432,7 +479,7 @@ describe('HubBoardComponent', () => {
 
 		it('should handle null scroll event target', () => {
 			const mockEvent = { target: null } as any;
-			
+
 			expect(() => component.onScroll(0, mockEvent)).not.toThrow();
 		});
 
@@ -461,10 +508,8 @@ describe('HubBoardComponent', () => {
 
 			component.onScroll(999, mockEvent);
 
-			expect(component.reachedEnd.emit).toHaveBeenCalledWith({
-				index: 999,
-				data: []
-			});
+			// Should not emit because column at index 999 doesn't exist
+			expect(component.reachedEnd.emit).not.toHaveBeenCalled();
 		});
 	});
 });

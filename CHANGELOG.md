@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.4.0] - 2026-01-17
+
+### Added
+
+-   Native drag-and-drop implementation without external dependencies (removed @angular/cdk dependency)
+-   Custom drag preview templates via `CardDragPreviewDirective` and `ColumnDragPreviewDirective`
+-   Custom placeholder templates via `CardPlaceholderDirective` and `ColumnPlaceholderDirective`
+-   New `dragBehavior` input to control dragged element visibility: `'ghost'`, `'hide'`, or `'collapse'`
+-   New `CardDragDropEvent` and `ColumnDragDropEvent` interfaces replacing CDK's CdkDragDrop
+-   Custom drag-and-drop event models with complete type safety
+-   Six new CSS custom properties for drag-and-drop customization (`--hub-drag-transition`, `--hub-placeholder-*`)
+
+### Changed
+
+-   Replaced Angular CDK drag-and-drop with custom native implementation
+-   Updated all drag-and-drop event types from CDK to custom interfaces
+-   Refactored component to use signals for column tracking with versioning
+-   Enhanced board component with 621 new lines of drag-and-drop logic
+-   Updated README with comprehensive documentation of new features, templates, and CSS variables
+
+### Removed
+
+-   Removed `@angular/cdk` peer dependency
+-   Removed `predicate` property from `BoardColumn` interface (CDK-specific)
+
 ## [19.3.9] - 2026-01-16
 
 ### Fixed

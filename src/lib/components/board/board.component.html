@@ -1,15 +1,29 @@
 @if (columns().length) {
-<div
-	class="hub-board__drop-list"
-	cdkDropList
-	cdkDropListOrientation="horizontal"
-	[cdkDropListData]="columns()"
-	(cdkDropListDropped)="dropColumn($event)"
-	[cdkDropListSortingDisabled]="columnSortingDisabled()"
->
-	<div cdkDropListGroup class="hub-board__columns">
-		@for (column of columns(); let index = $index; track column) {
-		<div class="hub-board__column-container" cdkDrag [cdkDragData]="column" [cdkDragDisabled]="column.disabled">
+<div class="hub-board__drop-list" (dragover)="onBoardDragOver($event)" (drop)="onBoardDrop($event)">
+	<div class="hub-board__columns">
+		@for (column of columns(); let index = $index; track trackColumnById($index, column)) {
+		<!-- Column placeholder (before column) -->
+		@if (shouldShowColumnDropIndicator(index)) {
+		<div class="hub-board__column-placeholder">
+			@if (columnPlaceholderTpt()) {
+			<ng-container
+				[ngTemplateOutlet]="columnPlaceholderTpt()!"
+				[ngTemplateOutletContext]="{ column: draggedColumn }"
+			></ng-container>
+			}
+		</div>
+		}
+		<div
+			class="hub-board__column-container"
+			[class.hub-board__column-container--disabled]="column.disabled"
+			[class.hub-board__column-container--dragging-ghost]="isDraggingColumn(column) && dragBehavior() === 'ghost'"
+			[class.hub-board__column-container--dragging-hide]="isDraggingColumn(column) && dragBehavior() === 'hide'"
+			[class.hub-board__column-container--dragging-collapse]="isDraggingColumn(column) && dragBehavior() === 'collapse'"
+			[attr.draggable]="!columnSortingDisabled() && !column.disabled"
+			[attr.data-column-index]="index"
+			(dragstart)="onColumnDragStart($event, column, index)"
+			(dragend)="onColumnDragEnd($event)"
+		>
 			<div class="hub-board__column" [ngClass]="column.classlist" [ngStyle]="column.style">
 				<div class="hub-board__column-header">
 					<ng-container
@@ -20,20 +34,33 @@
 				</div>
 				<div
 					class="hub-board__column-body"
-					cdkDropList
-					[cdkDropListData]="column"
-					(cdkDropListDropped)="dropCard($event)"
+					[class.hub-board__column-body--drag-over]="hoveredColumnIndex() === index"
 					(scroll)="onScroll(index, $event)"
-					[cdkDropListEnterPredicate]="column.predicate ?? defaultEnterPredicateFn"
-					[cdkDropListSortingDisabled]="column.cardSortingDisabled"
+					(dragover)="onCardDragOver($event, column, index)"
+					(dragleave)="onCardDragLeave($event, index)"
+					(drop)="onCardDrop($event, column, index)"
 				>
-					@for ( card of column.cards; let index = $index; track card ) {
+					@for (card of column.cards; let cardIndex = $index; track card) {
+					<!-- Card placeholder (before card) -->
+					@if (shouldShowCardDropIndicator(index, cardIndex)) {
+					<div class="hub-board__card-placeholder">
+						@if (cardPlaceholderTpt()) {
+						<ng-container
+							[ngTemplateOutlet]="cardPlaceholderTpt()!"
+							[ngTemplateOutletContext]="{ card: draggedCard, column: column }"
+						></ng-container>
+						}
+					</div>
+					}
 					<div
 						class="hub-board__card"
 						[class.hub-board__card--disabled]="card.disabled"
-						cdkDrag
-						[cdkDragData]="card"
-						[cdkDragDisabled]="card.disabled"
+						[class.hub-board__card--dragging-ghost]="isDraggingCard(card) && dragBehavior() === 'ghost'"
+						[class.hub-board__card--dragging-hide]="isDraggingCard(card) && dragBehavior() === 'hide'"
+						[class.hub-board__card--dragging-collapse]="isDraggingCard(card) && dragBehavior() === 'collapse'"
+						[attr.draggable]="!card.disabled && !column.cardSortingDisabled"
+						(dragstart)="onCardDragStart($event, card, index, cardIndex)"
+						(dragend)="onCardDragEnd($event)"
 						(click)="cardClick(card)"
 						(mousedown)="card.disabled && $event.stopPropagation()"
 						[ngClass]="card.classlist"
@@ -51,6 +78,17 @@
 						</div>
 					</div>
 					}
+					<!-- Card placeholder at the end -->
+					@if (shouldShowCardDropIndicator(index, column.cards.length)) {
+					<div class="hub-board__card-placeholder">
+						@if (cardPlaceholderTpt()) {
+						<ng-container
+							[ngTemplateOutlet]="cardPlaceholderTpt()!"
+							[ngTemplateOutletContext]="{ card: draggedCard, column: column }"
+						></ng-container>
+						}
+					</div>
+					}
 				</div>
 
 				@if (columnFooterTpt()) {
@@ -65,6 +103,17 @@
 				</div>
 				}
 			</div>
+		</div>
+		}
+		<!-- Column placeholder at the end -->
+		@if (shouldShowColumnDropIndicator(columns().length)) {
+		<div class="hub-board__column-placeholder">
+			@if (columnPlaceholderTpt()) {
+			<ng-container
+				[ngTemplateOutlet]="columnPlaceholderTpt()!"
+				[ngTemplateOutletContext]="{ column: draggedColumn }"
+			></ng-container>
+			}
 		</div>
 		}
 	</div>
@@ -86,3 +135,6 @@
 		</h6>
 	</div>
 </ng-template>
+
+<!-- Hidden container for rendering drag preview elements -->
+<div #dragPreviewContainer class="hub-board__drag-preview-container" aria-hidden="true"></div>

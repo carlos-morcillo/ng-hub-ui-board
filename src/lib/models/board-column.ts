@@ -1,5 +1,5 @@
-import { CdkDrag } from '@angular/cdk/drag-drop';
 import { BoardCard } from './board-card';
+import { BoardDragItem } from './drag-drop-event';
 
 /**
  * Represents a column within a board layout.
@@ -64,5 +64,5 @@ export interface BoardColumn<T = any> {
 	 * @param item The dragged item (if any) being tested.
 	 * @returns A boolean indicating if the item can be dropped in this column.
 	 */
-	predicate?: (item?: CdkDrag<T>) => boolean;
+	predicate?: (item?: BoardDragItem<T>) => boolean;
 }

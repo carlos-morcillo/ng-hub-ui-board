@@ -21,32 +21,33 @@ A flexible and powerful board component for Angular applications, perfect for im
 ## Features
 
 -   🎯 **Standalone component** - Modern Angular approach with minimal setup
--   🔄 **Drag and drop support** - Full drag-and-drop for both cards and columns using Angular CDK
+-   🔄 **Native drag and drop** - Custom implementation without external dependencies (no CDK required)
+-   🎨 **Fully customizable drag visuals** - Custom templates for drag previews and drop placeholders
+-   ⚙️ **Configurable drag behavior** - Choose between ghost, hide, or collapse modes for dragged elements
 -   📱 **Responsive design** - Works seamlessly across desktop, tablet, and mobile devices
--   🎨 **Highly customizable** - Custom templates for cards, headers, and footers
+-   🎭 **Highly customizable** - Custom templates for cards, headers, footers, and drag interactions
 -   🔧 **Bootstrap compatible** - Integrates perfectly with Bootstrap 5 design system
 -   ⚡ **Virtual scrolling** - Supports infinite scroll with end-detection for performance
--   🎭 **Custom styling** - CSS custom properties for easy theming and customization
+-   🎨 **Custom styling** - CSS custom properties for easy theming and customization
 -   🔒 **Granular control** - Enable/disable functionality at board, column, or card level
 -   🏷️ **TypeScript support** - Full type safety with generic interfaces
 -   ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
+-   🪶 **Lightweight** - Zero external UI dependencies
 
 ## Installation
 
 ```bash
 # Install the component
 npm install ng-hub-ui-board
-
-# Install required peer dependency
-npm install @angular/cdk
 ```
 
 Or using yarn:
 
 ```bash
 yarn add ng-hub-ui-board
-yarn add @angular/cdk
 ```
+
+**Note:** Starting from version 19.4.0, `@angular/cdk` is no longer required. The component now includes its own native drag-and-drop implementation.
 
 ## Quick Start
 
@@ -169,7 +170,9 @@ export class AppModule {}
 
 ## Templates
 
-The component uses three different templates for customization. If you're using the standalone approach, remember to import the corresponding directives for each template you plan to use.
+The component uses multiple templates for customization. If you're using the standalone approach, remember to import the corresponding directives for each template you plan to use.
+
+### Standard Templates
 
 ### Card Template (CardTemplateDirective)
 
@@ -221,6 +224,71 @@ Used to add a footer to each column. Useful for summary information, quick actio
 </ng-template>
 ```
 
+### Drag-and-Drop Templates
+
+#### Card Drag Preview Template (CardDragPreviewDirective)
+
+Customize the visual element that follows the cursor when dragging cards. The template receives the dragged card and its source column as context.
+
+```html
+<ng-template cardDragPreview let-card="card" let-column="column">
+	<div class="custom-drag-preview">
+		<div class="preview-header">
+			<span class="badge">{{ column.title }}</span>
+		</div>
+		<h4>{{ card.title }}</h4>
+		<p class="preview-description">{{ card.description }}</p>
+	</div>
+</ng-template>
+```
+
+**Context variables:**
+
+-   `card`: The card being dragged
+-   `column`: The source column of the card
+
+#### Card Placeholder Template (CardPlaceholderDirective)
+
+Customize the drop zone appearance when dragging cards between or within columns.
+
+```html
+<ng-template cardPlaceholder>
+	<div class="custom-card-placeholder">
+		<span class="placeholder-icon">📥</span>
+		<p>Drop card here</p>
+	</div>
+</ng-template>
+```
+
+#### Column Drag Preview Template (ColumnDragPreviewDirective)
+
+Customize the visual element that follows the cursor when dragging columns. The template receives the dragged column as context.
+
+```html
+<ng-template columnDragPreview let-column="column">
+	<div class="custom-column-preview">
+		<h3>{{ column.title }}</h3>
+		<span class="card-count">{{ column.cards.length }} cards</span>
+	</div>
+</ng-template>
+```
+
+**Context variable:**
+
+-   `column`: The column being dragged
+
+#### Column Placeholder Template (ColumnPlaceholderDirective)
+
+Customize the drop zone appearance when reordering columns.
+
+```html
+<ng-template columnPlaceholder>
+	<div class="custom-column-placeholder">
+		<span class="placeholder-text">Drop column here</span>
+	</div>
+</ng-template>
+```
+
 ## Events
 
 The `HubBoardComponent` emits several events to help you interact with user actions such as clicking cards, moving items, or reaching scroll limits.
@@ -253,12 +321,14 @@ Emitted when a card is moved either within the same column or between columns.
 <hub-board [board]="board" (onCardMoved)="handleCardMoved($event)"> </hub-board>
 ```
 
-**Type:** `EventEmitter<CdkDragDrop<BoardColumn, BoardColumn, BoardCard>>`
+**Type:** `EventEmitter<CardDragDropEvent>`
 
 **Example:**
 
 ```ts
-handleCardMoved(event: CdkDragDrop<BoardColumn, BoardColumn, BoardCard>) {
+import { CardDragDropEvent } from 'ng-hub-ui-board';
+
+handleCardMoved(event: CardDragDropEvent) {
   const card = event.item.data;
   const from = event.previousContainer.data;
   const to = event.container.data;
@@ -277,12 +347,14 @@ Emitted when a column is reordered via drag and drop.
 <hub-board [board]="board" (onColumnMoved)="handleColumnMoved($event)"> </hub-board>
 ```
 
-**Type:** `EventEmitter<CdkDragDrop<BoardColumn[]>>`
+**Type:** `EventEmitter<ColumnDragDropEvent>`
 
 **Example:**
 
 ```ts
-handleColumnMoved(event: CdkDragDrop<BoardColumn[]>) {
+import { ColumnDragDropEvent } from 'ng-hub-ui-board';
+
+handleColumnMoved(event: ColumnDragDropEvent) {
   console.log(`Column moved from ${event.previousIndex} to ${event.currentIndex}`);
 }
 ```
@@ -346,21 +418,22 @@ loadMoreCards(event: ReachedEndEvent) {
 
 The following inputs are available on the `HubBoardComponent`:
 
-| Input                   | Type            | Description                                   | Default     |
-| ----------------------- | --------------- | --------------------------------------------- | ----------- |
-| `board`                 | `Signal<Board>` | The board object containing columns and cards | `undefined` |
-| `columnSortingDisabled` | `boolean`       | Disables drag-and-drop sorting of columns     | `false`     |
+| Input                   | Type             | Description                                                                                              | Default      |
+| ----------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- | ------------ |
+| `board`                 | `Signal<Board>`  | The board object containing columns and cards                                                            | `undefined`  |
+| `columnSortingDisabled` | `boolean`        | Disables drag-and-drop sorting of columns                                                                | `false`      |
+| `dragBehavior`          | `DragBehavior`   | Controls how dragged elements behave visually: `'ghost'` (semi-transparent), `'hide'`, or `'collapse'`  | `'collapse'` |
 
 ## Outputs
 
 These outputs are emitted by the component during user interaction:
 
-| Output          | Type                                                             | Description                                                               |
-| --------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `onCardClick`   | `EventEmitter<BoardCard>`                                        | Triggered when a card is clicked                                          |
-| `onCardMoved`   | `EventEmitter<CdkDragDrop<BoardColumn, BoardColumn, BoardCard>>` | Emitted when a card is moved (within or across columns)                   |
-| `onColumnMoved` | `EventEmitter<CdkDragDrop<BoardColumn[]>>`                       | Emitted when a column is reordered via drag and drop                      |
-| `reachedEnd`    | `EventEmitter<ReachedEndEvent>`                                  | Triggered when the user scrolls to the bottom of a column (for lazy load) |
+| Output          | Type                                | Description                                                               |
+| --------------- | ----------------------------------- | ------------------------------------------------------------------------- |
+| `onCardClick`   | `EventEmitter<BoardCard>`           | Triggered when a card is clicked                                          |
+| `onCardMoved`   | `EventEmitter<CardDragDropEvent>`   | Emitted when a card is moved (within or across columns)                   |
+| `onColumnMoved` | `EventEmitter<ColumnDragDropEvent>` | Emitted when a column is reordered via drag and drop                      |
+| `reachedEnd`    | `EventEmitter<ReachedEndEvent>`     | Triggered when the user scrolls to the bottom of a column (for lazy load) |
 
 ## Interfaces
 
@@ -394,7 +467,6 @@ interface BoardColumn<T = any> {
 	classlist?: string[] | string;
 	disabled?: boolean;
 	cardSortingDisabled?: boolean;
-	predicate?: (item?: CdkDrag<T>) => boolean;
 }
 ```
 
@@ -414,6 +486,54 @@ interface BoardCard<T = any> {
 	disabled?: boolean;
 }
 ```
+
+### CardDragDropEvent
+
+Event interface emitted when a card is moved. Provides all information about the drag-and-drop operation.
+
+```typescript
+interface CardDragDropEvent<T = any> {
+	previousIndex: number;
+	currentIndex: number;
+	container: BoardDropContainer<BoardColumn>;
+	previousContainer: BoardDropContainer<BoardColumn>;
+	item: BoardDragItem<BoardCard>;
+	isPointerOverContainer: boolean;
+	distance?: { x: number; y: number };
+	dropPoint?: { x: number; y: number };
+}
+```
+
+### ColumnDragDropEvent
+
+Event interface emitted when a column is moved. Provides all information about the column reordering operation.
+
+```typescript
+interface ColumnDragDropEvent {
+	previousIndex: number;
+	currentIndex: number;
+	container: BoardDropContainer<BoardColumn[]>;
+	previousContainer: BoardDropContainer<BoardColumn[]>;
+	item: BoardDragItem<BoardColumn>;
+	isPointerOverContainer: boolean;
+	distance?: { x: number; y: number };
+	dropPoint?: { x: number; y: number };
+}
+```
+
+### DragBehavior
+
+Type definition for controlling how dragged elements behave visually during drag operations.
+
+```typescript
+type DragBehavior = 'ghost' | 'hide' | 'collapse';
+```
+
+**Values:**
+
+-   `'ghost'`: Element becomes semi-transparent (50% opacity) but remains visible
+-   `'hide'`: Element is hidden but still occupies its space (invisible placeholder)
+-   `'collapse'`: Element is completely hidden and its space is collapsed (default)
 
 ## 🧩 Styling
 
@@ -476,6 +596,17 @@ You can customize the board's appearance by overriding these CSS variables. Exam
 | `--hub-card-cap-color`           | `null`                     | Text color of card header/footer         |
 | `--hub-card-cap-padding-x`       | `1rem`                     | Horizontal padding of card header/footer |
 | `--hub-card-cap-padding-y`       | `0.5rem`                   | Vertical padding of card header/footer   |
+
+#### Drag and Drop specific
+
+| Variable                          | Default Value                            | Description                                      |
+| --------------------------------- | ---------------------------------------- | ------------------------------------------------ |
+| `--hub-drag-transition`           | `transform 250ms cubic-bezier(0,0,0.2,1)`| Transition animation for drag operations         |
+| `--hub-placeholder-border-color`  | `#0d6efd`                                | Border color of drop zone placeholders           |
+| `--hub-placeholder-border-width`  | `2px`                                    | Border width of drop zone placeholders           |
+| `--hub-placeholder-border-style`  | `dashed`                                 | Border style of drop zone placeholders           |
+| `--hub-placeholder-bg`            | `rgba(13, 110, 253, 0.05)`               | Background color of drop zone placeholders       |
+| `--hub-placeholder-min-height`    | `60px`                                   | Minimum height for card drop zone placeholders   |
 
 ### 🔗 How to include the styles in your application
 
