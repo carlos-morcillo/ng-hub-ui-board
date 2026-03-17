@@ -1,124 +1,87 @@
 :root,
 :host {
-	--hub-ref-color-white: #fff;
-	--hub-ref-space-2: 0.5rem;
-	--hub-ref-space-3: 1rem;
-	--hub-ref-radius-md: 0.375rem;
-	--hub-ref-border-width: 1px;
-	--hub-sys-text-primary: #212529;
-	--hub-sys-text-muted: #6c757d;
-	--hub-sys-surface-page: #fff;
-	--hub-sys-surface-elevated: rgba(0, 0, 0, 0.03);
-	--hub-sys-border-color-default: #dee2e6;
-	--hub-sys-color-primary: #0d6efd;
-	--hub-sys-color-primary-subtle: rgba(13, 110, 253, 0.05);
-}
-
-.hub-board {
-	--hub-board-container-color: var(--hub-body-color, var(--hub-sys-text-primary, #212529));
-	--hub-board-container-bg: var(--hub-body-bg, var(--hub-sys-surface-page, #fff));
+	--hub-board-container-color: var(--hub-sys-text-primary, #212529);
+	--hub-board-container-bg: var(--hub-sys-surface-page, #fff);
 	--hub-board-border-width: var(--hub-ref-border-width, 1px);
-	--hub-board-border-color: var(
-		--hub-border-color,
-		var(--hub-sys-border-color-default, #dee2e6)
-	);
-	--hub-board-border-radius: var(--hub-border-radius, var(--hub-ref-radius-md, 0.375rem));
+	--hub-board-border-color: var(--hub-sys-border-color-default, #dee2e6);
+	--hub-board-border-radius: var(--hub-ref-radius-md, 0.375rem);
 	--hub-board-columns-gap: var(--hub-ref-space-3, 1rem);
 	--hub-board-column-width: 256px;
 	--hub-board-column-min-height: 200px;
 	--hub-board-column-body-min-height: 128px;
 	--hub-board-column-body-gap: var(--hub-ref-space-3, 1rem);
-	--hub-board-column-spacer-y: var(--hub-column-spacer-y, 0.75rem);
-	--hub-board-column-spacer-x: var(--hub-column-spacer-x, var(--hub-ref-space-3, 1rem));
-	--hub-board-column-border-width: var(--hub-column-border-width, var(--hub-ref-border-width, 1px));
-	--hub-board-column-border-color: var(
-		--hub-column-border-color,
-		var(--hub-sys-border-color-default, rgba(0, 0, 0, 0.175))
+	--hub-board-column-spacer-y: 0.75rem;
+	--hub-board-column-spacer-x: var(--hub-ref-space-3, 1rem);
+	--hub-board-column-border-width: var(--hub-board-border-width);
+	--hub-board-column-border-color: var(--hub-board-border-color);
+	--hub-board-column-border-radius: var(--hub-board-border-radius);
+	--hub-board-column-box-shadow: none;
+	--hub-board-column-inner-border-radius: var(--hub-board-border-radius);
+	--hub-board-column-cap-padding-y: var(--hub-ref-space-2, 0.5rem);
+	--hub-board-column-cap-padding-x: var(--hub-ref-space-3, 1rem);
+	--hub-board-column-cap-bg: var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03));
+	--hub-board-column-cap-color: inherit;
+	--hub-board-column-header-padding-y: var(--hub-board-column-cap-padding-y);
+	--hub-board-column-header-padding-x: var(--hub-board-column-cap-padding-x);
+	--hub-board-column-header-bg: var(--hub-board-column-cap-bg);
+	--hub-board-column-header-color: var(--hub-board-column-cap-color);
+	--hub-board-column-footer-padding-y: var(--hub-board-column-cap-padding-y);
+	--hub-board-column-footer-padding-x: var(--hub-board-column-cap-padding-x);
+	--hub-board-column-footer-bg: var(--hub-board-column-cap-bg);
+	--hub-board-column-footer-color: var(--hub-board-column-cap-color);
+	--hub-board-column-body-padding-y: var(--hub-board-column-spacer-y);
+	--hub-board-column-body-padding-x: var(--hub-board-column-spacer-x);
+	--hub-board-column-header-title-color: inherit;
+	--hub-board-column-header-title-spacer-y: var(--hub-ref-space-2, 0.5rem);
+	--hub-board-column-header-subtitle-color: var(--hub-sys-text-muted, #6c757d);
+	--hub-board-column-height: 100%;
+	--hub-board-column-color: var(--hub-board-container-color);
+	--hub-board-column-bg: var(--hub-board-container-bg);
+	--hub-board-card-spacer-y: 0.75rem;
+	--hub-board-card-spacer-x: var(--hub-ref-space-3, 1rem);
+	--hub-board-card-title-spacer-y: var(--hub-ref-space-2, 0.5rem);
+	--hub-board-card-title-color: inherit;
+	--hub-board-card-subtitle-color: var(--hub-sys-text-muted, #6c757d);
+	--hub-board-card-border-width: var(--hub-board-border-width);
+	--hub-board-card-border-color: var(--hub-board-border-color);
+	--hub-board-card-border-radius: var(--hub-board-border-radius);
+	--hub-board-card-box-shadow: none;
+	--hub-board-card-inner-border-radius: calc(
+		var(--hub-board-card-border-radius) - var(--hub-board-card-border-width)
 	);
-	--hub-board-column-border-radius: var(
-		--hub-column-border-radius,
-		var(--hub-ref-radius-md, 0.375rem)
-	);
-	--hub-board-column-box-shadow: var(--hub-column-box-shadow, none);
-	--hub-board-column-inner-border-radius: var(
-		--hub-column-inner-border-radius,
-		var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem))
-	);
-	--hub-board-column-cap-padding-y: var(--hub-column-cap-padding-y, var(--hub-ref-space-2, 0.5rem));
-	--hub-board-column-cap-padding-x: var(--hub-column-cap-padding-x, var(--hub-ref-space-3, 1rem));
-	--hub-board-column-cap-bg: var(
-		--hub-column-cap-bg,
-		var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03))
-	);
-	--hub-board-column-cap-color: var(--hub-column-cap-color, inherit);
-	--hub-board-column-header-title-color: var(--hub-column-header-title-color, inherit);
-	--hub-board-column-header-title-spacer-y: var(
-		--hub-column-header-title-spacer-y,
-		var(--hub-ref-space-2, 0.5rem)
-	);
-	--hub-board-column-header-subtitle-color: var(
-		--hub-column-header-subtitle-color,
-		var(--hub-sys-text-muted, #6c757d)
-	);
-	--hub-board-column-height: var(--hub-column-height, 100%);
-	--hub-board-column-color: var(--hub-column-color, var(--hub-board-container-color));
-	--hub-board-column-bg: var(--hub-column-bg, var(--hub-sys-surface-page, #fff));
-	--hub-board-card-spacer-y: var(--hub-card-spacer-y, 0.75rem);
-	--hub-board-card-spacer-x: var(--hub-card-spacer-x, var(--hub-ref-space-3, 1rem));
-	--hub-board-card-title-spacer-y: var(--hub-card-title-spacer-y, var(--hub-ref-space-2, 0.5rem));
-	--hub-board-card-title-color: var(--hub-card-title-color, inherit);
-	--hub-board-card-subtitle-color: var(
-		--hub-card-subtitle-color,
-		var(--hub-sys-text-muted, #6c757d)
-	);
-	--hub-board-card-border-width: var(--hub-card-border-width, var(--hub-ref-border-width, 1px));
-	--hub-board-card-border-color: var(
-		--hub-card-border-color,
-		var(--hub-sys-border-color-default, rgba(0, 0, 0, 0.175))
-	);
-	--hub-board-card-border-radius: var(
-		--hub-card-border-radius,
-		var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem))
-	);
-	--hub-board-card-box-shadow: var(--hub-card-box-shadow, none);
-	--hub-board-card-inner-border-radius: var(
-		--hub-card-inner-border-radius,
-		calc(
-			var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-				var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
-		)
-	);
-	--hub-board-card-cap-padding-y: var(--hub-card-cap-padding-y, var(--hub-ref-space-2, 0.5rem));
-	--hub-board-card-cap-padding-x: var(--hub-card-cap-padding-x, var(--hub-ref-space-3, 1rem));
-	--hub-board-card-cap-bg: var(
-		--hub-card-cap-bg,
-		var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03))
-	);
-	--hub-board-card-cap-color: var(--hub-card-cap-color, inherit);
-	--hub-board-card-height: var(--hub-card-height, auto);
-	--hub-board-card-color: var(--hub-card-color, var(--hub-board-container-color));
-	--hub-board-card-bg: var(--hub-card-bg, var(--hub-sys-surface-page, #fff));
-	--hub-board-drag-transition: var(
-		--hub-drag-transition,
-		transform 250ms cubic-bezier(0, 0, 0.2, 1)
-	);
-	--hub-board-placeholder-border-color: var(
-		--hub-placeholder-border-color,
-		var(--hub-sys-color-primary, #0d6efd)
-	);
-	--hub-board-placeholder-border-width: var(--hub-placeholder-border-width, 2px);
-	--hub-board-placeholder-border-style: var(--hub-placeholder-border-style, dashed);
-	--hub-board-placeholder-bg: var(
-		--hub-placeholder-bg,
-		var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))
-	);
-	--hub-board-placeholder-min-height: var(--hub-placeholder-min-height, 60px);
+	--hub-board-card-cap-padding-y: var(--hub-ref-space-2, 0.5rem);
+	--hub-board-card-cap-padding-x: var(--hub-ref-space-3, 1rem);
+	--hub-board-card-cap-bg: var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03));
+	--hub-board-card-cap-color: inherit;
+	--hub-board-card-padding-y: var(--hub-board-card-spacer-y);
+	--hub-board-card-padding-x: var(--hub-board-card-spacer-x);
+	--hub-board-card-header-padding-y: var(--hub-board-card-cap-padding-y);
+	--hub-board-card-header-padding-x: var(--hub-board-card-cap-padding-x);
+	--hub-board-card-header-bg: var(--hub-board-card-cap-bg);
+	--hub-board-card-header-color: var(--hub-board-card-cap-color);
+	--hub-board-card-footer-padding-y: var(--hub-board-card-cap-padding-y);
+	--hub-board-card-footer-padding-x: var(--hub-board-card-cap-padding-x);
+	--hub-board-card-footer-bg: var(--hub-board-card-cap-bg);
+	--hub-board-card-footer-color: var(--hub-board-card-cap-color);
+	--hub-board-card-height: auto;
+	--hub-board-card-color: var(--hub-board-container-color);
+	--hub-board-card-bg: var(--hub-board-container-bg);
+	--hub-board-drag-transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+	--hub-board-placeholder-border-color: var(--hub-sys-color-primary, #0d6efd);
+	--hub-board-placeholder-border-width: 2px;
+	--hub-board-placeholder-border-style: dashed;
+	--hub-board-placeholder-bg: var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05));
+	--hub-board-placeholder-min-height: 60px;
+}
 
+:host {
 	display: block;
 	overflow: auto;
 	width: 100%;
 	height: 100%;
+}
 
+.hub-board {
 	&__drop-list {
 		height: 100%;
 	}
@@ -209,8 +172,8 @@
 
 		&-body {
 			flex: 1 1 auto;
-			padding: var(--hub-board-column-spacer-y, 0.75rem)
-				var(--hub-board-column-spacer-x, var(--hub-ref-space-3, 1rem));
+			padding: var(--hub-board-column-body-padding-y)
+				var(--hub-board-column-body-padding-x);
 			color: var(--hub-board-column-color, var(--hub-board-container-color));
 			overflow: auto;
 			display: flex;
@@ -227,14 +190,11 @@
 		}
 
 		&-header {
-			padding: var(--hub-board-column-cap-padding-y, var(--hub-ref-space-2, 0.5rem))
-				var(--hub-board-column-cap-padding-x, var(--hub-ref-space-3, 1rem));
+			padding: var(--hub-board-column-header-padding-y)
+				var(--hub-board-column-header-padding-x);
 			margin: 0;
-			color: var(--hub-board-column-cap-color, inherit);
-			background-color: var(
-				--hub-board-column-cap-bg,
-				var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03))
-			);
+			color: var(--hub-board-column-header-color);
+			background-color: var(--hub-board-column-header-bg);
 			border-bottom: var(--hub-board-column-border-width, var(--hub-ref-border-width, 1px)) solid
 				var(--hub-board-column-border-color, var(--hub-sys-border-color-default, #dee2e6));
 
@@ -264,13 +224,10 @@
 		}
 
 		&-footer {
-			padding: var(--hub-board-column-cap-padding-y, var(--hub-ref-space-2, 0.5rem))
-				var(--hub-board-column-cap-padding-x, var(--hub-ref-space-3, 1rem));
-			color: var(--hub-board-column-cap-color, inherit);
-			background-color: var(
-				--hub-board-column-cap-bg,
-				var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03))
-			);
+			padding: var(--hub-board-column-footer-padding-y)
+				var(--hub-board-column-footer-padding-x);
+			color: var(--hub-board-column-footer-color);
+			background-color: var(--hub-board-column-footer-bg);
 			border-top: var(--hub-board-column-border-width, var(--hub-ref-border-width, 1px)) solid
 				var(--hub-board-column-border-color, var(--hub-sys-border-color-default, #dee2e6));
 
@@ -395,8 +352,8 @@
 
 		&-body {
 			flex: 1 1 auto;
-			padding: var(--hub-board-card-spacer-y, 0.75rem)
-				var(--hub-board-card-spacer-x, var(--hub-ref-space-3, 1rem));
+			padding: var(--hub-board-card-padding-y)
+				var(--hub-board-card-padding-x);
 			color: var(--hub-board-card-color, var(--hub-board-container-color));
 		}
 
@@ -409,6 +366,58 @@
 			margin-top: calc(-0.5 * var(--hub-board-card-title-spacer-y, var(--hub-ref-space-2, 0.5rem)));
 			margin-bottom: 0;
 			color: var(--hub-board-card-subtitle-color, var(--hub-sys-text-muted, #6c757d));
+		}
+
+		&-header {
+			padding: var(--hub-board-card-header-padding-y)
+				var(--hub-board-card-header-padding-x);
+			color: var(--hub-board-card-header-color);
+			background-color: var(--hub-board-card-header-bg);
+			border-bottom: var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px)) solid
+				var(--hub-board-card-border-color, var(--hub-sys-border-color-default, #dee2e6));
+
+			&:first-child {
+				border-top-left-radius: var(
+					--hub-board-card-inner-border-radius,
+					calc(
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
+							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+					)
+				);
+				border-top-right-radius: var(
+					--hub-board-card-inner-border-radius,
+					calc(
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
+							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+					)
+				);
+			}
+		}
+
+		&-footer {
+			padding: var(--hub-board-card-footer-padding-y)
+				var(--hub-board-card-footer-padding-x);
+			color: var(--hub-board-card-footer-color);
+			background-color: var(--hub-board-card-footer-bg);
+			border-top: var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px)) solid
+				var(--hub-board-card-border-color, var(--hub-sys-border-color-default, #dee2e6));
+
+			&:last-child {
+				border-bottom-left-radius: var(
+					--hub-board-card-inner-border-radius,
+					calc(
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
+							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+					)
+				);
+				border-bottom-right-radius: var(
+					--hub-board-card-inner-border-radius,
+					calc(
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
+							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+					)
+				);
+			}
 		}
 	}
 

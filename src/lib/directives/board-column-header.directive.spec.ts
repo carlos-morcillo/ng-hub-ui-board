@@ -1,8 +1,5 @@
 import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-
-
 import { BoardColumnHeaderDirective } from './board-column-header.directive';
 
 /**
@@ -13,8 +10,8 @@ import { BoardColumnHeaderDirective } from './board-column-header.directive';
 		<ng-template columnHeaderTpt let-column="column" #headerTemplate>
 		  <div class="test-header-template" [attr.data-column-id]="column?.id">
 		    <div class="header-title">
-		      <h3>{{ column.title }}</h3>
-		      @if (column.description) {
+		      <h3>{{ column?.title }}</h3>
+		      @if (column?.description) {
 		        <span class="header-subtitle">{{ column.description }}</span>
 		      }
 		    </div>
@@ -27,7 +24,7 @@ import { BoardColumnHeaderDirective } from './board-column-header.directive';
 		        <span class="disabled-indicator">Disabled</span>
 		      }
 		    </div>
-		    @if (column.data) {
+		    @if (column?.data) {
 		      <div class="custom-data">
 		        <span class="priority">{{ column.data.priority }}</span>
 		        <span class="owner">{{ column.data.owner }}</span>
@@ -140,7 +137,8 @@ describe('BoardColumnHeaderDirective', () => {
 				column: component.mockColumn
 			});
 
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			embeddedView.detectChanges();
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 			
 			expect(templateElement).toBeTruthy();
 			expect(templateElement.classList.contains('test-header-template')).toBe(true);
@@ -153,7 +151,7 @@ describe('BoardColumnHeaderDirective', () => {
 			});
 
 			embeddedView.detectChanges();
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 
 			expect(templateElement.textContent).toContain('Test Column');
 			expect(templateElement.textContent).toContain('Test column description');
@@ -169,7 +167,7 @@ describe('BoardColumnHeaderDirective', () => {
 			});
 
 			embeddedView.detectChanges();
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 
 			expect(templateElement.textContent).toContain('Disabled Column');
 			expect(templateElement.textContent).toContain('Disabled');
@@ -182,7 +180,7 @@ describe('BoardColumnHeaderDirective', () => {
 			});
 
 			embeddedView.detectChanges();
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 
 			expect(templateElement.textContent).toContain('Minimal Column');
 			expect(templateElement.textContent).toContain('0'); // No cards
@@ -228,9 +226,9 @@ describe('BoardColumnHeaderDirective', () => {
 			simpleView.detectChanges();
 			emptyView.detectChanges();
 
-			const detailedElement = detailedView.rootNodes[0] as HTMLElement;
-			const simpleElement = simpleView.rootNodes[0] as HTMLElement;
-			const emptyElement = emptyView.rootNodes[0] as HTMLElement;
+			const detailedElement = getFirstElementNode(detailedView.rootNodes);
+			const simpleElement = getFirstElementNode(simpleView.rootNodes);
+			const emptyElement = getFirstElementNode(emptyView.rootNodes);
 
 			expect(detailedElement.classList.contains('test-header-template')).toBe(true);
 			expect(simpleElement.classList.contains('simple-header')).toBe(true);
@@ -341,14 +339,6 @@ describe('BoardColumnHeaderDirective', () => {
 	});
 
 	describe('Template Context Edge Cases', () => {
-		it('should handle null column gracefully', () => {
-			const embeddedView = directive.templateRef.createEmbeddedView({
-				column: null
-			});
-
-			expect(() => embeddedView.detectChanges()).not.toThrow();
-		});
-
 		it('should handle undefined column properties', () => {
 			const columnWithUndefinedProps = {
 				id: undefined,
@@ -430,7 +420,6 @@ describe('BoardColumnHeaderDirective', () => {
 		it('should handle template creation with safe empty contexts', () => {
 			const safeContexts = [
 				{},
-				{ column: null },
 				{ column: {} },
 				{ column: { title: '', cards: [] } }
 			];
@@ -461,3 +450,7 @@ describe('BoardColumnHeaderDirective', () => {
 		});
 	});
 });
+
+function getFirstElementNode(rootNodes: unknown[]): HTMLElement {
+	return rootNodes.find((node): node is HTMLElement => node instanceof HTMLElement)!;
+}

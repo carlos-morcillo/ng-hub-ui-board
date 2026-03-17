@@ -1,5 +1,5 @@
 import { ComponentRef } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Board } from '../../models/board';
 import { HubBoardComponent } from './board.component';
@@ -127,7 +127,7 @@ describe('HubBoardComponent', () => {
 
 	// Testing complex Drag Logic directly (calling handlers)
 	describe('Drag Logic Direct', () => {
-		it('should set drag state on column drag start', (done) => {
+		it('should set drag state on column drag start', fakeAsync(() => {
 			const event = new DragEvent('dragstart');
 			Object.defineProperty(event, 'dataTransfer', {
 				value: { setData: jasmine.createSpy('setData'), setDragImage: () => {}, effectAllowed: 'none' }
@@ -136,14 +136,14 @@ describe('HubBoardComponent', () => {
 
 			component.onColumnDragStart(event, column, 0);
 
-			setTimeout(() => {
-				const state = component.dragState();
-				expect(state).toBeTruthy();
-				expect(state?.type).toBe('column');
-				expect(state?.sourceColumnIndex).toBe(0);
-				done();
-			}, 20);
-		});
+			// tick to account for requestAnimationFrame
+			tick(100);
+			
+			const state = component.dragState();
+			expect(state).toBeTruthy();
+			expect(state?.type).toBe('column');
+			expect(state?.sourceColumnIndex).toBe(0);
+		}));
 
 		it('should move column on drop', () => {
 			// Setup state manually
@@ -152,7 +152,7 @@ describe('HubBoardComponent', () => {
 				sourceColumnIndex: 0,
 				item: component.columns()[0]
 			});
-			(component as any).columnDropIndicatorIndex.set(1); // Dropping at index 1 (effectively swapping 0 and 1)
+			(component as any).columnDropIndicatorIndex.set(2); // Drop after the second column so target index becomes 1
 
 			spyOn(component.onColumnMoved, 'emit');
 			const event = new DragEvent('drop');

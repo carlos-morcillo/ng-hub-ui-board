@@ -62,6 +62,7 @@ export type DragBehavior = 'ghost' | 'hide' | 'collapse';
 @Component({
 	selector: 'hub-board, hub-ui-board',
 	templateUrl: './board.component.html',
+	styleUrl: './board.component.scss',
 	imports: [NgClass, NgStyle, NgTemplateOutlet],
 	host: {
 		class: 'hub-board'

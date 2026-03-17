@@ -2,6 +2,24 @@
 
 This document details the breaking changes introduced in major versions of `ng-hub-ui-board` and how to migrate your codebase.
 
+## Version 21.1.0
+
+### Removal of Public SCSS Entry Point
+
+The standalone file `src/lib/styles/board.scss` has been removed. Styles are now strictly encapsulated within the `HubBoardComponent` via `board.component.scss`.
+
+**Migration Steps:**
+
+1.  **Remove manual style imports:** If you were importing the stylesheet manually in your global `styles.scss`, remove the following line:
+
+    ```scss
+    @use 'ng-hub-ui-board/src/lib/styles/board.scss';
+    ```
+
+2.  **Automatic Styling:** The component now handles its own styles. Ensure your build pipeline correctly processes component-level SCSS.
+
+3.  **Global Overrides:** If you need to override component styles globally, you should now use CSS custom properties (variables) or target the `.hub-board` class directly (using `:deep` or global selectors if necessary, though CSS variables are the recommended approach).
+
 ## Version 21.0.0
 
 ### CSS Variables Prefix Standardization

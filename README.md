@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/ng-hub-ui-board.svg)](https://badge.fury.io/js/ng-hub-ui-board)
 
-> **⚠️ CRITICAL (MAJOR RELEASE):** Version 21.0.0 introduces structural breaking changes to CSS variables and stylesheet imports. Please read the [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) file before upgrading.
+> **⚠️ BREAKING CHANGES:** Version 21.1.0 removes the public stylesheet entry point. Styles are now encapsulated within the component. Please read the [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) file before upgrading.
 
 ## Part of ng-hub-ui Family
 
@@ -604,7 +604,7 @@ Here are some common issues and how to resolve them:
 
 - **Import path**: Confirm you've imported the SCSS base styles in your global `styles.scss`:
     ```scss
-    @use 'ng-hub-ui-board/src/lib/styles/base.scss';
+    @use 'ng-hub-ui-board/src/lib/styles/board.scss';
     ```
 - **CSS custom properties**: Check that your custom CSS variables follow the `--hub-*` naming convention
 - **Style specificity**: Ensure your custom styles have sufficient specificity to override defaults

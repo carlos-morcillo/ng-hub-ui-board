@@ -105,7 +105,8 @@ describe('CardTemplateDirective', () => {
 				column: component.mockColumn
 			});
 
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			embeddedView.detectChanges();
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 			
 			expect(templateElement).toBeTruthy();
 			expect(templateElement.classList.contains('test-card-template')).toBe(true);
@@ -119,7 +120,7 @@ describe('CardTemplateDirective', () => {
 			});
 
 			embeddedView.detectChanges();
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 
 			expect(templateElement.textContent).toContain('Test Card');
 			expect(templateElement.textContent).toContain('Test Description');
@@ -141,7 +142,7 @@ describe('CardTemplateDirective', () => {
 			});
 
 			embeddedView.detectChanges();
-			const templateElement = embeddedView.rootNodes[0] as HTMLElement;
+			const templateElement = getFirstElementNode(embeddedView.rootNodes);
 
 			expect(templateElement.textContent).toContain('Test Card');
 			expect(templateElement.textContent).toContain('Column:'); // Should render even without column data
@@ -170,8 +171,8 @@ describe('CardTemplateDirective', () => {
 			firstView.detectChanges();
 			secondView.detectChanges();
 
-			const firstElement = firstView.rootNodes[0] as HTMLElement;
-			const secondElement = secondView.rootNodes[0] as HTMLElement;
+			const firstElement = getFirstElementNode(firstView.rootNodes);
+			const secondElement = getFirstElementNode(secondView.rootNodes);
 
 			expect(firstElement.classList.contains('test-card-template')).toBe(true);
 			expect(secondElement.classList.contains('simple-card')).toBe(true);
@@ -322,3 +323,7 @@ describe('CardTemplateDirective', () => {
 		});
 	});
 });
+
+function getFirstElementNode(rootNodes: unknown[]): HTMLElement {
+	return rootNodes.find((node): node is HTMLElement => node instanceof HTMLElement)!;
+}
