@@ -62,7 +62,7 @@
 						(dragstart)="onCardDragStart($event, card, index, cardIndex)"
 						(dragend)="onCardDragEnd($event)"
 						(click)="cardClick(card)"
-						(mousedown)="card.disabled && $event.stopPropagation()"
+						(mousedown)="card.disabled ? $event.stopPropagation() : null"
 						[ngClass]="card.classlist"
 						[ngStyle]="card.style"
 					>

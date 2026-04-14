@@ -1,20 +1,38 @@
 # ng-hub-ui-board
 
-[![npm version](https://badge.fury.io/js/ng-hub-ui-board.svg)](https://badge.fury.io/js/ng-hub-ui-board)
+[Español](./README.es.md) | **English**
+
+[![NPM Version](https://img.shields.io/npm/v/ng-hub-ui-board.svg)](https://www.npmjs.com/package/ng-hub-ui-board)
 
 > **⚠️ BREAKING CHANGES:** Version 21.1.0 removes the public stylesheet entry point. Styles are now encapsulated within the component. Please read the [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) file before upgrading.
 
-## Part of ng-hub-ui Family
+## Documentation and Live Examples
 
-This component is part of the ng-hub-ui ecosystem, which includes:
+This package is part of [Hub UI](https://hubui.dev/), a collection of Angular component libraries for standalone apps.
 
-- [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
-- [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
-- [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
-- [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
-- [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
-- [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
+- Docs: https://hubui.dev/board/overview/
+- Live examples: https://hubui.dev/board/examples/
+- Hub UI: https://hubui.dev/
+
+## 🧩 Library Family `ng-hub-ui`
+
+This library is part of the **ng-hub-ui** ecosystem:
+
 - [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion)
+- [ng-hub-ui-action-sheet](https://www.npmjs.com/package/ng-hub-ui-action-sheet)
+- [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
+- [ng-hub-ui-board](https://www.npmjs.com/package/ng-hub-ui-board) ← You are here
+- [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
+- [ng-hub-ui-calendar](https://www.npmjs.com/package/ng-hub-ui-calendar)
+- [ng-hub-ui-dropdown](https://www.npmjs.com/package/ng-hub-ui-dropdown)
+- [ng-hub-ui-history](https://www.npmjs.com/package/ng-hub-ui-history)
+- [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
+- [ng-hub-ui-nav](https://www.npmjs.com/package/ng-hub-ui-nav)
+- [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
+- [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
+- [ng-hub-ui-sortable](https://www.npmjs.com/package/ng-hub-ui-sortable)
+- [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
+- [ng-hub-ui-utils](https://www.npmjs.com/package/ng-hub-ui-utils)
 
 ## Description
 
