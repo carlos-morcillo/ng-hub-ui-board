@@ -2,6 +2,10 @@
 
 **Español** | [English](./README.md)
 
+[![NPM Version](https://img.shields.io/npm/v/ng-hub-ui-board.svg)](https://www.npmjs.com/package/ng-hub-ui-board)
+
+> **⚠️ CAMBIOS IMPORTANTES:** La versión 21.1.0 elimina el punto de entrada de hojas de estilo público. Los estilos ahora se encapsulan dentro del componente. Lee el archivo [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) antes de actualizar.
+
 ## Documentación y ejemplos en vivo
 
 Este paquete forma parte de [Hub UI](https://hubui.dev/), una colección de bibliotecas de componentes Angular para aplicaciones standalone.
@@ -10,48 +14,696 @@ Este paquete forma parte de [Hub UI](https://hubui.dev/), una colección de bibl
 - Ejemplos en vivo: https://hubui.dev/board/examples/
 - Hub UI: https://hubui.dev/
 
-## 🧩 Familia `ng-hub-ui`
+## 🧩 Familia de bibliotecas `ng-hub-ui`
 
-- [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion)
+Esta biblioteca forma parte del ecosistema **ng-hub-ui**:
+
+- [ng-hub-ui-accordion](https://www.npmjs.com/package/ng-hub-ui-accordion) (obsoleto — usa ng-hub-ui-panels)
 - [ng-hub-ui-action-sheet](https://www.npmjs.com/package/ng-hub-ui-action-sheet)
 - [ng-hub-ui-avatar](https://www.npmjs.com/package/ng-hub-ui-avatar)
 - [ng-hub-ui-board](https://www.npmjs.com/package/ng-hub-ui-board) ← Estás aquí
 - [ng-hub-ui-breadcrumbs](https://www.npmjs.com/package/ng-hub-ui-breadcrumbs)
 - [ng-hub-ui-calendar](https://www.npmjs.com/package/ng-hub-ui-calendar)
 - [ng-hub-ui-dropdown](https://www.npmjs.com/package/ng-hub-ui-dropdown)
+- [ng-hub-ui-ds](https://www.npmjs.com/package/ng-hub-ui-ds)
+- [ng-hub-ui-forms](https://www.npmjs.com/package/ng-hub-ui-forms)
 - [ng-hub-ui-history](https://www.npmjs.com/package/ng-hub-ui-history)
+- [ng-hub-ui-milestones](https://www.npmjs.com/package/ng-hub-ui-milestones)
 - [ng-hub-ui-modal](https://www.npmjs.com/package/ng-hub-ui-modal)
 - [ng-hub-ui-nav](https://www.npmjs.com/package/ng-hub-ui-nav)
 - [ng-hub-ui-paginable](https://www.npmjs.com/package/ng-hub-ui-paginable)
+- [ng-hub-ui-panels](https://www.npmjs.com/package/ng-hub-ui-panels)
 - [ng-hub-ui-portal](https://www.npmjs.com/package/ng-hub-ui-portal)
+- [ng-hub-ui-skeleton](https://www.npmjs.com/package/ng-hub-ui-skeleton)
 - [ng-hub-ui-sortable](https://www.npmjs.com/package/ng-hub-ui-sortable)
 - [ng-hub-ui-stepper](https://www.npmjs.com/package/ng-hub-ui-stepper)
 - [ng-hub-ui-utils](https://www.npmjs.com/package/ng-hub-ui-utils)
 
-## Resumen
+## Descripción
 
-`ng-hub-ui-board` permite construir tableros tipo kanban y flujos de trabajo con columnas, tarjetas y drag and drop en Angular.
+Un componente de tablero flexible y potente para aplicaciones Angular, perfecto para implementar tableros estilo Kanban, sistemas de gestión de tareas o cualquier interfaz basada en tarjetas con arrastrar y soltar. Similar a los tableros de Trello, este componente te permite crear columnas interactivas con tarjetas arrastrables.
+
+## Características
+
+- 🎯 **Componente standalone** - Enfoque moderno de Angular con configuración mínima
+- 🔄 **Arrastrar y soltar nativo** - Implementación propia sin dependencias externas (no requiere CDK)
+- 🎨 **Visuales de arrastre totalmente personalizables** - Plantillas personalizadas para previsualizaciones de arrastre y marcadores de posición de destino
+- ⚙️ **Comportamiento de arrastre configurable** - Elige entre los modos ghost, hide o collapse para los elementos arrastrados
+- 📱 **Diseño responsive** - Funciona sin problemas en escritorio, tablet y dispositivos móviles
+- 🎭 **Altamente personalizable** - Plantillas personalizadas para tarjetas, cabeceras, pies de página e interacciones de arrastre
+- 🔧 **Compatible con Bootstrap** - Se integra perfectamente con el sistema de diseño de Bootstrap 5
+- ⚡ **Scroll virtual** - Soporta scroll infinito con detección de final para mejorar el rendimiento
+- 🎨 **Estilado personalizado** - Propiedades personalizadas de CSS para temas y personalización sencilla
+- 🔒 **Control granular** - Habilita/deshabilita funcionalidades a nivel de tablero, columna o tarjeta
+- 🏷️ **Soporte de TypeScript** - Seguridad de tipos completa con interfaces genéricas
+- ♿ **Listo para accesibilidad** - Sigue las buenas prácticas de WAI-ARIA para arrastrar y soltar
+- 🪶 **Ligero** - Cero dependencias de UI externas
 
 ## Instalación
 
 ```bash
+# Instala el componente
 npm install ng-hub-ui-board
 ```
 
-## Uso rápido
+O usando yarn:
 
-```typescript
-import { Board } from 'ng-hub-ui-board';
+```bash
+yarn add ng-hub-ui-board
 ```
 
-## Características
+**Nota:** A partir de la versión 19.4.0, `@angular/cdk` ya no es necesario. El componente ahora incluye su propia implementación nativa de arrastrar y soltar.
 
-- Columnas y tarjetas configurables.
-- Drag and drop para reordenar o mover elementos.
-- Soporte para plantillas personalizadas.
-- Estilado con variables CSS.
+## Inicio rápido
 
-## Soporte y licencia
+Aquí tienes un ejemplo rápido para empezar con `ng-hub-ui-board` usando el enfoque de componente standalone.
 
-- Issues y soporte: https://github.com/carlos-morcillo/ng-hub-ui-board/issues
-- Licencia: MIT
+### 1. Configura el modelo de tu tablero
+
+```ts
+import { signal } from '@angular/core';
+import { Board } from 'ng-hub-ui-board';
+
+export const board = signal<Board>({
+	title: 'Project Sprint',
+	columns: [
+		{
+			title: 'To Do',
+			cards: [
+				{ title: 'Login page', description: 'Build login form with validation' },
+				{ title: 'Landing hero', description: 'Implement hero section' }
+			]
+		},
+		{
+			title: 'In Progress',
+			cards: [{ title: 'Set up CI/CD', description: 'Add GitHub Actions' }]
+		},
+		{
+			title: 'Done',
+			cards: [{ title: 'Project scaffold', description: 'Initial Angular setup' }]
+		}
+	]
+});
+```
+
+### 2. Crea tu componente
+
+```ts
+import { Component } from '@angular/core';
+import {
+	HubBoardComponent,
+	CardTemplateDirective,
+	BoardColumnHeaderDirective,
+	BoardColumnFooterDirective,
+	BoardCard
+} from 'ng-hub-ui-board';
+
+@Component({
+	selector: 'board-demo',
+	standalone: true,
+	imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective, BoardColumnFooterDirective],
+	templateUrl: './board-demo.component.html'
+})
+export class BoardDemoComponent {
+	board = board;
+
+	handleCardClick(card: BoardCard) {
+		console.log('Card clicked:', card);
+	}
+
+	handleCardMoved(event: any) {
+		console.log('Card moved:', event);
+	}
+}
+```
+
+### 3. Úsalo en tu plantilla
+
+```html
+<hub-board [board]="board()" (onCardClick)="handleCardClick($event)" (onCardMoved)="handleCardMoved($event)">
+	<ng-template cardTpt let-card="item">
+		<strong>{{ card.title }}</strong>
+		<p>{{ card.description }}</p>
+	</ng-template>
+</hub-board>
+```
+
+Este bloque de código proporciona un ejemplo mínimo y funcional tanto para usuarios principiantes como intermedios.
+
+## Uso
+
+El componente se puede utilizar de dos maneras:
+
+### 1. Importación de componente standalone (recomendado)
+
+```typescript
+import { Component } from '@angular/core';
+import {
+	HubBoardComponent,
+	CardTemplateDirective,
+	BoardColumnHeaderDirective,
+	BoardColumnFooterDirective
+} from 'ng-hub-ui-board';
+
+@Component({
+	selector: 'app-my-component',
+	standalone: true,
+	imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective, BoardColumnFooterDirective],
+	template: `
+		<hub-board [board]="board" (onCardClick)="handleCardClick($event)" (onCardMoved)="handleCardMoved($event)">
+			<!-- Las plantillas van aquí -->
+		</hub-board>
+	`
+})
+export class MyComponent {
+	// ... lógica del componente
+}
+```
+
+### 2. Importación de módulo (heredado)
+
+```typescript
+import { NgModule } from '@angular/core';
+import { BoardModule } from 'ng-hub-ui-board';
+
+@NgModule({
+	imports: [BoardModule]
+	// ... resto de la configuración del módulo
+})
+export class AppModule {}
+```
+
+## Plantillas
+
+El componente utiliza varias plantillas para la personalización. Si usas el enfoque standalone, recuerda importar las directivas correspondientes para cada plantilla que vayas a utilizar.
+
+### Plantillas estándar
+
+### Plantilla de tarjeta (CardTemplateDirective)
+
+Se usa para personalizar cómo se renderiza cada tarjeta dentro de las columnas. Esta plantilla te da control total sobre la apariencia y la estructura de la tarjeta.
+
+```html
+<ng-template cardTpt let-card="card">
+	<div class="custom-card">
+		<h3>{{ card.title }}</h3>
+		<p>{{ card.description }}</p>
+		<div class="card-metadata">
+			<span class="priority">{{ card.data?.priority }}</span>
+			<span class="due-date">{{ card.data?.dueDate | date }}</span>
+		</div>
+	</div>
+</ng-template>
+```
+
+### Plantilla de cabecera de columna (BoardColumnHeaderDirective)
+
+Se usa para personalizar la cabecera de cada columna. Perfecta para añadir acciones específicas de la columna, mostrar recuentos de tarjetas o añadir opciones de filtrado.
+
+```html
+<ng-template columnHeaderTpt let-column="column">
+	<div class="custom-header">
+		<h2>{{ column.title }}</h2>
+		<span class="card-count">{{ column.cards.length }} items</span>
+		<div class="column-actions">
+			<button (click)="addCard(column)">Add Card</button>
+			<button (click)="filterColumn(column)">Filter</button>
+		</div>
+	</div>
+</ng-template>
+```
+
+### Plantilla de pie de columna (BoardColumnFooterDirective)
+
+Se usa para añadir un pie de página a cada columna. Útil para información de resumen, acciones rápidas o controles específicos de la columna.
+
+```html
+<ng-template columnFooterTpt let-column="column">
+	<div class="custom-footer">
+		<div class="column-summary">
+			<span>Total: {{ column.cards.length }}</span>
+			<span>Priority Items: {{ getPriorityItems(column) }}</span>
+		</div>
+		<button (click)="quickAddCard(column)">Quick Add</button>
+	</div>
+</ng-template>
+```
+
+### Plantillas de arrastrar y soltar
+
+#### Plantilla de previsualización de arrastre de tarjeta (CardDragPreviewDirective)
+
+Personaliza el elemento visual que sigue al cursor al arrastrar tarjetas. La plantilla recibe la tarjeta arrastrada y su columna de origen como contexto.
+
+```html
+<ng-template cardDragPreview let-card="card" let-column="column">
+	<div class="custom-drag-preview">
+		<div class="preview-header">
+			<span class="badge">{{ column.title }}</span>
+		</div>
+		<h4>{{ card.title }}</h4>
+		<p class="preview-description">{{ card.description }}</p>
+	</div>
+</ng-template>
+```
+
+**Variables de contexto:**
+
+- `card`: La tarjeta que se está arrastrando
+- `column`: La columna de origen de la tarjeta
+
+#### Plantilla de marcador de posición de tarjeta (CardPlaceholderDirective)
+
+Personaliza la apariencia de la zona de destino al arrastrar tarjetas entre columnas o dentro de ellas.
+
+```html
+<ng-template cardPlaceholder>
+	<div class="custom-card-placeholder">
+		<span class="placeholder-icon">📥</span>
+		<p>Drop card here</p>
+	</div>
+</ng-template>
+```
+
+#### Plantilla de previsualización de arrastre de columna (ColumnDragPreviewDirective)
+
+Personaliza el elemento visual que sigue al cursor al arrastrar columnas. La plantilla recibe la columna arrastrada como contexto.
+
+```html
+<ng-template columnDragPreview let-column="column">
+	<div class="custom-column-preview">
+		<h3>{{ column.title }}</h3>
+		<span class="card-count">{{ column.cards.length }} cards</span>
+	</div>
+</ng-template>
+```
+
+**Variable de contexto:**
+
+- `column`: La columna que se está arrastrando
+
+#### Plantilla de marcador de posición de columna (ColumnPlaceholderDirective)
+
+Personaliza la apariencia de la zona de destino al reordenar columnas.
+
+```html
+<ng-template columnPlaceholder>
+	<div class="custom-column-placeholder">
+		<span class="placeholder-text">Drop column here</span>
+	</div>
+</ng-template>
+```
+
+## Eventos
+
+El `HubBoardComponent` emite varios eventos que te ayudan a interactuar con las acciones del usuario, como hacer clic en tarjetas, mover elementos o llegar a los límites del scroll.
+
+### onCardClick
+
+Se emite cuando se hace clic en una tarjeta.
+
+```html
+<hub-board [board]="board" (onCardClick)="handleCardClick($event)"> </hub-board>
+```
+
+**Tipo:** `EventEmitter<BoardCard>`
+
+**Ejemplo:**
+
+```ts
+handleCardClick(card: BoardCard) {
+  console.log('Card clicked:', card.title);
+}
+```
+
+---
+
+### onCardMoved
+
+Se emite cuando una tarjeta se mueve, ya sea dentro de la misma columna o entre columnas.
+
+```html
+<hub-board [board]="board" (onCardMoved)="handleCardMoved($event)"> </hub-board>
+```
+
+**Tipo:** `EventEmitter<CardDragDropEvent>`
+
+**Ejemplo:**
+
+```ts
+import { CardDragDropEvent } from 'ng-hub-ui-board';
+
+handleCardMoved(event: CardDragDropEvent) {
+  const card = event.item.data;
+  const from = event.previousContainer.data;
+  const to = event.container.data;
+
+  console.log(`Moved "${card.title}" from "${from.title}" to "${to.title}"`);
+}
+```
+
+---
+
+### onColumnMoved
+
+Se emite cuando una columna se reordena mediante arrastrar y soltar.
+
+```html
+<hub-board [board]="board" (onColumnMoved)="handleColumnMoved($event)"> </hub-board>
+```
+
+**Tipo:** `EventEmitter<ColumnDragDropEvent>`
+
+**Ejemplo:**
+
+```ts
+import { ColumnDragDropEvent } from 'ng-hub-ui-board';
+
+handleColumnMoved(event: ColumnDragDropEvent) {
+  console.log(`Column moved from ${event.previousIndex} to ${event.currentIndex}`);
+}
+```
+
+---
+
+### reachedEnd
+
+Se emite cuando un usuario hace scroll hasta el final de una columna. Útil para disparar la carga diferida de tarjetas adicionales.
+
+```html
+<div style="height: 512px;">
+	<hub-board [board]="board" (reachedEnd)="loadMoreCards($event)"></hub-board>
+</div>
+```
+
+**Tipo:** `EventEmitter<ReachedEndEvent<BoardColumn>>`
+
+**Estructura del evento:**
+
+```typescript
+interface ReachedEndEvent<T = any> {
+	index: number; // Índice de la columna que llegó al final
+	data: T; // El propio objeto BoardColumn
+}
+```
+
+**Ejemplo:**
+
+```ts
+loadMoreCards(event: ReachedEndEvent) {
+  const columnIndex = event.index;
+  const column = event.data;  // event.data es el objeto BoardColumn
+
+  if (!column) {
+    return;
+  }
+
+  console.log(`Loading more cards for column: ${column.title}`);
+
+  // Simula una llamada a la API para cargar más tarjetas
+  setTimeout(() => {
+    const newCards = this.generateCards(5);
+
+    // Actualiza el tablero con las nuevas tarjetas
+    this.board.update(currentBoard => ({
+      ...currentBoard,
+      columns: currentBoard.columns?.map((col, index) =>
+        index === columnIndex
+          ? { ...col, cards: [...col.cards, ...newCards] }
+          : col
+      ) || []
+    }));
+  }, 1000);
+}
+```
+
+> ℹ️ **Importante:** Para habilitar la detección de scroll, el tablero debe colocarse dentro de un contenedor con una restricción de altura fija.
+
+## Inputs
+
+Los siguientes inputs están disponibles en el `HubBoardComponent`:
+
+| Input                   | Tipo            | Descripción                                                                                                                  | Por defecto  |
+| ----------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `board`                 | `Signal<Board>` | El objeto del tablero que contiene las columnas y las tarjetas                                                               | `undefined`  |
+| `columnSortingDisabled` | `boolean`       | Deshabilita la ordenación de columnas mediante arrastrar y soltar                                                            | `false`      |
+| `dragBehavior`          | `DragBehavior`  | Controla cómo se comportan visualmente los elementos arrastrados: `'ghost'` (semitransparente), `'hide'` o `'collapse'`      | `'collapse'` |
+
+## Outputs
+
+Estos outputs son emitidos por el componente durante la interacción del usuario:
+
+| Output          | Tipo                                | Descripción                                                                          |
+| --------------- | ----------------------------------- | ------------------------------------------------------------------------------------ |
+| `onCardClick`   | `EventEmitter<BoardCard>`           | Se dispara cuando se hace clic en una tarjeta                                         |
+| `onCardMoved`   | `EventEmitter<CardDragDropEvent>`   | Se emite cuando se mueve una tarjeta (dentro de una columna o entre columnas)         |
+| `onColumnMoved` | `EventEmitter<ColumnDragDropEvent>` | Se emite cuando una columna se reordena mediante arrastrar y soltar                   |
+| `reachedEnd`    | `EventEmitter<ReachedEndEvent>`     | Se dispara cuando el usuario hace scroll hasta el final de una columna (carga diferida) |
+
+## Interfaces
+
+### Board
+
+Interfaz contenedora principal que representa toda la estructura del tablero. Se usa para definir la configuración general del tablero, incluyendo sus columnas y su estilado general.
+
+```typescript
+interface Board<T = any> {
+	id?: number;
+	title: string;
+	description?: string;
+	columns?: BoardColumn<T>[];
+	classlist?: string[];
+	style?: { [key: string]: any };
+}
+```
+
+### BoardColumn
+
+Representa una única columna del tablero. Se usa para configurar columnas individuales, sus tarjetas y comportamientos específicos de la columna, como las reglas de arrastrar y soltar.
+
+```typescript
+interface BoardColumn<T = any> {
+	id?: number;
+	boardId?: number;
+	title: string;
+	description?: string;
+	cards: BoardCard<T>[];
+	style?: { [key: string]: any };
+	classlist?: string[] | string;
+	disabled?: boolean;
+	cardSortingDisabled?: boolean;
+}
+```
+
+### BoardCard
+
+Representa las tarjetas individuales dentro de las columnas. Se usa para definir el contenido y el comportamiento de la tarjeta, incluyendo datos y estilado personalizados.
+
+```typescript
+interface BoardCard<T = any> {
+	id?: number;
+	columnId?: number;
+	title: string;
+	description?: string;
+	data?: T;
+	classlist?: string[];
+	style?: { [key: string]: any };
+	disabled?: boolean;
+}
+```
+
+### CardDragDropEvent
+
+Interfaz de evento emitida cuando se mueve una tarjeta. Proporciona toda la información sobre la operación de arrastrar y soltar.
+
+```typescript
+interface CardDragDropEvent<T = any> {
+	previousIndex: number;
+	currentIndex: number;
+	container: BoardDropContainer<BoardColumn>;
+	previousContainer: BoardDropContainer<BoardColumn>;
+	item: BoardDragItem<BoardCard>;
+	isPointerOverContainer: boolean;
+	distance?: { x: number; y: number };
+	dropPoint?: { x: number; y: number };
+}
+```
+
+### ColumnDragDropEvent
+
+Interfaz de evento emitida cuando se mueve una columna. Proporciona toda la información sobre la operación de reordenación de columnas.
+
+```typescript
+interface ColumnDragDropEvent {
+	previousIndex: number;
+	currentIndex: number;
+	container: BoardDropContainer<BoardColumn[]>;
+	previousContainer: BoardDropContainer<BoardColumn[]>;
+	item: BoardDragItem<BoardColumn>;
+	isPointerOverContainer: boolean;
+	distance?: { x: number; y: number };
+	dropPoint?: { x: number; y: number };
+}
+```
+
+### DragBehavior
+
+Definición de tipo para controlar cómo se comportan visualmente los elementos arrastrados durante las operaciones de arrastre.
+
+```typescript
+type DragBehavior = 'ghost' | 'hide' | 'collapse';
+```
+
+**Valores:**
+
+- `'ghost'`: El elemento se vuelve semitransparente (50% de opacidad) pero permanece visible
+- `'hide'`: El elemento se oculta pero sigue ocupando su espacio (marcador de posición invisible)
+- `'collapse'`: El elemento se oculta por completo y su espacio se colapsa (por defecto)
+
+## 🧩 Estilado
+
+`ng-hub-ui-board` es totalmente configurable en cuanto a estilos mediante propiedades personalizadas de CSS.
+
+Para consultar el catálogo de tokens completo y actualizado, consulta la [Referencia de variables CSS](./docs/css-variables-reference.md).
+
+### 🔗 Importar estilos
+
+```scss
+@use 'ng-hub-ui-board/src/lib/styles/board.scss';
+```
+
+### 🎛 Ejemplo de personalización rápida (independiente del framework)
+
+```scss
+.hub-board {
+	--hub-board-columns-gap: 1.25rem;
+	--hub-board-column-bg: #f8f9fa;
+	--hub-board-card-bg: #ffffff;
+	--hub-board-card-border-color: #d0d7de;
+	--hub-board-placeholder-border-color: #0d6efd;
+}
+```
+
+### 🔌 Integración con Bootstrap (opcional)
+
+```scss
+.hub-board {
+	--hub-board-column-bg: var(--bs-light);
+	--hub-board-card-bg: var(--bs-body-bg);
+	--hub-board-card-border-color: var(--bs-border-color);
+	--hub-board-placeholder-border-color: var(--bs-primary);
+}
+```
+
+## Casos de uso reales
+
+El componente `ng-hub-ui-board` es versátil y se ha utilizado en una gran variedad de aplicaciones reales, como por ejemplo:
+
+- **Herramientas de gestión de proyectos** – Visualiza el progreso de las tareas a través de distintas etapas (To Do, In Progress, Done).
+- **Tableros de tickets de soporte** – Organiza los tickets de soporte por urgencia, equipo o estado.
+- **Pipelines de selección de personal** – Realiza el seguimiento de candidatos a través de las distintas fases de contratación.
+- **Sistemas CRM** – Gestiona leads y clientes en flujos de trabajo tipo pipeline.
+- **Calendarios editoriales** – Planifica y organiza el contenido por estado de publicación.
+
+Cada caso se beneficia de columnas, plantillas de tarjetas y outputs de eventos personalizables para integrarse con la lógica de tu aplicación.
+
+## Solución de problemas
+
+Aquí tienes algunos problemas comunes y cómo resolverlos:
+
+### 🔄 El arrastrar y soltar no funciona
+
+- **Comprueba las dependencias**: Asegúrate de que `@angular/cdk` está instalado e importado
+- **Datos reactivos**: Verifica que los datos de tu tablero son reactivos (usando `signal()`, `Observable` o una detección de cambios adecuada)
+- **Compatibilidad del navegador**: Asegúrate de que tus navegadores objetivo soportan la API HTML5 de arrastrar y soltar
+
+### 📏 La detección de scroll no dispara `reachedEnd`
+
+- **Restricciones de altura**: El elemento `<hub-board>` o su contenedor padre debe tener un `max-height` o una altura fija
+- **Configuración de overflow**: Asegúrate de aplicar `overflow: auto` u `overflow-y: scroll` para habilitar el scroll
+- **Longitud del contenido**: Asegúrate de que hay suficiente contenido para disparar realmente el scroll
+
+### 🎨 Los estilos no se aplican
+
+- **Ruta de importación**: Confirma que has importado los estilos base SCSS en tu `styles.scss` global:
+    ```scss
+    @use 'ng-hub-ui-board/src/lib/styles/board.scss';
+    ```
+- **Propiedades personalizadas de CSS**: Comprueba que tus variables CSS personalizadas siguen la convención de nomenclatura `--hub-*`
+- **Especificidad de los estilos**: Asegúrate de que tus estilos personalizados tienen suficiente especificidad para sobrescribir los valores por defecto
+
+### 🧩 Las plantillas no se renderizan
+
+- **Importa las directivas**: Cuando uses componentes standalone, importa las directivas de plantilla:
+    ```typescript
+    imports: [HubBoardComponent, CardTemplateDirective, BoardColumnHeaderDirective];
+    ```
+- **Sintaxis de plantilla**: Verifica que estás usando los selectores de plantilla correctos (`cardTpt`, `columnHeaderTpt`, `columnFooterTpt`)
+
+### 🛠️ Errores en tiempo de ejecución
+
+- **"Cannot read property 'cards' of undefined"**: Inicializa correctamente tu signal del tablero:
+    ```typescript
+    board = signal<Board>({ title: 'My Board', columns: [] });
+    ```
+- **Errores de tipo**: Asegúrate de que tus datos coinciden con las interfaces `Board`, `BoardColumn` y `BoardCard`
+- **Actualizaciones de signal**: Usa los métodos `.set()` o `.update()` para modificar los valores del signal
+
+### 🎯 Problemas de rendimiento
+
+- **Conjuntos de datos grandes**: Considera implementar scroll virtual para columnas con muchas tarjetas
+- **Fugas de memoria**: Asegura una limpieza adecuada de los listeners de eventos y las suscripciones
+- **Detección de cambios**: Usa la estrategia de detección de cambios `OnPush` siempre que sea posible
+
+Si los problemas persisten, abre una incidencia en: https://github.com/carlos-morcillo/ng-hub-ui-board/issues
+
+## Contribuir
+
+¡Las contribuciones son bienvenidas! Así es como puedes ayudar:
+
+1. Haz un fork del repositorio
+2. Crea tu rama de funcionalidad: `git checkout -b feature/my-new-feature`
+3. Confirma tus cambios: `git commit -am 'Add some feature'`
+4. Sube la rama: `git push origin feature/my-new-feature`
+5. Envía una pull request
+
+## Apoya el proyecto
+
+Si este proyecto te resulta útil y quieres apoyar su desarrollo, puedes invitarme a un café:
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/carlosmorcillo)
+
+¡Tu apoyo es muy apreciado y ayuda a mantener y mejorar este proyecto!
+
+## Licencia
+
+Este proyecto está licenciado bajo la **Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+
+### Qué significa esto:
+
+✅ **Puedes:**
+
+- Usarlo comercial y no comercialmente
+- Modificarlo, adaptarlo y crear derivados
+- Distribuirlo y redistribuirlo en cualquier formato
+- Usarlo en proyectos privados y públicos
+
+📋 **Debes:**
+
+- Dar el crédito apropiado a los autores originales
+- Proporcionar un enlace a la licencia
+- Indicar si se han realizado cambios
+
+### Ejemplo de atribución:
+
+```
+Based on ng-hub-ui-board by [Carlos Morcillo](https://www.carlosmorcillo.com)
+Original: https://github.com/carlos-morcillo/ng-hub-ui-board
+License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+```
+
+Para los detalles completos de la licencia, consulta el archivo [LICENSE](LICENSE).
+
+---
+
+Hecho con ❤️ por [Carlos Morcillo Fernández](https://www.carlosmorcillo.com/)

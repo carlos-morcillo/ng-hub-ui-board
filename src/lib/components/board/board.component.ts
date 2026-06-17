@@ -1,4 +1,4 @@
-import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
 	ElementRef,
@@ -63,7 +63,7 @@ export type DragBehavior = 'ghost' | 'hide' | 'collapse';
 	selector: 'hub-board, hub-ui-board',
 	templateUrl: './board.component.html',
 	styleUrl: './board.component.scss',
-	imports: [NgClass, NgStyle, NgTemplateOutlet],
+	imports: [NgClass, NgTemplateOutlet],
 	host: {
 		class: 'hub-board'
 	}

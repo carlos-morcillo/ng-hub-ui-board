@@ -24,7 +24,7 @@
 			(dragstart)="onColumnDragStart($event, column, index)"
 			(dragend)="onColumnDragEnd($event)"
 		>
-			<div class="hub-board__column" [ngClass]="column.classlist" [ngStyle]="column.style">
+			<div class="hub-board__column" [ngClass]="column.classlist" [style]="column.style">
 				<div class="hub-board__column-header">
 					<ng-container
 						[ngTemplateOutlet]="columnHeaderTpt() || defaultColumnHeaderTpt"
@@ -64,7 +64,7 @@
 						(click)="cardClick(card)"
 						(mousedown)="card.disabled ? $event.stopPropagation() : null"
 						[ngClass]="card.classlist"
-						[ngStyle]="card.style"
+						[style]="card.style"
 					>
 						<div class="hub-board__card-body">
 							<ng-container
