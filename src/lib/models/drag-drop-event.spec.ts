@@ -1,4 +1,4 @@
-import { moveItemInArray, transferArrayItem } from './drag-drop-event';
+import { moveItemInArray, transferArrayItem } from './array-helpers';
 
 describe('Board Utils', () => {
 	describe('moveItemInArray', () => {

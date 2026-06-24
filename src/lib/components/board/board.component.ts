@@ -2,10 +2,8 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
 	ElementRef,
-	EmbeddedViewRef,
 	Signal,
 	TemplateRef,
-	ViewContainerRef,
 	computed,
 	contentChild,
 	inject,
@@ -24,13 +22,9 @@ import { ColumnPlaceholderDirective } from '../../directives/column-placeholder.
 import { Board } from '../../models/board';
 import { BoardCard } from '../../models/board-card';
 import { BoardColumn } from '../../models/board-column';
-import {
-	BoardDragItem,
-	CardDragDropEvent,
-	ColumnDragDropEvent,
-	moveItemInArray,
-	transferArrayItem
-} from '../../models/drag-drop-event';
+import { createNativeDragImage } from 'ng-hub-ui-utils';
+import { moveItemInArray, transferArrayItem } from '../../models/array-helpers';
+import { BoardDragItem, CardDragDropEvent, ColumnDragDropEvent } from '../../models/drag-drop-event';
 import { ReachedEndEvent } from '../../models/reached-end-event';
 
 /**
@@ -65,7 +59,9 @@ export type DragBehavior = 'ghost' | 'hide' | 'collapse';
 	styleUrl: './board.component.scss',
 	imports: [NgClass, NgTemplateOutlet],
 	host: {
-		class: 'hub-board'
+		class: 'hub-board',
+		'[attr.data-variant]': 'variant() ?? null',
+		'[style.--hub-board-accent]': 'groupAccent()'
 	}
 })
 export class HubBoardComponent {
@@ -73,6 +69,25 @@ export class HubBoardComponent {
 	 * Reactive input containing the full board definition (columns and cards).
 	 */
 	readonly board = input<Board>();
+
+	/**
+	 * Semantic accent applied to the drag/drop placeholder. The built-in values
+	 * (`primary` / `success` / `danger` / `warning` / `info`) render with the
+	 * design-system tints; any other string is also accepted — the board reads
+	 * `--hub-sys-color-<variant>` from the host application, so a custom accent
+	 * palette interconnects with no changes to this library. Defaults to `primary`.
+	 */
+	readonly variant = input<'primary' | 'success' | 'danger' | 'warning' | 'info' | (string & {}) | undefined>(undefined);
+
+	/**
+	 * Inline accent fed to the board styles: `var(--hub-sys-color-<variant>)` for
+	 * the active variant, or `null` to keep the `primary` default. Keeps the
+	 * variant set open to any accent token the host application defines.
+	 */
+	readonly groupAccent = computed(() => {
+		const variant = this.variant();
+		return variant ? `var(--hub-sys-color-${variant})` : null;
+	});
 
 	/**
 	 * Pixel threshold used when determining whether a column has reached scroll end.
@@ -170,14 +185,9 @@ export class HubBoardComponent {
 	readonly dragPreviewContainer = viewChild<ElementRef<HTMLElement>>('dragPreviewContainer');
 
 	/**
-	 * ViewContainerRef for dynamically creating drag preview views.
+	 * Disposer for the currently active custom drag preview, or `null`.
 	 */
-	private readonly viewContainerRef = inject(ViewContainerRef);
-
-	/**
-	 * Reference to the currently active drag preview view.
-	 */
-	private currentDragPreviewView: EmbeddedViewRef<unknown> | null = null;
+	private dragPreviewDestroy: (() => void) | null = null;
 
 	/**
 	 * Emits each time a card is clicked within the board.
@@ -693,47 +703,30 @@ export class HubBoardComponent {
 	 * @returns The native HTML element to use as the drag image, or null if creation failed.
 	 */
 	private createDragPreview(template: TemplateRef<unknown>, context: Record<string, unknown>): HTMLElement | null {
-		// Destroy any existing preview first
+		// Destroy any existing preview first.
 		this.destroyDragPreview();
 
-		// Create the embedded view from the template
-		const viewRef = this.viewContainerRef.createEmbeddedView(template, context);
-		this.currentDragPreviewView = viewRef;
-
-		// Detect changes to ensure the view is rendered
-		viewRef.detectChanges();
-
-		// Get the container element
 		const container = this.dragPreviewContainer();
 		if (!container) {
 			return null;
 		}
 
-		// Append all root nodes from the view to the container
-		for (const node of viewRef.rootNodes) {
-			if (node instanceof HTMLElement) {
-				container.nativeElement.appendChild(node);
-			}
+		// Render the template into the hidden container using the shared drag-image helper.
+		const image = createNativeDragImage(template, context, container.nativeElement);
+		if (!image) {
+			return null;
 		}
-
-		// Return the first element node as the drag image
-		const firstElement = viewRef.rootNodes.find((node): node is HTMLElement => node instanceof HTMLElement);
-		return firstElement ?? null;
+		this.dragPreviewDestroy = image.destroy;
+		return image.node;
 	}
 
 	/**
-	 * Destroys the current drag preview view and cleans up related resources.
+	 * Destroys the current drag preview view and cleans up related resources. The disposer
+	 * returned by `createNativeDragImage` removes both the embedded view and the rendered
+	 * nodes, so no manual container clearing is required.
 	 */
 	private destroyDragPreview(): void {
-		if (this.currentDragPreviewView) {
-			this.currentDragPreviewView.destroy();
-			this.currentDragPreviewView = null;
-		}
-
-		// Clear the container
-		const container = this.dragPreviewContainer();
-		if (container) {
-			container.nativeElement.innerHTML = '';
-		}
+		this.dragPreviewDestroy?.();
+		this.dragPreviewDestroy = null;
 	}
 }

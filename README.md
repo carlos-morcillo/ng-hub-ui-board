@@ -46,7 +46,7 @@ A flexible and powerful board component for Angular applications, perfect for im
 ## Features
 
 - 🎯 **Standalone component** - Modern Angular approach with minimal setup
-- 🔄 **Native drag and drop** - Custom implementation without external dependencies (no CDK required)
+- 🔄 **Native drag and drop** - Built on the in-ecosystem `ng-hub-ui-utils` core, with no third-party UI or CDK dependencies
 - 🎨 **Fully customizable drag visuals** - Custom templates for drag previews and drop placeholders
 - ⚙️ **Configurable drag behavior** - Choose between ghost, hide, or collapse modes for dragged elements
 - 📱 **Responsive design** - Works seamlessly across desktop, tablet, and mobile devices
@@ -57,22 +57,22 @@ A flexible and powerful board component for Angular applications, perfect for im
 - 🔒 **Granular control** - Enable/disable functionality at board, column, or card level
 - 🏷️ **TypeScript support** - Full type safety with generic interfaces
 - ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
-- 🪶 **Lightweight** - Zero external UI dependencies
+- 🪶 **Lightweight** - No third-party UI or CDK dependencies; relies only on the shared `ng-hub-ui-utils` core
 
 ## Installation
 
 ```bash
-# Install the component
-npm install ng-hub-ui-board
+# Install the component and its required peer dependency
+npm install ng-hub-ui-board ng-hub-ui-utils
 ```
 
 Or using yarn:
 
 ```bash
-yarn add ng-hub-ui-board
+yarn add ng-hub-ui-board ng-hub-ui-utils
 ```
 
-**Note:** Starting from version 19.4.0, `@angular/cdk` is no longer required. The component now includes its own native drag-and-drop implementation.
+**Note:** `@angular/cdk` is not required. The board uses the shared `ng-hub-ui-utils` native drag-and-drop core (a mandatory peer dependency since `22.1.0`) — there are no third-party UI or CDK dependencies.
 
 ## Quick Start
 
@@ -448,6 +448,7 @@ The following inputs are available on the `HubBoardComponent`:
 | `board`                 | `Signal<Board>` | The board object containing columns and cards                                                          | `undefined`  |
 | `columnSortingDisabled` | `boolean`       | Disables drag-and-drop sorting of columns                                                              | `false`      |
 | `dragBehavior`          | `DragBehavior`  | Controls how dragged elements behave visually: `'ghost'` (semi-transparent), `'hide'`, or `'collapse'` | `'collapse'` |
+| `variant`               | `string`        | Semantic accent of the drag/drop placeholder. Built-in values (`'primary'` / `'success'` / `'danger'` / `'warning'` / `'info'`) use the exact design-system tints; any other string is also accepted — the board reads `--hub-sys-color-<variant>` from the host application | `'primary'`  |
 
 ## Outputs
 
@@ -572,6 +573,42 @@ For a complete and up-to-date token catalog, see [CSS Variables Reference](./doc
 @use 'ng-hub-ui-board/src/lib/styles/board.scss';
 ```
 
+### 🎨 Semantic accent (`variant`)
+
+The drag/drop placeholder is driven by a single accent token. Pass the `variant` input to recolour the drop zone with a semantic accent:
+
+```html
+<hub-board [board]="board()" variant="success"></hub-board>
+```
+
+Built-in variants (`primary` / `success` / `danger` / `warning` / `info`) use the exact design-system tints. Any other string is also accepted — the board reads `--hub-sys-color-<variant>` from the host application, so a custom accent palette interconnects with no changes to this library. Defaults to `primary`.
+
+Under the hood this re-bases the new `--hub-board-accent` token (and its subtle tint `--hub-board-accent-subtle`, derived via `color-mix`), through which the placeholder border and background colours resolve:
+
+| Token                        | Description                                                                |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| `--hub-board-accent`         | Semantic accent of the drag/drop placeholder (re-based per `variant`)      |
+| `--hub-board-accent-subtle`  | Subtle tint of the accent, used as the placeholder background              |
+
+### 🧵 `hub-board-theme()` Sass mixin
+
+Theme a `<hub-board>` in a single call. Every parameter is optional and defaults to `null`, so only the ones you pass are emitted as `--hub-board-*` overrides; the rest keep their defaults. Token-based, with no Bootstrap dependency.
+
+```scss
+@use 'ng-hub-ui-board/styles/mixins/board-theme' as *;
+
+.sprint-board {
+	@include hub-board-theme(
+		$accent: var(--hub-sys-color-success),
+		$column-bg: #f6f8fa,
+		$card-border-radius: 0.75rem,
+		$columns-gap: 1.25rem
+	);
+}
+```
+
+Available parameters cover the accent, container/column/card colours, borders and radius, columns gap, card padding and shadow.
+
 ### 🎛 Quick customization example (framework-agnostic)
 
 ```scss
@@ -613,7 +650,7 @@ Here are some common issues and how to resolve them:
 
 ### 🔄 Drag and drop not working
 
-- **Check dependencies**: Ensure `@angular/cdk` is installed and imported
+- **Check dependencies**: Ensure the `ng-hub-ui-utils` peer dependency is installed (`npm install ng-hub-ui-utils`)
 - **Reactive data**: Verify your board data is reactive (using `signal()`, `Observable`, or proper change detection)
 - **Browser compatibility**: Ensure your target browsers support the HTML5 Drag and Drop API
 

@@ -67,10 +67,13 @@
 	--hub-board-card-color: var(--hub-board-container-color);
 	--hub-board-card-bg: var(--hub-board-container-bg);
 	--hub-board-drag-transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-	--hub-board-placeholder-border-color: var(--hub-sys-color-primary, #0d6efd);
+	// Semantic accent — re-based per `variant`; drives the drag/drop placeholder.
+	--hub-board-accent: var(--hub-sys-color-primary, #0d6efd);
+	--hub-board-accent-subtle: color-mix(in srgb, var(--hub-board-accent) 8%, var(--hub-sys-surface-page, #fff));
+	--hub-board-placeholder-border-color: var(--hub-board-accent);
 	--hub-board-placeholder-border-width: 2px;
 	--hub-board-placeholder-border-style: dashed;
-	--hub-board-placeholder-bg: var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05));
+	--hub-board-placeholder-bg: var(--hub-board-accent-subtle);
 	--hub-board-placeholder-min-height: 60px;
 }
 
@@ -458,5 +461,18 @@
 	to {
 		opacity: 1;
 		transform: scaleY(1);
+	}
+}
+
+// Semantic variant — `<hub-board [variant]="…">` re-bases the single
+// `--hub-board-accent` (and its subtle tint follows via color-mix), so the
+// drag/drop placeholder recolours. Built-in variants use the exact tints; any
+// custom accent the host app defines works through the inline accent.
+$hub-board-variants: primary, success, danger, warning, info;
+
+@each $variant in $hub-board-variants {
+	:host([data-variant='#{$variant}']),
+	.hub-board[data-variant='#{$variant}'] {
+		--hub-board-accent: var(--hub-sys-color-#{$variant});
 	}
 }

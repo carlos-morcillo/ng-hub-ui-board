@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [22.1.0] - 2026-06-24
+
+### Changed
+
+- **Drag-and-drop internals now consume the shared `ng-hub-ui-utils` native drag-and-drop core.** The board's `moveItemInArray` / `transferArrayItem` helpers (still re-exported from the public API with unchanged behaviour) and the custom drag-preview rendering now come from `ng-hub-ui-utils`, removing duplicated logic. **New peer dependency: `ng-hub-ui-utils` (>=22.1.0)** — previously the board carried no ng-hub-ui dependencies, so install `ng-hub-ui-utils` alongside `ng-hub-ui-board`.
+
+### Added
+
+- New `variant` input on `<hub-board>` selecting the **semantic accent** of the drag/drop placeholder: `<hub-board variant="success">` recolours the drop zone. The built-in variants (`primary` / `success` / `danger` / `warning` / `info`) use the exact design-system tints; **any other string is also accepted** — the board reads `--hub-sys-color-<variant>` from the host application. Defaults to `primary`. Mirrors the accent system in panels/nav.
+- New tokens `--hub-board-accent` and `--hub-board-accent-subtle` (the placeholder's `--hub-board-placeholder-border-color` / `-bg` now resolve through them instead of being hard-wired to `--hub-sys-color-primary*`). No visual change with the default accent.
+- New **`hub-board-theme()` Sass mixin** (`styles/mixins/board-theme`) — theme a `<hub-board>` in one call: accent, container/column/card colours, borders/radius, columns gap, card padding & shadow. Every parameter is optional and defaults to `null`, so only the ones you pass are emitted as `--hub-board-*` overrides; the rest keep their defaults. Token-based, no Bootstrap dependency.
+
 ## [22.0.0] - 2026-06-17
 
 ### Changed

@@ -46,7 +46,7 @@ Un componente de tablero flexible y potente para aplicaciones Angular, perfecto 
 ## Características
 
 - 🎯 **Componente standalone** - Enfoque moderno de Angular con configuración mínima
-- 🔄 **Arrastrar y soltar nativo** - Implementación propia sin dependencias externas (no requiere CDK)
+- 🔄 **Arrastrar y soltar nativo** - Basado en el núcleo `ng-hub-ui-utils` del ecosistema, sin dependencias de UI de terceros ni CDK
 - 🎨 **Visuales de arrastre totalmente personalizables** - Plantillas personalizadas para previsualizaciones de arrastre y marcadores de posición de destino
 - ⚙️ **Comportamiento de arrastre configurable** - Elige entre los modos ghost, hide o collapse para los elementos arrastrados
 - 📱 **Diseño responsive** - Funciona sin problemas en escritorio, tablet y dispositivos móviles
@@ -57,22 +57,22 @@ Un componente de tablero flexible y potente para aplicaciones Angular, perfecto 
 - 🔒 **Control granular** - Habilita/deshabilita funcionalidades a nivel de tablero, columna o tarjeta
 - 🏷️ **Soporte de TypeScript** - Seguridad de tipos completa con interfaces genéricas
 - ♿ **Listo para accesibilidad** - Sigue las buenas prácticas de WAI-ARIA para arrastrar y soltar
-- 🪶 **Ligero** - Cero dependencias de UI externas
+- 🪶 **Ligero** - Sin dependencias de UI de terceros ni CDK; solo depende del núcleo compartido `ng-hub-ui-utils`
 
 ## Instalación
 
 ```bash
-# Instala el componente
-npm install ng-hub-ui-board
+# Instala el componente y su peer dependency obligatoria
+npm install ng-hub-ui-board ng-hub-ui-utils
 ```
 
 O usando yarn:
 
 ```bash
-yarn add ng-hub-ui-board
+yarn add ng-hub-ui-board ng-hub-ui-utils
 ```
 
-**Nota:** A partir de la versión 19.4.0, `@angular/cdk` ya no es necesario. El componente ahora incluye su propia implementación nativa de arrastrar y soltar.
+**Nota:** `@angular/cdk` no es necesario. El tablero usa el núcleo nativo de arrastrar y soltar de `ng-hub-ui-utils` (una peer dependency obligatoria desde `22.1.0`) — no hay dependencias de UI de terceros ni CDK.
 
 ## Inicio rápido
 
@@ -448,6 +448,7 @@ Los siguientes inputs están disponibles en el `HubBoardComponent`:
 | `board`                 | `Signal<Board>` | El objeto del tablero que contiene las columnas y las tarjetas                                                               | `undefined`  |
 | `columnSortingDisabled` | `boolean`       | Deshabilita la ordenación de columnas mediante arrastrar y soltar                                                            | `false`      |
 | `dragBehavior`          | `DragBehavior`  | Controla cómo se comportan visualmente los elementos arrastrados: `'ghost'` (semitransparente), `'hide'` o `'collapse'`      | `'collapse'` |
+| `variant`               | `string`        | Acento semántico del marcador de posición de arrastrar y soltar. Los valores integrados (`'primary'` / `'success'` / `'danger'` / `'warning'` / `'info'`) usan los tintes exactos del sistema de diseño; también se acepta cualquier otra cadena — el tablero lee `--hub-sys-color-<variant>` de la aplicación anfitriona | `'primary'`  |
 
 ## Outputs
 
@@ -572,6 +573,42 @@ Para consultar el catálogo de tokens completo y actualizado, consulta la [Refer
 @use 'ng-hub-ui-board/src/lib/styles/board.scss';
 ```
 
+### 🎨 Acento semántico (`variant`)
+
+El marcador de posición de arrastrar y soltar se controla mediante un único token de acento. Pasa el input `variant` para recolorear la zona de destino con un acento semántico:
+
+```html
+<hub-board [board]="board()" variant="success"></hub-board>
+```
+
+Las variantes integradas (`primary` / `success` / `danger` / `warning` / `info`) usan los tintes exactos del sistema de diseño. También se acepta cualquier otra cadena — el tablero lee `--hub-sys-color-<variant>` de la aplicación anfitriona, de modo que una paleta de acentos personalizada se integra sin cambios en esta biblioteca. Por defecto es `primary`.
+
+Internamente, esto rebasa el nuevo token `--hub-board-accent` (y su tinte sutil `--hub-board-accent-subtle`, derivado mediante `color-mix`), a través del cual se resuelven los colores de borde y fondo del marcador de posición:
+
+| Token                        | Descripción                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
+| `--hub-board-accent`         | Acento semántico del marcador de posición de arrastrar y soltar (rebasado por `variant`) |
+| `--hub-board-accent-subtle`  | Tinte sutil del acento, usado como fondo del marcador de posición                    |
+
+### 🧵 Mixin Sass `hub-board-theme()`
+
+Tematiza un `<hub-board>` en una sola llamada. Cada parámetro es opcional y por defecto vale `null`, de modo que solo se emiten los que pasas como overrides `--hub-board-*`; el resto conservan sus valores por defecto. Basado en tokens, sin dependencia de Bootstrap.
+
+```scss
+@use 'ng-hub-ui-board/styles/mixins/board-theme' as *;
+
+.sprint-board {
+	@include hub-board-theme(
+		$accent: var(--hub-sys-color-success),
+		$column-bg: #f6f8fa,
+		$card-border-radius: 0.75rem,
+		$columns-gap: 1.25rem
+	);
+}
+```
+
+Los parámetros disponibles cubren el acento, los colores del contenedor/columnas/tarjetas, los bordes y el radio, el espaciado entre columnas, y el padding y la sombra de las tarjetas.
+
 ### 🎛 Ejemplo de personalización rápida (independiente del framework)
 
 ```scss
@@ -613,7 +650,7 @@ Aquí tienes algunos problemas comunes y cómo resolverlos:
 
 ### 🔄 El arrastrar y soltar no funciona
 
-- **Comprueba las dependencias**: Asegúrate de que `@angular/cdk` está instalado e importado
+- **Comprueba las dependencias**: Asegúrate de que la peer dependency `ng-hub-ui-utils` está instalada (`npm install ng-hub-ui-utils`)
 - **Datos reactivos**: Verifica que los datos de tu tablero son reactivos (usando `signal()`, `Observable` o una detección de cambios adecuada)
 - **Compatibilidad del navegador**: Asegúrate de que tus navegadores objetivo soportan la API HTML5 de arrastrar y soltar
 

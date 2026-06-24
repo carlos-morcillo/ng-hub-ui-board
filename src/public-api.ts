@@ -21,6 +21,7 @@ export * from './lib/components/board/board.component';
 export * from './lib/pipes/invert-color.pipe';
 
 // models
+export * from './lib/models/array-helpers';
 export * from './lib/models/board';
 export * from './lib/models/board-card';
 export * from './lib/models/board-column';

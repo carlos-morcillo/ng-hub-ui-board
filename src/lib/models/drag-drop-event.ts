@@ -106,61 +106,7 @@ export type ColumnDragDropEvent<T = any> = BoardDragDropEvent<
 	import('./board-column').BoardColumn<T>
 >;
 
-/**
- * Moves an item within an array from one index to another.
- * This is a replacement for CDK's moveItemInArray utility.
- *
- * @template T The type of items in the array.
- * @param array The array to modify.
- * @param fromIndex The index of the item to move.
- * @param toIndex The index to move the item to.
- * @publicApi
- */
-export function moveItemInArray<T>(array: T[], fromIndex: number, toIndex: number): void {
-	const clampedFrom = clamp(fromIndex, array.length - 1);
-	const clampedTo = clamp(toIndex, array.length - 1);
-
-	if (clampedFrom === clampedTo) {
-		return;
-	}
-
-	const item = array[clampedFrom];
-	const direction = clampedTo < clampedFrom ? -1 : 1;
-
-	for (let i = clampedFrom; i !== clampedTo; i += direction) {
-		array[i] = array[i + direction];
-	}
-
-	array[clampedTo] = item;
-}
-
-/**
- * Transfers an item from one array to another.
- * This is a replacement for CDK's transferArrayItem utility.
- *
- * @template T The type of items in the arrays.
- * @param currentArray The array from which the item should be removed.
- * @param targetArray The array into which the item should be inserted.
- * @param currentIndex The index of the item in the current array.
- * @param targetIndex The index at which to insert the item in the target array.
- * @publicApi
- */
-export function transferArrayItem<T>(currentArray: T[], targetArray: T[], currentIndex: number, targetIndex: number): void {
-	const clampedCurrentIndex = clamp(currentIndex, currentArray.length - 1);
-	const clampedTargetIndex = clamp(targetIndex, targetArray.length);
-
-	if (currentArray.length) {
-		targetArray.splice(clampedTargetIndex, 0, currentArray.splice(clampedCurrentIndex, 1)[0]);
-	}
-}
-
-/**
- * Clamps a number between zero and a maximum value.
- *
- * @param value The value to clamp.
- * @param max The maximum value.
- * @returns The clamped value.
- */
-function clamp(value: number, max: number): number {
-	return Math.max(0, Math.min(max, value));
-}
+// The array move/transfer helpers used when reordering cards and columns now live in the
+// shared `ng-hub-ui-utils` drag-and-drop core and are re-exported from `./array-helpers`
+// (kept in a dedicated file so the external re-export does not sit alongside the inline
+// `import('./board-column')` type references above, which trips ng-packagr's compiler).

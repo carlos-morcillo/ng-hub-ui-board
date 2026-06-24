@@ -1,0 +1,115 @@
+// ─────────────────────────────────────────────────────────────────────────
+// hub-board-theme — one-call theming for `<hub-board>` (Kanban board)
+// ─────────────────────────────────────────────────────────────────────────
+//
+// Override any of the `--hub-board-*` design tokens in a single include. Every
+// parameter is OPTIONAL and defaults to `null`: only the parameters you pass
+// are emitted, so the rest keep the component's defaults. Token-based and
+// self-contained (no Bootstrap dependencies).
+//
+// @example
+//
+//   @use 'ng-hub-ui-board/styles/mixins/board-theme' as *;
+//
+//   .sprint-board {
+//     @include hub-board-theme(
+//       $accent: var(--hub-sys-color-success),
+//       $column-bg: #f6f8fa,
+//       $card-border-radius: 0.75rem,
+//       $columns-gap: 1.25rem
+//     );
+//   }
+//
+// scss-docs-start hub-board-theme
+@mixin hub-board-theme(
+	// ── Accent / surfaces ──
+	$accent: null,                 // drag/drop placeholder accent (re-based per variant)
+	$container-bg: null,
+	$container-color: null,
+	$border-color: null,
+	$border-radius: null,
+	// ── Columns ──
+	$columns-gap: null,
+	$column-bg: null,
+	$column-color: null,
+	$column-border-color: null,
+	$column-border-radius: null,
+	$column-width: null,
+	$column-header-bg: null,
+	$column-header-color: null,
+	// ── Cards ──
+	$card-bg: null,
+	$card-color: null,
+	$card-border-color: null,
+	$card-border-radius: null,
+	$card-padding-x: null,
+	$card-padding-y: null,
+	$card-shadow: null
+) {
+	// Accent / surfaces
+	@if $accent != null {
+		--hub-board-accent: #{$accent};
+	}
+	@if $container-bg != null {
+		--hub-board-container-bg: #{$container-bg};
+	}
+	@if $container-color != null {
+		--hub-board-container-color: #{$container-color};
+	}
+	@if $border-color != null {
+		--hub-board-border-color: #{$border-color};
+	}
+	@if $border-radius != null {
+		--hub-board-border-radius: #{$border-radius};
+	}
+
+	// Columns
+	@if $columns-gap != null {
+		--hub-board-columns-gap: #{$columns-gap};
+	}
+	@if $column-bg != null {
+		--hub-board-column-bg: #{$column-bg};
+	}
+	@if $column-color != null {
+		--hub-board-column-color: #{$column-color};
+	}
+	@if $column-border-color != null {
+		--hub-board-column-border-color: #{$column-border-color};
+	}
+	@if $column-border-radius != null {
+		--hub-board-column-border-radius: #{$column-border-radius};
+	}
+	@if $column-width != null {
+		--hub-board-column-width: #{$column-width};
+	}
+	@if $column-header-bg != null {
+		--hub-board-column-header-bg: #{$column-header-bg};
+	}
+	@if $column-header-color != null {
+		--hub-board-column-header-color: #{$column-header-color};
+	}
+
+	// Cards
+	@if $card-bg != null {
+		--hub-board-card-bg: #{$card-bg};
+	}
+	@if $card-color != null {
+		--hub-board-card-color: #{$card-color};
+	}
+	@if $card-border-color != null {
+		--hub-board-card-border-color: #{$card-border-color};
+	}
+	@if $card-border-radius != null {
+		--hub-board-card-border-radius: #{$card-border-radius};
+	}
+	@if $card-padding-x != null {
+		--hub-board-card-padding-x: #{$card-padding-x};
+	}
+	@if $card-padding-y != null {
+		--hub-board-card-padding-y: #{$card-padding-y};
+	}
+	@if $card-shadow != null {
+		--hub-board-card-box-shadow: #{$card-shadow};
+	}
+}
+// scss-docs-end hub-board-theme

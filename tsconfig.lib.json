@@ -6,7 +6,10 @@
 		"declaration": true,
 		"declarationMap": true,
 		"inlineSources": true,
-		"types": []
+		"types": [],
+		"paths": {
+			"ng-hub-ui-utils": ["../../dist/utils"]
+		}
 	},
 	"exclude": [
 		"src/test.ts",
