@@ -19,7 +19,7 @@
 	--hub-board-column-inner-border-radius: var(--hub-board-border-radius);
 	--hub-board-column-cap-padding-y: var(--hub-ref-space-2, 0.5rem);
 	--hub-board-column-cap-padding-x: var(--hub-ref-space-3, 1rem);
-	--hub-board-column-cap-bg: var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03));
+	--hub-board-column-cap-bg: var(--hub-sys-surface-elevated, #f8f9fa);
 	--hub-board-column-cap-color: inherit;
 	--hub-board-column-header-padding-y: var(--hub-board-column-cap-padding-y);
 	--hub-board-column-header-padding-x: var(--hub-board-column-cap-padding-x);
@@ -51,7 +51,7 @@
 	);
 	--hub-board-card-cap-padding-y: var(--hub-ref-space-2, 0.5rem);
 	--hub-board-card-cap-padding-x: var(--hub-ref-space-3, 1rem);
-	--hub-board-card-cap-bg: var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03));
+	--hub-board-card-cap-bg: var(--hub-sys-surface-elevated, #f8f9fa);
 	--hub-board-card-cap-color: inherit;
 	--hub-board-card-padding-y: var(--hub-board-card-spacer-y);
 	--hub-board-card-padding-x: var(--hub-board-card-spacer-x);
