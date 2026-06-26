@@ -67,9 +67,15 @@
 	--hub-board-card-color: var(--hub-board-container-color);
 	--hub-board-card-bg: var(--hub-board-container-bg);
 	--hub-board-drag-transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-	// Semantic accent — re-based per `variant`; drives the drag/drop placeholder.
+	// Semantic accent — re-based per `variant` through a single slot; drives the
+	// drag/drop placeholder. The role family is derived LOCALLY from the slot
+	// (mirroring the ds engine), so any accent — a known variant or a custom
+	// `brand` — yields a coherent family with no recompilation. `-on` is a
+	// grayscale contrast flip driven by the accent's own lightness.
 	--hub-board-accent: var(--hub-sys-color-primary, #0d6efd);
-	--hub-board-accent-subtle: color-mix(in srgb, var(--hub-board-accent) 8%, var(--hub-sys-surface-page, #fff));
+	--hub-board-accent-emphasis: color-mix(in oklch, var(--hub-board-accent) 80%, var(--hub-sys-color-ink, #212529));
+	--hub-board-accent-subtle: color-mix(in oklch, var(--hub-board-accent) 12%, var(--hub-sys-surface-page, #fff));
+	--hub-board-accent-on: oklch(from var(--hub-board-accent) clamp(0, (0.62 - l) * 1000, 1) 0 h);
 	--hub-board-placeholder-border-color: var(--hub-board-accent);
 	--hub-board-placeholder-border-width: 2px;
 	--hub-board-placeholder-border-style: dashed;
@@ -464,15 +470,30 @@
 	}
 }
 
-// Semantic variant — `<hub-board [variant]="…">` re-bases the single
-// `--hub-board-accent` (and its subtle tint follows via color-mix), so the
-// drag/drop placeholder recolours. Built-in variants use the exact tints; any
-// custom accent the host app defines works through the inline accent.
-$hub-board-variants: primary, success, danger, warning, info;
+// Semantic variants (open set) — `<hub-board [variant]="…">` re-bases the single
+// `--hub-board-accent` slot, and the `-emphasis` / `-subtle` / `-on` roles
+// declared in `:root, :host` recompute from it at runtime, so the drag/drop
+// placeholder recolours. The nine canonical variants are emitted here.
+$hub-board-variants: primary, secondary, success, danger, warning, info, neutral, light, dark;
 
 @each $variant in $hub-board-variants {
 	:host([data-variant='#{$variant}']),
 	.hub-board[data-variant='#{$variant}'] {
 		--hub-board-accent: var(--hub-sys-color-#{$variant});
 	}
+}
+
+// Open-set escape hatch — any custom accent (e.g. a `brand` the host app adds to
+// the ds `$hub-accents` map) works with ONE CSS rule:
+//
+//   hub-board[data-variant='brand'] { --hub-board-accent: var(--hub-sys-color-brand); }
+//
+// This bare `[data-variant]` block re-derives the role family from the slot so a
+// host that sets only `--hub-board-accent` still gets a coherent family, with no
+// per-variant boilerplate and no recompilation.
+:host([data-variant]),
+.hub-board[data-variant] {
+	--hub-board-accent-emphasis: color-mix(in oklch, var(--hub-board-accent) 80%, var(--hub-sys-color-ink, #212529));
+	--hub-board-accent-subtle: color-mix(in oklch, var(--hub-board-accent) 12%, var(--hub-sys-surface-page, #fff));
+	--hub-board-accent-on: oklch(from var(--hub-board-accent) clamp(0, (0.62 - l) * 1000, 1) 0 h);
 }

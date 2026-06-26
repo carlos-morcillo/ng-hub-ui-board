@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [22.2.0] - 2026-06-26
+
+### Changed
+
+- **Accent system migrated to the open-set "local accent slot" pattern.** `<hub-board variant="…">` now re-bases a single `--hub-board-accent` slot, and the role family — `--hub-board-accent-emphasis`, `--hub-board-accent-subtle` and the new `--hub-board-accent-on` (contrast colour) — is derived **locally** from it with `color-mix(in oklch, …)` / relative color, mirroring the `ng-hub-ui-ds` engine. The built-in variant list grew from 5 to the **nine canonical accents** (`primary · secondary · success · danger · warning · info · neutral · light · dark`), and a bare `[data-variant]` block re-derives the family from the slot so **any custom accent** the host app adds to the ds `$hub-accents` map (e.g. `brand`) recolours the drag/drop placeholder at runtime with one CSS rule — no library recompilation.
+
+### Added
+
+- New tokens `--hub-board-accent-on` (grayscale contrast flip driven by the accent's own lightness) and `--hub-board-accent-emphasis`.
+
+### Fixed
+
+- Migrated the accent `color-mix()` derivation (`--hub-board-accent-subtle`) from the `srgb` colour space to `oklch` for perceptually uniform tints, matching `ng-hub-ui-ds`. The subtle tint is now derived at 12% (was 8%).
+
 ## [22.1.1] - 2026-06-25
 
 ### Fixed
