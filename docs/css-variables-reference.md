@@ -95,7 +95,7 @@ These variables are defined in the component's `:host` and can be overridden.
 | `--hub-board-column-inner-border-radius` | `var(--hub-board-border-radius)` |
 | `--hub-board-column-cap-padding-y` | `var(--hub-ref-space-2, 0.5rem)` |
 | `--hub-board-column-cap-padding-x` | `var(--hub-ref-space-3, 1rem)` |
-| `--hub-board-column-cap-bg` | `var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03))` |
+| `--hub-board-column-cap-bg` | `var(--hub-sys-surface-elevated, #f8f9fa)` |
 | `--hub-board-column-cap-color` | `inherit` |
 | `--hub-board-column-header-title-color` | `inherit` |
 | `--hub-board-column-header-title-spacer-y` | `var(--hub-ref-space-2, 0.5rem)` |
@@ -108,33 +108,33 @@ These variables are defined in the component's `:host` and can be overridden.
 
 | Variable | Default |
 |---|---|
-| `--hub-board-card-spacer-y` | `var(--hub-card-spacer-y, 0.75rem)` |
-| `--hub-board-card-spacer-x` | `var(--hub-card-spacer-x, var(--hub-ref-space-3, 1rem))` |
-| `--hub-board-card-title-spacer-y` | `var(--hub-card-title-spacer-y, var(--hub-ref-space-2, 0.5rem))` |
-| `--hub-board-card-title-color` | `var(--hub-card-title-color, inherit)` |
-| `--hub-board-card-subtitle-color` | `var(--hub-card-subtitle-color, var(--hub-sys-text-muted, #6c757d))` |
-| `--hub-board-card-border-width` | `var(--hub-card-border-width, var(--hub-ref-border-width, 1px))` |
-| `--hub-board-card-border-color` | `var(--hub-card-border-color, var(--hub-sys-border-color-default, rgba(0, 0, 0, 0.175)))` |
-| `--hub-board-card-border-radius` | `var(--hub-card-border-radius, var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem)))` |
-| `--hub-board-card-box-shadow` | `var(--hub-card-box-shadow, none)` |
+| `--hub-board-card-spacer-y` | `0.75rem` |
+| `--hub-board-card-spacer-x` | `var(--hub-ref-space-3, 1rem)` |
+| `--hub-board-card-title-spacer-y` | `var(--hub-ref-space-2, 0.5rem)` |
+| `--hub-board-card-title-color` | `inherit` |
+| `--hub-board-card-subtitle-color` | `var(--hub-sys-text-muted, #6c757d)` |
+| `--hub-board-card-border-width` | `var(--hub-board-border-width)` |
+| `--hub-board-card-border-color` | `var(--hub-board-border-color)` |
+| `--hub-board-card-border-radius` | `var(--hub-board-border-radius)` |
+| `--hub-board-card-box-shadow` | `none` |
 | `--hub-board-card-inner-border-radius` | `var(--hub-card-inner-border-radius, calc(var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))))` |
-| `--hub-board-card-cap-padding-y` | `var(--hub-card-cap-padding-y, var(--hub-ref-space-2, 0.5rem))` |
-| `--hub-board-card-cap-padding-x` | `var(--hub-card-cap-padding-x, var(--hub-ref-space-3, 1rem))` |
-| `--hub-board-card-cap-bg` | `var(--hub-card-cap-bg, var(--hub-sys-surface-elevated, rgba(0, 0, 0, 0.03)))` |
-| `--hub-board-card-cap-color` | `var(--hub-card-cap-color, inherit)` |
-| `--hub-board-card-height` | `var(--hub-card-height, auto)` |
-| `--hub-board-card-color` | `var(--hub-card-color, var(--hub-board-container-color))` |
-| `--hub-board-card-bg` | `var(--hub-card-bg, var(--hub-sys-surface-page, #fff))` |
+| `--hub-board-card-cap-padding-y` | `var(--hub-ref-space-2, 0.5rem)` |
+| `--hub-board-card-cap-padding-x` | `var(--hub-ref-space-3, 1rem)` |
+| `--hub-board-card-cap-bg` | `var(--hub-sys-surface-elevated, #f8f9fa)` |
+| `--hub-board-card-cap-color` | `inherit` |
+| `--hub-board-card-height` | `auto` |
+| `--hub-board-card-color` | `var(--hub-board-container-color)` |
+| `--hub-board-card-bg` | `var(--hub-board-container-bg)` |
 
 ### Drag and Placeholder
 
 | Variable | Default |
 |---|---|
 | `--hub-board-drag-transition` | `transform 250ms cubic-bezier(0, 0, 0.2, 1)` |
-| `--hub-board-placeholder-border-color` | `var(--hub-sys-color-primary, #0d6efd)` |
+| `--hub-board-placeholder-border-color` | `var(--hub-board-accent)` |
 | `--hub-board-placeholder-border-width` | `2px` |
 | `--hub-board-placeholder-border-style" | `dashed` |
-| `--hub-board-placeholder-bg` | `var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))` |
+| `--hub-board-placeholder-bg` | `var(--hub-board-accent-subtle)` |
 | `--hub-board-placeholder-min-height` | `60px` |
 
 
