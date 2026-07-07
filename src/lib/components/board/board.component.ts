@@ -22,7 +22,7 @@ import { ColumnPlaceholderDirective } from '../../directives/column-placeholder.
 import { Board } from '../../models/board';
 import { BoardCard } from '../../models/board-card';
 import { BoardColumn } from '../../models/board-column';
-import { createNativeDragImage } from 'ng-hub-ui-utils';
+import { createNativeDragImage, resolveHubAccent } from 'ng-hub-ui-utils';
 import { moveItemInArray, transferArrayItem } from '../../models/array-helpers';
 import { BoardDragItem, CardDragDropEvent, ColumnDragDropEvent } from '../../models/drag-drop-event';
 import { ReachedEndEvent } from '../../models/reached-end-event';
@@ -80,14 +80,14 @@ export class HubBoardComponent {
 	readonly variant = input<'primary' | 'success' | 'danger' | 'warning' | 'info' | (string & {}) | undefined>(undefined);
 
 	/**
-	 * Inline accent fed to the board styles: `var(--hub-sys-color-<variant>)` for
-	 * the active variant, or `null` to keep the `primary` default. Keeps the
-	 * variant set open to any accent token the host application defines.
+	 * Inline accent fed to the board styles through the single `--hub-board-accent`
+	 * slot. A bareword — a built-in variant, a registered accent or a CSS named
+	 * colour — resolves to `var(--hub-sys-color-<variant>, <variant>)`, so the
+	 * design-system token drives the colour when present and the raw word is the
+	 * fallback. A literal `#hex` / `rgb()` / `oklch()` / `var()` is passed through
+	 * unchanged. Returns `null` when no variant is set, keeping the `primary` default.
 	 */
-	readonly groupAccent = computed(() => {
-		const variant = this.variant();
-		return variant ? `var(--hub-sys-color-${variant})` : null;
-	});
+	readonly groupAccent = computed(() => resolveHubAccent(this.variant()));
 
 	/**
 	 * Pixel threshold used when determining whether a column has reached scroll end.

@@ -2,6 +2,14 @@
 
 This document details the breaking changes introduced in major versions of `ng-hub-ui-board` and how to migrate your codebase.
 
+## [22.3.0] - 2026-07-07
+
+### SCSS ships at `ng-hub-ui-board/styles` (packaging path)
+
+- **Change**: the theming mixin now builds to `dist/board/styles/...` instead of `dist/board/src/lib/styles/...`, and a `styles/index.scss` root entry forwards it.
+- **Impact**: a `@use` that reached into the old `src/lib/styles/...` path no longer resolves.
+- **Migration**: `@use 'ng-hub-ui-board/styles' as *;`
+
 ## Version 21.1.0
 
 ### Removal of Public SCSS Entry Point

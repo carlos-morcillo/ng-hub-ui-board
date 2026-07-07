@@ -67,6 +67,20 @@ describe('HubBoardComponent', () => {
         expect(cards.length).toBe(3);
     });
 
+    describe('Accent resolution (groupAccent)', () => {
+        it('resolves a semantic variant name to a ds token with a raw fallback', () => {
+            componentRef.setInput('variant', 'primary');
+            fixture.detectChanges();
+            expect(component.groupAccent()).toBe('var(--hub-sys-color-primary, primary)');
+        });
+
+        it('passes a literal colour through unchanged', () => {
+            componentRef.setInput('variant', '#ff0000');
+            fixture.detectChanges();
+            expect(component.groupAccent()).toBe('#ff0000');
+        });
+    });
+
     describe('Column Drag & Drop', () => {
         it('should start column drag', () => {
             const event = new DragEvent('dragstart');
