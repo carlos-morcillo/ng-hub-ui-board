@@ -15,10 +15,13 @@
 		}
 		<div
 			class="hub-board__column-container"
+			role="group"
 			[class.hub-board__column-container--disabled]="column.disabled"
 			[class.hub-board__column-container--dragging-ghost]="isDraggingColumn(column) && dragBehavior() === 'ghost'"
 			[class.hub-board__column-container--dragging-hide]="isDraggingColumn(column) && dragBehavior() === 'hide'"
 			[class.hub-board__column-container--dragging-collapse]="isDraggingColumn(column) && dragBehavior() === 'collapse'"
+			[attr.id]="columnGroupId(index, column)"
+			[attr.aria-label]="column.title"
 			[attr.draggable]="!columnSortingDisabled() && !column.disabled"
 			[attr.data-column-index]="index"
 			(dragstart)="onColumnDragStart($event, column, index)"
@@ -34,6 +37,7 @@
 				</div>
 				<div
 					class="hub-board__column-body"
+					role="list"
 					[class.hub-board__column-body--drag-over]="hoveredColumnIndex() === index"
 					(scroll)="onScroll(index, $event)"
 					(dragover)="onCardDragOver($event, column, index)"
@@ -54,14 +58,20 @@
 					}
 					<div
 						class="hub-board__card"
+						role="listitem"
 						[class.hub-board__card--disabled]="card.disabled"
+						[class.hub-board__card--grabbed]="isCardGrabbed(card)"
 						[class.hub-board__card--dragging-ghost]="isDraggingCard(card) && dragBehavior() === 'ghost'"
 						[class.hub-board__card--dragging-hide]="isDraggingCard(card) && dragBehavior() === 'hide'"
 						[class.hub-board__card--dragging-collapse]="isDraggingCard(card) && dragBehavior() === 'collapse'"
 						[attr.draggable]="!card.disabled && !column.cardSortingDisabled"
+						[attr.tabindex]="card.disabled ? null : 0"
+						[attr.aria-describedby]="card.disabled ? null : keyboardHintId"
+						[attr.data-card-index]="cardIndex"
 						(dragstart)="onCardDragStart($event, card, index, cardIndex)"
 						(dragend)="onCardDragEnd($event)"
 						(click)="cardClick(card)"
+						(keydown)="onCardKeydown($event, card, index, cardIndex)"
 						(mousedown)="card.disabled ? $event.stopPropagation() : null"
 						[ngClass]="card.classlist"
 						[style]="card.style"
@@ -135,6 +145,15 @@
 		</h6>
 	</div>
 </ng-template>
+
+<!-- Visually hidden keyboard usage hint referenced by every focusable card -->
+<span class="hub-board__visually-hidden" [attr.id]="keyboardHintId"
+	>Press Space or Enter to grab the card, use the arrow keys to move it, Space or Enter to drop it, Escape to cancel the
+	move.</span
+>
+
+<!-- Polite live region announcing keyboard grab, move, drop and cancel actions -->
+<div class="hub-board__visually-hidden" aria-live="polite" aria-atomic="true">{{ announcement() }}</div>
 
 <!-- Hidden container for rendering drag preview elements -->
 <div #dragPreviewContainer class="hub-board__drag-preview-container" aria-hidden="true"></div>

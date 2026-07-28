@@ -296,6 +296,26 @@
 			opacity: 0.6;
 		}
 
+		// Keyboard-move state — the card is "grabbed" and follows the arrow
+		// keys. Reuses the drag/drop placeholder tokens so the keyboard visual
+		// matches the pointer placeholder identity (and recolours per variant).
+		&--grabbed {
+			outline: var(--hub-board-placeholder-border-width, 2px)
+				var(--hub-board-placeholder-border-style, dashed)
+				var(--hub-board-placeholder-border-color, var(--hub-sys-color-primary, #0d6efd));
+			outline-offset: 2px;
+			background-color: var(
+				--hub-board-placeholder-bg,
+				var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))
+			);
+		}
+
+		// Visible focus ring for keyboard navigation, driven by the accent slot.
+		&:focus-visible {
+			outline: 2px solid var(--hub-board-accent, var(--hub-sys-color-primary, #0d6efd));
+			outline-offset: 2px;
+		}
+
 		&[draggable='true'] {
 			cursor: grab;
 
@@ -455,6 +475,21 @@
 		left: -9999px;
 		pointer-events: none;
 		z-index: -1;
+	}
+
+	// Screen-reader-only content: the keyboard usage hint and the polite
+	// live region that announces keyboard grab/move/drop/cancel actions.
+	&__visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		clip-path: inset(50%);
+		overflow: hidden;
+		white-space: nowrap;
 	}
 }
 

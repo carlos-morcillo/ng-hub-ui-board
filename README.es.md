@@ -56,7 +56,7 @@ Un componente de tablero flexible y potente para aplicaciones Angular, perfecto 
 - 🎨 **Estilado personalizado** - Propiedades personalizadas de CSS para temas y personalización sencilla
 - 🔒 **Control granular** - Habilita/deshabilita funcionalidades a nivel de tablero, columna o tarjeta
 - 🏷️ **Soporte de TypeScript** - Seguridad de tipos completa con interfaces genéricas
-- ♿ **Listo para accesibilidad** - Sigue las buenas prácticas de WAI-ARIA para arrastrar y soltar
+- ♿ **Accesible por teclado** - Reordenación completa de tarjetas con teclado, semántica ARIA de lista y anuncios para lectores de pantalla
 - 🪶 **Ligero** - Sin dependencias de UI de terceros ni CDK; solo depende del núcleo compartido `ng-hub-ui-utils`
 
 ## Instalación
@@ -439,6 +439,19 @@ loadMoreCards(event: ReachedEndEvent) {
 
 > ℹ️ **Importante:** Para habilitar la detección de scroll, el tablero debe colocarse dentro de un contenedor con una restricción de altura fija.
 
+## Teclado y accesibilidad
+
+El tablero expone semántica ARIA de lista: el host es un `role="list"` nombrado por el input `boardLabel` (por defecto `'Board'`), cada columna es un `role="group"` etiquetado, cada cuerpo de columna es un `role="list"` y cada tarjeta un `role="listitem"`.
+
+Las tarjetas pueden reordenarse sin puntero — cada tarjeta habilitada es una parada de tabulación. Con una tarjeta enfocada:
+
+- `Space` / `Enter` — **agarra** la tarjeta.
+- Mientras está agarrada, `ArrowUp` / `ArrowDown` la mueven dentro de su columna y `ArrowLeft` / `ArrowRight` la mueven a la columna adyacente, respetando las mismas reglas que el arrastre (el `predicate` de la columna destino y `cardSortingDisabled`). Cada movimiento se aplica en vivo y el foco sigue a la tarjeta.
+- `Space` / `Enter` — **suelta** (confirma) el movimiento, emitiendo `onCardMoved` con exactamente el mismo payload `CardDragDropEvent` que una suelta con puntero.
+- `Escape` — **cancela**, restaurando la tarjeta a su posición original sin emitir ningún evento.
+
+Una región `aria-live="polite"` oculta visualmente anuncia agarres, movimientos, sueltas, cancelaciones y destinos rechazados. Los mensajes del anunciador están solo en inglés por ahora; su i18n/personalización está registrada como trabajo futuro. La reordenación de columnas sigue siendo solo con puntero.
+
 ## Inputs
 
 Los siguientes inputs están disponibles en el `HubBoardComponent`:
@@ -446,6 +459,7 @@ Los siguientes inputs están disponibles en el `HubBoardComponent`:
 | Input                   | Tipo            | Descripción                                                                                                                  | Por defecto  |
 | ----------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | `board`                 | `Signal<Board>` | El objeto del tablero que contiene las columnas y las tarjetas                                                               | `undefined`  |
+| `boardLabel`            | `string`        | Nombre accesible (`aria-label`) del contenedor de lista del tablero                                                          | `'Board'`    |
 | `columnSortingDisabled` | `boolean`       | Deshabilita la ordenación de columnas mediante arrastrar y soltar                                                            | `false`      |
 | `dragBehavior`          | `DragBehavior`  | Controla cómo se comportan visualmente los elementos arrastrados: `'ghost'` (semitransparente), `'hide'` o `'collapse'`      | `'collapse'` |
 | `variant`               | `string`        | Acento semántico del marcador de posición de arrastrar y soltar. Los valores integrados (`'primary'` / `'success'` / `'danger'` / `'warning'` / `'info'`) usan los tintes exactos del sistema de diseño; también se acepta cualquier otra cadena — el tablero lee `--hub-sys-color-<variant>` de la aplicación anfitriona | `'primary'`  |

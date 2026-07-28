@@ -56,7 +56,7 @@ A flexible and powerful board component for Angular applications, perfect for im
 - 🎨 **Custom styling** - CSS custom properties for easy theming and customization
 - 🔒 **Granular control** - Enable/disable functionality at board, column, or card level
 - 🏷️ **TypeScript support** - Full type safety with generic interfaces
-- ♿ **Accessibility ready** - Follows WAI-ARIA best practices for drag-and-drop
+- ♿ **Keyboard accessible** - Full keyboard card reorder with ARIA list semantics and screen-reader announcements
 - 🪶 **Lightweight** - No third-party UI or CDK dependencies; relies only on the shared `ng-hub-ui-utils` core
 
 ## Installation
@@ -439,6 +439,19 @@ loadMoreCards(event: ReachedEndEvent) {
 
 > ℹ️ **Important:** To enable scroll detection, the board must be placed inside a container with a fixed height constraint.
 
+## Keyboard & accessibility
+
+The board exposes ARIA list semantics: the host is a `role="list"` named by the `boardLabel` input (default `'Board'`), each column is a labelled `role="group"`, each column body is a `role="list"` and each card a `role="listitem"`.
+
+Cards can be reordered without a pointer — every enabled card is a tab stop. With a card focused:
+
+- `Space` / `Enter` — **grabs** the card.
+- While grabbed, `ArrowUp` / `ArrowDown` move it within its column and `ArrowLeft` / `ArrowRight` move it to the adjacent column, honouring the same rules as dragging (the target column's `predicate` and `cardSortingDisabled`). Each move is applied live and focus follows the card.
+- `Space` / `Enter` — **drops** (commits) the move, emitting `onCardMoved` with the exact same `CardDragDropEvent` payload as a pointer drop.
+- `Escape` — **cancels**, restoring the card to its original position with no event emitted.
+
+A visually hidden `aria-live="polite"` region announces grabs, moves, drops, cancels and rejected targets. Announcer messages are English-only for now; i18n/customisation is tracked as future work. Column reordering remains pointer-only.
+
 ## Inputs
 
 The following inputs are available on the `HubBoardComponent`:
@@ -446,6 +459,7 @@ The following inputs are available on the `HubBoardComponent`:
 | Input                   | Type            | Description                                                                                            | Default      |
 | ----------------------- | --------------- | ------------------------------------------------------------------------------------------------------ | ------------ |
 | `board`                 | `Signal<Board>` | The board object containing columns and cards                                                          | `undefined`  |
+| `boardLabel`            | `string`        | Accessible name (`aria-label`) of the board list container                                             | `'Board'`    |
 | `columnSortingDisabled` | `boolean`       | Disables drag-and-drop sorting of columns                                                              | `false`      |
 | `dragBehavior`          | `DragBehavior`  | Controls how dragged elements behave visually: `'ghost'` (semi-transparent), `'hide'`, or `'collapse'` | `'collapse'` |
 | `variant`               | `string`        | Semantic accent of the drag/drop placeholder. Built-in values (`'primary'` / `'success'` / `'danger'` / `'warning'` / `'info'`) use the exact design-system tints; any other string is also accepted — the board reads `--hub-sys-color-<variant>` from the host application | `'primary'`  |

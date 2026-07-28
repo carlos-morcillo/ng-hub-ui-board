@@ -39,6 +39,29 @@ interface DragState {
 }
 
 /**
+ * Internal interface tracking an in-progress keyboard move of a card.
+ * Captured when the card is grabbed and updated on every arrow-key move so the
+ * original position can be restored when the move is cancelled.
+ */
+interface KeyboardMoveState {
+	/** The card currently grabbed for a keyboard move. */
+	card: BoardCard;
+	/** Column index the card occupied when it was grabbed. */
+	sourceColumnIndex: number;
+	/** Card index the card occupied when it was grabbed. */
+	sourceCardIndex: number;
+	/** Column index the card currently occupies. */
+	currentColumnIndex: number;
+	/** Card index the card currently occupies. */
+	currentCardIndex: number;
+}
+
+/**
+ * Monotonic counter used to derive unique, SSR-safe ids per board instance.
+ */
+let nextHubBoardInstanceId = 0;
+
+/**
  * Defines how the dragged element behaves visually during drag operations.
  * - 'ghost': Element becomes semi-transparent but remains visible and occupies space
  * - 'hide': Element is hidden but still occupies space (invisible placeholder)
@@ -60,15 +83,42 @@ export type DragBehavior = 'ghost' | 'hide' | 'collapse';
 	imports: [NgClass, NgTemplateOutlet],
 	host: {
 		class: 'hub-board',
+		role: 'list',
+		'[attr.aria-label]': 'boardLabel()',
 		'[attr.data-variant]': 'variant() ?? null',
 		'[style.--hub-board-accent]': 'groupAccent()'
 	}
 })
 export class HubBoardComponent {
 	/**
+	 * Reference to the host element, used to relocate keyboard focus after
+	 * Angular re-renders a moved card.
+	 */
+	private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
+	/**
 	 * Reactive input containing the full board definition (columns and cards).
 	 */
 	readonly board = input<Board>();
+
+	/**
+	 * Accessible label exposed on the board container through `aria-label`.
+	 * Defaults to `'Board'`.
+	 */
+	readonly boardLabel = input<string>('Board');
+
+	/**
+	 * Unique, SSR-safe id prefix for this board instance. Used to build stable
+	 * element ids (column groups, keyboard hint) that never collide when several
+	 * boards coexist on the same page.
+	 */
+	readonly boardInstanceId = `hub-board-${nextHubBoardInstanceId++}`;
+
+	/**
+	 * Id of the visually hidden keyboard usage hint referenced by every
+	 * focusable card through `aria-describedby`.
+	 */
+	readonly keyboardHintId = `${this.boardInstanceId}-keyboard-hint`;
 
 	/**
 	 * Semantic accent applied to the drag/drop placeholder. The built-in values
@@ -230,6 +280,24 @@ export class HubBoardComponent {
 	readonly columnDropIndicatorIndex = signal<number | null>(null);
 
 	/**
+	 * Signal tracking the in-progress keyboard move of a card, or `null` when
+	 * no card is grabbed.
+	 */
+	readonly keyboardMoveState = signal<KeyboardMoveState | null>(null);
+
+	/**
+	 * Message rendered inside the visually hidden `aria-live` region so screen
+	 * readers announce keyboard grab, move, drop and cancel actions.
+	 */
+	readonly announcement = signal<string>('');
+
+	/**
+	 * Alternation flag used by {@link announce} so consecutive identical
+	 * messages still trigger a live-region announcement.
+	 */
+	private announcementToggle = false;
+
+	/**
 	 * Default predicate that allows any card to be dropped into any column.
 	 *
 	 * @returns Always `true`, indicating that drop operations are permitted.
@@ -275,6 +343,28 @@ export class HubBoardComponent {
 	 */
 	trackColumnById(index: number, column: BoardColumn): string | number {
 		return (column as any).id ?? index;
+	}
+
+	/**
+	 * Builds the stable DOM id of a column group. Uses the column id when
+	 * available (falling back to its index) prefixed by the board instance id.
+	 *
+	 * @param index - The index of the column.
+	 * @param column - The column object.
+	 * @returns A stable, board-scoped element id for the column group.
+	 */
+	columnGroupId(index: number, column: BoardColumn): string {
+		return `${this.boardInstanceId}-column-${this.trackColumnById(index, column)}`;
+	}
+
+	/**
+	 * Checks if the given card is currently grabbed for a keyboard move.
+	 *
+	 * @param card - The card to check.
+	 * @returns Whether the card is grabbed.
+	 */
+	isCardGrabbed(card: BoardCard): boolean {
+		return this.keyboardMoveState()?.card === card;
 	}
 
 	/**
@@ -619,20 +709,288 @@ export class HubBoardComponent {
 		// Force re-render by incrementing the version counter
 		this._columnsVersion.update((v) => v + 1);
 
+		this.emitCardMoved(sourceColumn, targetColumn, state.item as BoardCard, previousIndex, currentIndex);
+
+		this.hoveredColumnIndex.set(null);
+		this.dropIndicatorIndex.set(null);
+		this.dragState.set(null);
+	}
+
+	/**
+	 * Handles keyboard interaction on a card, implementing the keyboard
+	 * reordering model:
+	 *
+	 * - `Space` / `Enter` on a focused card grabs it (or drops it when already
+	 *   grabbed, committing the move through the same event path as a pointer
+	 *   drop).
+	 * - While grabbed, `ArrowUp` / `ArrowDown` move the card within its column
+	 *   and `ArrowLeft` / `ArrowRight` move it to the adjacent column,
+	 *   respecting the same acceptance rules as the drag path (column
+	 *   `predicate` and `cardSortingDisabled`).
+	 * - `Escape` cancels the move and restores the original position.
+	 *
+	 * @param event - The native keyboard event.
+	 * @param card - The card that received the key press.
+	 * @param columnIndex - The index of the column containing the card.
+	 * @param cardIndex - The index of the card within the column.
+	 */
+	onCardKeydown(event: KeyboardEvent, card: BoardCard, columnIndex: number, cardIndex: number): void {
+		if (card.disabled) {
+			return;
+		}
+
+		const state = this.keyboardMoveState();
+
+		if (!state) {
+			if (event.key === ' ' || event.key === 'Enter') {
+				this.grabCard(event, card, columnIndex, cardIndex);
+			}
+			return;
+		}
+
+		// Only the grabbed card reacts while a keyboard move is in progress.
+		if (state.card !== card) {
+			return;
+		}
+
+		switch (event.key) {
+			case ' ':
+			case 'Enter':
+				event.preventDefault();
+				this.dropGrabbedCard(state);
+				break;
+			case 'Escape':
+				event.preventDefault();
+				this.cancelGrabbedCard(state);
+				break;
+			case 'ArrowUp':
+				event.preventDefault();
+				this.moveGrabbedCardWithinColumn(state, -1);
+				break;
+			case 'ArrowDown':
+				event.preventDefault();
+				this.moveGrabbedCardWithinColumn(state, 1);
+				break;
+			case 'ArrowLeft':
+				event.preventDefault();
+				this.moveGrabbedCardToColumn(state, -1);
+				break;
+			case 'ArrowRight':
+				event.preventDefault();
+				this.moveGrabbedCardToColumn(state, 1);
+				break;
+		}
+	}
+
+	/**
+	 * Grabs a card for a keyboard move, mirroring the drag-start restrictions
+	 * (disabled cards and columns with `cardSortingDisabled` cannot start a move).
+	 *
+	 * @param event - The keyboard event that initiated the grab.
+	 * @param card - The card to grab.
+	 * @param columnIndex - The index of the column containing the card.
+	 * @param cardIndex - The index of the card within the column.
+	 */
+	private grabCard(event: KeyboardEvent, card: BoardCard, columnIndex: number, cardIndex: number): void {
+		const column = this.columns()[columnIndex];
+		if (!column || column.cardSortingDisabled) {
+			return;
+		}
+
+		event.preventDefault();
+		this.keyboardMoveState.set({
+			card,
+			sourceColumnIndex: columnIndex,
+			sourceCardIndex: cardIndex,
+			currentColumnIndex: columnIndex,
+			currentCardIndex: cardIndex
+		});
+		this.announce(
+			`Card "${card.title}" grabbed. Position ${cardIndex + 1} of ${column.cards.length} in "${column.title}". ` +
+				`Use the arrow keys to move, Space or Enter to drop, Escape to cancel.`
+		);
+	}
+
+	/**
+	 * Moves the grabbed card one position up or down within its current column.
+	 *
+	 * @param state - The active keyboard move state.
+	 * @param delta - `-1` to move up, `1` to move down.
+	 */
+	private moveGrabbedCardWithinColumn(state: KeyboardMoveState, delta: -1 | 1): void {
+		const column = this.columns()[state.currentColumnIndex];
+		const targetIndex = state.currentCardIndex + delta;
+
+		if (!column || targetIndex < 0 || targetIndex >= column.cards.length) {
+			return;
+		}
+
+		moveItemInArray(column.cards, state.currentCardIndex, targetIndex);
+		this._columnsVersion.update((v) => v + 1);
+		this.keyboardMoveState.set({ ...state, currentCardIndex: targetIndex });
+		this.announce(
+			`Card "${state.card.title}" moved to "${column.title}", position ${targetIndex + 1} of ${column.cards.length}.`
+		);
+		this.focusCard(state.currentColumnIndex, targetIndex);
+	}
+
+	/**
+	 * Moves the grabbed card to the adjacent column, enforcing the same
+	 * acceptance rules as the pointer drag path (the target column `predicate`
+	 * and `cardSortingDisabled`).
+	 *
+	 * @param state - The active keyboard move state.
+	 * @param delta - `-1` to move to the previous column, `1` to the next one.
+	 */
+	private moveGrabbedCardToColumn(state: KeyboardMoveState, delta: -1 | 1): void {
+		const columns = this.columns();
+		const targetColumnIndex = state.currentColumnIndex + delta;
+		const targetColumn = columns[targetColumnIndex];
+
+		if (!targetColumn) {
+			return;
+		}
+
+		// Enforce the same acceptance rules as the pointer drag-over path.
+		const predicate = targetColumn.predicate ?? this.defaultEnterPredicateFn;
+		if (!predicate({ data: state.card }) || targetColumn.cardSortingDisabled) {
+			this.announce(`Card "${state.card.title}" cannot be moved to "${targetColumn.title}".`);
+			return;
+		}
+
+		const sourceColumn = columns[state.currentColumnIndex];
+		const targetIndex = Math.min(state.currentCardIndex, targetColumn.cards.length);
+
+		transferArrayItem(sourceColumn.cards, targetColumn.cards, state.currentCardIndex, targetIndex);
+		this._columnsVersion.update((v) => v + 1);
+		this.keyboardMoveState.set({
+			...state,
+			currentColumnIndex: targetColumnIndex,
+			currentCardIndex: targetIndex
+		});
+		this.announce(
+			`Card "${state.card.title}" moved to "${targetColumn.title}", position ${targetIndex + 1} of ${targetColumn.cards.length}.`
+		);
+		this.focusCard(targetColumnIndex, targetIndex);
+	}
+
+	/**
+	 * Commits the keyboard move, emitting {@link onCardMoved} through the same
+	 * path as a pointer drop. Dropping a card that was never moved is a no-op
+	 * (the grab is simply released without emitting).
+	 *
+	 * @param state - The active keyboard move state.
+	 */
+	private dropGrabbedCard(state: KeyboardMoveState): void {
+		const columns = this.columns();
+		const sourceColumn = columns[state.sourceColumnIndex];
+		const targetColumn = columns[state.currentColumnIndex];
+
+		this.keyboardMoveState.set(null);
+
+		if (!sourceColumn || !targetColumn) {
+			return;
+		}
+
+		const moved = state.sourceColumnIndex !== state.currentColumnIndex || state.sourceCardIndex !== state.currentCardIndex;
+		if (moved) {
+			this.emitCardMoved(sourceColumn, targetColumn, state.card, state.sourceCardIndex, state.currentCardIndex);
+		}
+
+		this.announce(
+			`Card "${state.card.title}" dropped in "${targetColumn.title}", position ${state.currentCardIndex + 1} of ${targetColumn.cards.length}.`
+		);
+	}
+
+	/**
+	 * Cancels the keyboard move, restoring the card to the position it occupied
+	 * when it was grabbed. No {@link onCardMoved} event is emitted.
+	 *
+	 * @param state - The active keyboard move state.
+	 */
+	private cancelGrabbedCard(state: KeyboardMoveState): void {
+		const columns = this.columns();
+		const currentColumn = columns[state.currentColumnIndex];
+		const sourceColumn = columns[state.sourceColumnIndex];
+
+		if (currentColumn && sourceColumn) {
+			if (state.currentColumnIndex === state.sourceColumnIndex) {
+				if (state.currentCardIndex !== state.sourceCardIndex) {
+					moveItemInArray(currentColumn.cards, state.currentCardIndex, state.sourceCardIndex);
+				}
+			} else {
+				transferArrayItem(
+					currentColumn.cards,
+					sourceColumn.cards,
+					state.currentCardIndex,
+					Math.min(state.sourceCardIndex, sourceColumn.cards.length)
+				);
+			}
+			this._columnsVersion.update((v) => v + 1);
+		}
+
+		this.keyboardMoveState.set(null);
+		this.announce(`Move cancelled. Card "${state.card.title}" returned to its original position.`);
+		this.focusCard(state.sourceColumnIndex, state.sourceCardIndex);
+	}
+
+	/**
+	 * Builds and emits the {@link onCardMoved} event. Shared by the pointer
+	 * drop and keyboard commit paths so both emit an identical payload shape.
+	 *
+	 * @param sourceColumn - The column the card was moved from.
+	 * @param targetColumn - The column the card was moved to.
+	 * @param card - The moved card.
+	 * @param previousIndex - The card index before the move.
+	 * @param currentIndex - The card index after the move.
+	 */
+	private emitCardMoved(
+		sourceColumn: BoardColumn,
+		targetColumn: BoardColumn,
+		card: BoardCard,
+		previousIndex: number,
+		currentIndex: number
+	): void {
 		const dropEvent: CardDragDropEvent = {
 			previousIndex,
 			currentIndex,
 			container: { data: targetColumn },
 			previousContainer: { data: sourceColumn },
-			item: { data: state.item as BoardCard },
+			item: { data: card },
 			isPointerOverContainer: true
 		};
 
 		this.onCardMoved.emit(dropEvent);
+	}
 
-		this.hoveredColumnIndex.set(null);
-		this.dropIndicatorIndex.set(null);
-		this.dragState.set(null);
+	/**
+	 * Sets the given announcement message on the polite live region. Alternates
+	 * a trailing no-break space so consecutive identical messages are still
+	 * re-announced by screen readers.
+	 *
+	 * @param message - The message to announce.
+	 */
+	private announce(message: string): void {
+		this.announcementToggle = !this.announcementToggle;
+		this.announcement.set(this.announcementToggle ? message : `${message}\u00A0`);
+	}
+
+	/**
+	 * Restores keyboard focus to the card at the given coordinates after the
+	 * next render. Needed because browsers blur an element when Angular
+	 * relocates it in the DOM during a keyboard move. Only ever called from
+	 * keyboard handlers, so it is SSR-safe.
+	 *
+	 * @param columnIndex - The index of the column containing the card.
+	 * @param cardIndex - The index of the card within the column.
+	 */
+	private focusCard(columnIndex: number, cardIndex: number): void {
+		requestAnimationFrame(() => {
+			const card = this.elementRef.nativeElement.querySelector<HTMLElement>(
+				`[data-column-index="${columnIndex}"] .hub-board__card[data-card-index="${cardIndex}"]`
+			);
+			card?.focus();
+		});
 	}
 
 	/**
