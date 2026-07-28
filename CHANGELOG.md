@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [22.4.0] - 2026-07-28
+
+### Added
+
+- **Keyboard accessibility — cards can now be reordered without a pointer.** Every enabled card is a tab stop (`tabindex="0"`; no roving tabindex — the simple, consistent model). With a card focused:
+	- `Space` / `Enter` **grabs** the card (visual `hub-board__card--grabbed` state styled with the existing placeholder tokens, so it recolours per `variant`).
+	- While grabbed, `ArrowUp` / `ArrowDown` move it within its column and `ArrowLeft` / `ArrowRight` move it to the adjacent column, honouring the **same rules as the drag path** (the target column's `predicate` and `cardSortingDisabled`). Each move is applied live and focus follows the card.
+	- `Space` / `Enter` **drops** (commits) the move, emitting `onCardMoved` with the **exact same `CardDragDropEvent` payload shape as a pointer drop** (`previousIndex` / `currentIndex` refer to the grab origin and the final position; `previousContainer` / `container` are the origin and final columns). Dropping a card that was never moved releases the grab without emitting.
+	- `Escape` **cancels**, restoring the card to its original position with no event emitted.
+- **ARIA semantics.** The board host exposes `role="list"` with an `aria-label` driven by the new optional `boardLabel` input (defaults to `'Board'`); each column container is a `role="group"` labelled by its title with a stable, board-scoped id; each column body is a `role="list"` and each card a `role="listitem"`.
+- **Screen-reader announcer.** A visually hidden `aria-live="polite"` region announces grab ("Card X grabbed. Position N of M in Y…"), every move ("moved to Y, position N of M"), drop, cancel, and rejected targets ("cannot be moved to Y"). Each focusable card also points (`aria-describedby`) to a hidden usage hint. `aria-grabbed` is intentionally not used (deprecated in ARIA 1.1).
+- New optional `boardLabel` input on `<hub-board>` — the accessible name of the board container.
+- Visible `:focus-visible` ring on cards, driven by the `--hub-board-accent` slot. No new CSS custom properties were introduced.
+
+### Changed
+
+- Internal: the `onCardMoved` payload construction was extracted into a single shared path used by both the pointer drop and the keyboard commit, guaranteeing identical events regardless of input modality.
+
+### Known limitations / future work
+
+- Announcer messages are hardcoded in English for now; i18n/customisation of the messages is tracked as future work.
+- Column reordering by keyboard is out of scope for this release (pointer drag-and-drop only).
+
 ## [22.3.0] - 2026-07-07
 
 ### Changed
