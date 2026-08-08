@@ -8,11 +8,11 @@
 
 ## Documentación y ejemplos en vivo
 
-Este paquete forma parte de [Hub UI](https://hubui.dev/), una colección de bibliotecas de componentes Angular para aplicaciones standalone.
+Este paquete forma parte de [Hub UI](https://hubui.dev/en/), una colección de bibliotecas de componentes Angular para aplicaciones standalone.
 
-- Documentación: https://hubui.dev/board/overview/
-- Ejemplos en vivo: https://hubui.dev/board/examples/
-- Hub UI: https://hubui.dev/
+- Documentación: https://hubui.dev/en/board/overview/
+- Ejemplos en vivo: https://hubui.dev/en/board/examples/
+- Hub UI: https://hubui.dev/en/
 
 ## 🧩 Familia de bibliotecas `ng-hub-ui`
 
