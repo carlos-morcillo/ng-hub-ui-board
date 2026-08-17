@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [22.5.0] - 2026-08-17
+
+### Changed
+
+- **Relicensed from CC-BY-4.0 to MIT.** Creative Commons advises against its licences for software, and the reasons applied squarely here: no patent grant, no source-distribution terms, and an attribution requirement with no defined meaning for code that ends up inside a bundle — a consumer could not tell whether crediting was owed in their interface, in a third-party notices file, or nowhere. MIT grants strictly more than CC-BY-4.0, so nobody who took an earlier version loses anything; those versions keep the grant they were published under.
+
 ## [22.4.1] - 2026-08-08
 
 ### Fixed
