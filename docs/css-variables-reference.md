@@ -117,7 +117,7 @@ These variables are defined in the component's `:host` and can be overridden.
 | `--hub-board-card-border-color` | `var(--hub-board-border-color)` |
 | `--hub-board-card-border-radius` | `var(--hub-board-border-radius)` |
 | `--hub-board-card-box-shadow` | `none` |
-| `--hub-board-card-inner-border-radius` | `var(--hub-card-inner-border-radius, calc(var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))))` |
+| `--hub-board-card-inner-border-radius` | `calc(var(--hub-board-card-border-radius) - var(--hub-board-card-border-width))` |
 | `--hub-board-card-cap-padding-y` | `var(--hub-ref-space-2, 0.5rem)` |
 | `--hub-board-card-cap-padding-x` | `var(--hub-ref-space-3, 1rem)` |
 | `--hub-board-card-cap-bg` | `var(--hub-sys-surface-elevated, #f8f9fa)` |
