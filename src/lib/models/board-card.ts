@@ -1,6 +1,6 @@
 /**
  * Represents a card within a board column, containing the core data and behavior.
- * 
+ *
  * @template T The type of custom data attached to the card (defaults to `any`).
  * @publicApi
  */
@@ -26,7 +26,7 @@ export interface BoardCard<T = any> {
 	description?: string;
 
 	/**
-	 * Custom data that can be attached to this card, such as metadata, 
+	 * Custom data that can be attached to this card, such as metadata,
 	 * priority levels, due dates, or any application-specific information.
 	 */
 	data?: T;

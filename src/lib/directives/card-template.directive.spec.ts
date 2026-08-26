@@ -1,7 +1,6 @@
 import { Component, TemplateRef, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-
 import { CardTemplateDirective } from './card-template.directive';
 
 /**
@@ -10,27 +9,27 @@ import { CardTemplateDirective } from './card-template.directive';
 @Component({
 	template: `
 		<ng-template cardTpt let-card="item" let-column="column" #testTemplate>
-		  <div class="test-card-template" [attr.data-card-title]="card?.title">
-		    <h4>{{ card?.title }}</h4>
-		    <p>{{ card?.description }}</p>
-		    <span class="column-info">Column: {{ column?.title }}</span>
-		    @if (card?.data) {
-		      <div class="card-data">
-		        <span class="priority">{{ card.data.priority }}</span>
-		      </div>
-		    }
-		  </div>
+			<div class="test-card-template" [attr.data-card-title]="card?.title">
+				<h4>{{ card?.title }}</h4>
+				<p>{{ card?.description }}</p>
+				<span class="column-info">Column: {{ column?.title }}</span>
+				@if (card?.data) {
+					<div class="card-data">
+						<span class="priority">{{ card.data.priority }}</span>
+					</div>
+				}
+			</div>
 		</ng-template>
-		
+
 		<ng-template cardTpt #anotherTemplate>
-		  <div class="simple-card">Simple template</div>
+			<div class="simple-card">Simple template</div>
 		</ng-template>
-		
+
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-		  <div class="regular-template">Regular template</div>
+			<div class="regular-template">Regular template</div>
 		</ng-template>
-		`,
+	`,
 	standalone: true,
 	imports: [CardTemplateDirective]
 })
@@ -107,7 +106,7 @@ describe('CardTemplateDirective', () => {
 
 			embeddedView.detectChanges();
 			const templateElement = getFirstElementNode(embeddedView.rootNodes);
-			
+
 			expect(templateElement).toBeTruthy();
 			expect(templateElement.classList.contains('test-card-template')).toBe(true);
 			expect(templateElement.getAttribute('data-card-title')).toBe('Test Card');
@@ -130,7 +129,7 @@ describe('CardTemplateDirective', () => {
 
 		it('should handle template without context data', () => {
 			const embeddedView = directive.templateRef.createEmbeddedView({});
-			
+
 			expect(embeddedView).toBeTruthy();
 			expect(embeddedView.rootNodes.length).toBeGreaterThan(0);
 		});
@@ -248,15 +247,15 @@ describe('CardTemplateDirective', () => {
 			});
 
 			expect(embeddedView.destroyed).toBe(false);
-			
+
 			embeddedView.destroy();
-			
+
 			expect(embeddedView.destroyed).toBe(true);
 		});
 
 		it('should handle multiple view creation and destruction', () => {
 			const views: any[] = [];
-			
+
 			// Create multiple views
 			for (let i = 0; i < 5; i++) {
 				const view = directive.templateRef.createEmbeddedView({
@@ -267,11 +266,11 @@ describe('CardTemplateDirective', () => {
 			}
 
 			expect(views.length).toBe(5);
-			views.forEach(view => expect(view.destroyed).toBe(false));
+			views.forEach((view) => expect(view.destroyed).toBe(false));
 
 			// Destroy all views
-			views.forEach(view => view.destroy());
-			views.forEach(view => expect(view.destroyed).toBe(true));
+			views.forEach((view) => view.destroy());
+			views.forEach((view) => expect(view.destroyed).toBe(true));
 		});
 	});
 
@@ -299,13 +298,13 @@ describe('CardTemplateDirective', () => {
 		it('should handle template creation with invalid context gracefully', () => {
 			// Test with various invalid contexts that won't break the template
 			const validEmptyContexts = [
-				{}, 
+				{},
 				{ item: null, column: null },
 				{ item: {}, column: {} },
 				{ item: { title: '' }, column: { title: '' } }
 			];
 
-			validEmptyContexts.forEach(context => {
+			validEmptyContexts.forEach((context) => {
 				expect(() => {
 					const view = directive.templateRef.createEmbeddedView(context as any);
 					view.detectChanges();

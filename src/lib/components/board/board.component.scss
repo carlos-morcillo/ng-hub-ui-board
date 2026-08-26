@@ -46,9 +46,7 @@
 	--hub-board-card-border-color: var(--hub-board-border-color);
 	--hub-board-card-border-radius: var(--hub-board-border-radius);
 	--hub-board-card-box-shadow: none;
-	--hub-board-card-inner-border-radius: calc(
-		var(--hub-board-card-border-radius) - var(--hub-board-card-border-width)
-	);
+	--hub-board-card-inner-border-radius: calc(var(--hub-board-card-border-radius) - var(--hub-board-card-border-width));
 	--hub-board-card-cap-padding-y: var(--hub-ref-space-2, 0.5rem);
 	--hub-board-card-cap-padding-x: var(--hub-ref-space-3, 1rem);
 	--hub-board-card-cap-bg: var(--hub-sys-surface-elevated, #f8f9fa);
@@ -147,14 +145,10 @@
 		min-width: var(--hub-board-column-width, 256px);
 		height: 100%;
 		min-height: var(--hub-board-column-min-height, 200px);
-		border: var(--hub-board-placeholder-border-width, 2px)
-			var(--hub-board-placeholder-border-style, dashed)
+		border: var(--hub-board-placeholder-border-width, 2px) var(--hub-board-placeholder-border-style, dashed)
 			var(--hub-board-placeholder-border-color, var(--hub-sys-color-primary, #0d6efd));
 		border-radius: var(--hub-board-column-border-radius, var(--hub-ref-radius-md, 0.375rem));
-		background-color: var(
-			--hub-board-placeholder-bg,
-			var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))
-		);
+		background-color: var(--hub-board-placeholder-bg, var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05)));
 		flex-shrink: 0;
 		display: flex;
 		align-items: center;
@@ -181,8 +175,7 @@
 
 		&-body {
 			flex: 1 1 auto;
-			padding: var(--hub-board-column-body-padding-y)
-				var(--hub-board-column-body-padding-x);
+			padding: var(--hub-board-column-body-padding-y) var(--hub-board-column-body-padding-x);
 			color: var(--hub-board-column-color, var(--hub-board-container-color));
 			overflow: auto;
 			display: flex;
@@ -199,8 +192,7 @@
 		}
 
 		&-header {
-			padding: var(--hub-board-column-header-padding-y)
-				var(--hub-board-column-header-padding-x);
+			padding: var(--hub-board-column-header-padding-y) var(--hub-board-column-header-padding-x);
 			margin: 0;
 			color: var(--hub-board-column-header-color);
 			background-color: var(--hub-board-column-header-bg);
@@ -233,8 +225,7 @@
 		}
 
 		&-footer {
-			padding: var(--hub-board-column-footer-padding-y)
-				var(--hub-board-column-footer-padding-x);
+			padding: var(--hub-board-column-footer-padding-y) var(--hub-board-column-footer-padding-x);
 			color: var(--hub-board-column-footer-color);
 			background-color: var(--hub-board-column-footer-bg);
 			border-top: var(--hub-board-column-border-width, var(--hub-ref-border-width, 1px)) solid
@@ -267,10 +258,7 @@
 		background-clip: border-box;
 		border: var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px)) solid
 			var(--hub-board-card-border-color, var(--hub-sys-border-color-default, #dee2e6));
-		border-radius: var(
-			--hub-board-card-border-radius,
-			var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem))
-		);
+		border-radius: var(--hub-board-card-border-radius, var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem)));
 		box-shadow: var(--hub-board-card-box-shadow, none);
 		cursor: grab;
 		user-select: none;
@@ -300,14 +288,10 @@
 		// keys. Reuses the drag/drop placeholder tokens so the keyboard visual
 		// matches the pointer placeholder identity (and recolours per variant).
 		&--grabbed {
-			outline: var(--hub-board-placeholder-border-width, 2px)
-				var(--hub-board-placeholder-border-style, dashed)
+			outline: var(--hub-board-placeholder-border-width, 2px) var(--hub-board-placeholder-border-style, dashed)
 				var(--hub-board-placeholder-border-color, var(--hub-sys-color-primary, #0d6efd));
 			outline-offset: 2px;
-			background-color: var(
-				--hub-board-placeholder-bg,
-				var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))
-			);
+			background-color: var(--hub-board-placeholder-bg, var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05)));
 		}
 
 		// Visible focus ring for keyboard navigation, driven by the accent slot.
@@ -342,15 +326,19 @@
 				border-top-left-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 				border-top-right-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 			}
@@ -360,15 +348,19 @@
 				border-bottom-left-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 				border-bottom-right-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 			}
@@ -381,8 +373,7 @@
 
 		&-body {
 			flex: 1 1 auto;
-			padding: var(--hub-board-card-padding-y)
-				var(--hub-board-card-padding-x);
+			padding: var(--hub-board-card-padding-y) var(--hub-board-card-padding-x);
 			color: var(--hub-board-card-color, var(--hub-board-container-color));
 		}
 
@@ -398,8 +389,7 @@
 		}
 
 		&-header {
-			padding: var(--hub-board-card-header-padding-y)
-				var(--hub-board-card-header-padding-x);
+			padding: var(--hub-board-card-header-padding-y) var(--hub-board-card-header-padding-x);
 			color: var(--hub-board-card-header-color);
 			background-color: var(--hub-board-card-header-bg);
 			border-bottom: var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px)) solid
@@ -409,23 +399,26 @@
 				border-top-left-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 				border-top-right-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 			}
 		}
 
 		&-footer {
-			padding: var(--hub-board-card-footer-padding-y)
-				var(--hub-board-card-footer-padding-x);
+			padding: var(--hub-board-card-footer-padding-y) var(--hub-board-card-footer-padding-x);
 			color: var(--hub-board-card-footer-color);
 			background-color: var(--hub-board-card-footer-bg);
 			border-top: var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px)) solid
@@ -435,15 +428,19 @@
 				border-bottom-left-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 				border-bottom-right-radius: var(
 					--hub-board-card-inner-border-radius,
 					calc(
-						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) -
-							var(--hub-board-card-border-width, var(--hub-ref-border-width, 1px))
+						var(--hub-board-card-border-radius, var(--hub-ref-radius-md, 0.375rem)) - var(
+								--hub-board-card-border-width,
+								var(--hub-ref-border-width, 1px)
+							)
 					)
 				);
 			}
@@ -452,17 +449,10 @@
 
 	&__card-placeholder {
 		min-height: var(--hub-board-placeholder-min-height, 60px);
-		border: var(--hub-board-placeholder-border-width, 2px)
-			var(--hub-board-placeholder-border-style, dashed)
+		border: var(--hub-board-placeholder-border-width, 2px) var(--hub-board-placeholder-border-style, dashed)
 			var(--hub-board-placeholder-border-color, var(--hub-sys-color-primary, #0d6efd));
-		border-radius: var(
-			--hub-board-card-border-radius,
-			var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem))
-		);
-		background-color: var(
-			--hub-board-placeholder-bg,
-			var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05))
-		);
+		border-radius: var(--hub-board-card-border-radius, var(--hub-board-border-radius, var(--hub-ref-radius-md, 0.375rem)));
+		background-color: var(--hub-board-placeholder-bg, var(--hub-sys-color-primary-subtle, rgba(13, 110, 253, 0.05)));
 		display: flex;
 		align-items: center;
 		justify-content: center;

@@ -32,12 +32,7 @@ export class InvertColorPipe implements PipeTransform {
 		if (normalizedHex.length === 3) {
 			// Convert shorthand notation (e.g., #abc) to full length (#aabbcc)
 			normalizedHex =
-				normalizedHex[0] +
-				normalizedHex[0] +
-				normalizedHex[1] +
-				normalizedHex[1] +
-				normalizedHex[2] +
-				normalizedHex[2];
+				normalizedHex[0] + normalizedHex[0] + normalizedHex[1] + normalizedHex[1] + normalizedHex[2] + normalizedHex[2];
 		}
 
 		if (normalizedHex.length !== 6) {

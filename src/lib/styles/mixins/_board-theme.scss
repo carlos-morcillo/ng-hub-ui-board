@@ -23,7 +23,8 @@
 // scss-docs-start hub-board-theme
 @mixin hub-board-theme(
 	// ── Accent / surfaces ──
-	$accent: null,                 // drag/drop placeholder accent (re-based per variant)
+	$accent: null,
+	// drag/drop placeholder accent (re-based per variant)
 	$container-bg: null,
 	$container-color: null,
 	$border-color: null,

@@ -10,70 +10,64 @@ import { BoardColumnFooterDirective } from './board-column-footer.directive';
 @Component({
 	template: `
 		<ng-template columnFooterTpt let-column="column" #footerTemplate>
-		  <div class="test-footer-template" [attr.data-column-id]="column?.id">
-		    <div class="footer-summary">
-		      <span class="total-cards">Total: {{ column?.cards?.length || 0 }}</span>
-		      @if (getCompletedCards(column) > 0) {
-		        <span class="completed-cards">
-		          Completed: {{ getCompletedCards(column) }}
-		        </span>
-		      }
-		      @if (getPriorityCards(column) > 0) {
-		        <span class="priority-cards">
-		          High Priority: {{ getPriorityCards(column) }}
-		        </span>
-		      }
-		    </div>
-		    <div class="footer-actions">
-		      @if (!column?.disabled) {
-		        <button class="quick-add-btn">Quick Add</button>
-		      }
-		      @if ((column?.cards?.length || 0) > 0 && !column?.disabled) {
-		        <button class="clear-all-btn">
-		          Clear All
-		        </button>
-		      }
-		      @if (column?.disabled) {
-		        <span class="disabled-footer">Column Disabled</span>
-		      }
-		    </div>
-		    @if (column?.data) {
-		      <div class="footer-metadata">
-		        <small class="last-updated">Updated: {{ column.data.lastUpdated | date }}</small>
-		        <small class="column-owner">Owner: {{ column.data.owner }}</small>
-		      </div>
-		    }
-		  </div>
+			<div class="test-footer-template" [attr.data-column-id]="column?.id">
+				<div class="footer-summary">
+					<span class="total-cards">Total: {{ column?.cards?.length || 0 }}</span>
+					@if (getCompletedCards(column) > 0) {
+						<span class="completed-cards"> Completed: {{ getCompletedCards(column) }} </span>
+					}
+					@if (getPriorityCards(column) > 0) {
+						<span class="priority-cards"> High Priority: {{ getPriorityCards(column) }} </span>
+					}
+				</div>
+				<div class="footer-actions">
+					@if (!column?.disabled) {
+						<button class="quick-add-btn">Quick Add</button>
+					}
+					@if ((column?.cards?.length || 0) > 0 && !column?.disabled) {
+						<button class="clear-all-btn">Clear All</button>
+					}
+					@if (column?.disabled) {
+						<span class="disabled-footer">Column Disabled</span>
+					}
+				</div>
+				@if (column?.data) {
+					<div class="footer-metadata">
+						<small class="last-updated">Updated: {{ column.data.lastUpdated | date }}</small>
+						<small class="column-owner">Owner: {{ column.data.owner }}</small>
+					</div>
+				}
+			</div>
 		</ng-template>
-		
+
 		<ng-template columnFooterTpt #simpleFooterTemplate>
-		  <div class="simple-footer">
-		    <span>Simple Footer</span>
-		  </div>
+			<div class="simple-footer">
+				<span>Simple Footer</span>
+			</div>
 		</ng-template>
-		
+
 		<ng-template columnFooterTpt let-column="column" #statsFooterTemplate>
-		  <div class="stats-footer" [attr.data-stats]="true">
-		    <div class="stats-grid">
-		      <div class="stat-item">
-		        <span class="stat-value">{{ column?.cards?.length || 0 }}</span>
-		        <span class="stat-label">Cards</span>
-		      </div>
-		      @if (column?.data?.estimatedHours) {
-		        <div class="stat-item">
-		          <span class="stat-value">{{ column.data.estimatedHours }}h</span>
-		          <span class="stat-label">Hours</span>
-		        </div>
-		      }
-		    </div>
-		  </div>
+			<div class="stats-footer" [attr.data-stats]="true">
+				<div class="stats-grid">
+					<div class="stat-item">
+						<span class="stat-value">{{ column?.cards?.length || 0 }}</span>
+						<span class="stat-label">Cards</span>
+					</div>
+					@if (column?.data?.estimatedHours) {
+						<div class="stat-item">
+							<span class="stat-value">{{ column.data.estimatedHours }}h</span>
+							<span class="stat-label">Hours</span>
+						</div>
+					}
+				</div>
+			</div>
 		</ng-template>
-		
+
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-		  <div class="regular-template">Regular template</div>
+			<div class="regular-template">Regular template</div>
 		</ng-template>
-		`,
+	`,
 	standalone: true,
 	imports: [BoardColumnFooterDirective, DatePipe]
 })
@@ -111,9 +105,7 @@ class TestComponent {
 		id: 2,
 		title: 'Disabled Column',
 		description: 'This column is disabled',
-		cards: [
-			{ id: 5, title: 'Disabled Card 1' }
-		],
+		cards: [{ id: 5, title: 'Disabled Card 1' }],
 		disabled: true
 	};
 
@@ -179,7 +171,7 @@ describe('BoardColumnFooterDirective', () => {
 
 			embeddedView.detectChanges();
 			const templateElement = getFirstElementNode(embeddedView.rootNodes);
-			
+
 			expect(templateElement).toBeTruthy();
 			expect(templateElement.classList.contains('test-footer-template')).toBe(true);
 			expect(templateElement.getAttribute('data-column-id')).toBe('1');
@@ -232,7 +224,7 @@ describe('BoardColumnFooterDirective', () => {
 
 		it('should handle template without context data', () => {
 			const embeddedView = directive.templateRef.createEmbeddedView({});
-			
+
 			expect(embeddedView).toBeTruthy();
 			expect(embeddedView.rootNodes.length).toBeGreaterThan(0);
 		});
@@ -247,10 +239,10 @@ describe('BoardColumnFooterDirective', () => {
 			expect(firstDirective).toBeTruthy();
 			expect(secondDirective).toBeTruthy();
 			expect(thirdDirective).toBeTruthy();
-			
+
 			expect(firstDirective).not.toBe(secondDirective);
 			expect(secondDirective).not.toBe(thirdDirective);
-			
+
 			expect(firstDirective.templateRef).not.toBe(secondDirective.templateRef);
 			expect(secondDirective.templateRef).not.toBe(thirdDirective.templateRef);
 		});
@@ -261,7 +253,7 @@ describe('BoardColumnFooterDirective', () => {
 			});
 
 			const simpleView = component.simpleFooterDirective().templateRef.createEmbeddedView({});
-			
+
 			const statsView = component.statsFooterDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
@@ -460,23 +452,23 @@ describe('BoardColumnFooterDirective', () => {
 			});
 
 			expect(embeddedView.destroyed).toBe(false);
-			
+
 			embeddedView.destroy();
-			
+
 			expect(embeddedView.destroyed).toBe(true);
 		});
 
 		it('should handle multiple view creation and destruction', () => {
 			const views: any[] = [];
-			
+
 			for (let i = 0; i < 15; i++) {
 				const view = directive.templateRef.createEmbeddedView({
-					column: { 
-						...component.mockColumn, 
-						id: i, 
+					column: {
+						...component.mockColumn,
+						id: i,
 						title: `Footer Column ${i}`,
-						cards: new Array(i).fill({}).map((_, idx) => ({ 
-							id: idx, 
+						cards: new Array(i).fill({}).map((_, idx) => ({
+							id: idx,
 							title: `Card ${idx}`,
 							data: { completed: idx % 2 === 0, priority: idx % 3 === 0 ? 'high' : 'low' }
 						}))
@@ -486,10 +478,10 @@ describe('BoardColumnFooterDirective', () => {
 			}
 
 			expect(views.length).toBe(15);
-			views.forEach(view => expect(view.destroyed).toBe(false));
+			views.forEach((view) => expect(view.destroyed).toBe(false));
 
-			views.forEach(view => view.destroy());
-			views.forEach(view => expect(view.destroyed).toBe(true));
+			views.forEach((view) => view.destroy());
+			views.forEach((view) => expect(view.destroyed).toBe(true));
 		});
 	});
 
@@ -510,14 +502,14 @@ describe('BoardColumnFooterDirective', () => {
 			};
 
 			const startTime = performance.now();
-			
+
 			const embeddedView = directive.templateRef.createEmbeddedView({
 				column: largeColumn
 			});
-			
+
 			embeddedView.detectChanges();
 			embeddedView.destroy();
-			
+
 			const endTime = performance.now();
 			const executionTime = endTime - startTime;
 
@@ -562,13 +554,9 @@ describe('BoardColumnFooterDirective', () => {
 
 	describe('Error Handling', () => {
 		it('should handle template creation with safe empty contexts', () => {
-			const safeContexts = [
-				{},
-				{ column: {} },
-				{ column: { title: '', cards: [], disabled: false } }
-			];
+			const safeContexts = [{}, { column: {} }, { column: { title: '', cards: [], disabled: false } }];
 
-			safeContexts.forEach(context => {
+			safeContexts.forEach((context) => {
 				expect(() => {
 					const view = directive.templateRef.createEmbeddedView(context as any);
 					view.detectChanges();

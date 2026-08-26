@@ -38,7 +38,7 @@ describe('InvertColorPipe', () => {
 		expect(pipe.transform('#ffffff', true)).toBe('#000000'); // White -> Black
 		expect(pipe.transform('#000000', true)).toBe('#FFFFFF'); // Black -> White
 		expect(pipe.transform('#ff0000', true)).toBe('#FFFFFF'); // Red -> White (bright red)
-		expect(pipe.transform('#800000', true)).toBe('#FFFFFF'); // Dark red -> White  
+		expect(pipe.transform('#800000', true)).toBe('#FFFFFF'); // Dark red -> White
 		expect(pipe.transform('#008000', true)).toBe('#FFFFFF'); // Green -> White (standard green is bright)
 	});
 

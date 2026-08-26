@@ -8,46 +8,46 @@ import { BoardColumnHeaderDirective } from './board-column-header.directive';
 @Component({
 	template: `
 		<ng-template columnHeaderTpt let-column="column" #headerTemplate>
-		  <div class="test-header-template" [attr.data-column-id]="column?.id">
-		    <div class="header-title">
-		      <h3>{{ column?.title }}</h3>
-		      @if (column?.description) {
-		        <span class="header-subtitle">{{ column.description }}</span>
-		      }
-		    </div>
-		    <div class="header-actions">
-		      <span class="card-count badge">{{ column?.cards?.length || 0 }}</span>
-		      @if (!column?.disabled) {
-		        <button class="add-card-btn">Add Card</button>
-		      }
-		      @if (column?.disabled) {
-		        <span class="disabled-indicator">Disabled</span>
-		      }
-		    </div>
-		    @if (column?.data) {
-		      <div class="custom-data">
-		        <span class="priority">{{ column.data.priority }}</span>
-		        <span class="owner">{{ column.data.owner }}</span>
-		      </div>
-		    }
-		  </div>
+			<div class="test-header-template" [attr.data-column-id]="column?.id">
+				<div class="header-title">
+					<h3>{{ column?.title }}</h3>
+					@if (column?.description) {
+						<span class="header-subtitle">{{ column.description }}</span>
+					}
+				</div>
+				<div class="header-actions">
+					<span class="card-count badge">{{ column?.cards?.length || 0 }}</span>
+					@if (!column?.disabled) {
+						<button class="add-card-btn">Add Card</button>
+					}
+					@if (column?.disabled) {
+						<span class="disabled-indicator">Disabled</span>
+					}
+				</div>
+				@if (column?.data) {
+					<div class="custom-data">
+						<span class="priority">{{ column.data.priority }}</span>
+						<span class="owner">{{ column.data.owner }}</span>
+					</div>
+				}
+			</div>
 		</ng-template>
-		
+
 		<ng-template columnHeaderTpt #simpleHeaderTemplate>
-		  <div class="simple-header">
-		    <span>Simple Column Header</span>
-		  </div>
+			<div class="simple-header">
+				<span>Simple Column Header</span>
+			</div>
 		</ng-template>
-		
+
 		<ng-template columnHeaderTpt let-column="column" #emptyHeaderTemplate>
-		  <div class="empty-header" [attr.data-empty]="true"></div>
+			<div class="empty-header" [attr.data-empty]="true"></div>
 		</ng-template>
-		
+
 		<!-- Template without directive for comparison -->
 		<ng-template #regularTemplate>
-		  <div class="regular-template">Regular template</div>
+			<div class="regular-template">Regular template</div>
 		</ng-template>
-		`,
+	`,
 	standalone: true,
 	imports: [BoardColumnHeaderDirective]
 })
@@ -139,7 +139,7 @@ describe('BoardColumnHeaderDirective', () => {
 
 			embeddedView.detectChanges();
 			const templateElement = getFirstElementNode(embeddedView.rootNodes);
-			
+
 			expect(templateElement).toBeTruthy();
 			expect(templateElement.classList.contains('test-header-template')).toBe(true);
 			expect(templateElement.getAttribute('data-column-id')).toBe('1');
@@ -188,7 +188,7 @@ describe('BoardColumnHeaderDirective', () => {
 
 		it('should handle template without context data', () => {
 			const embeddedView = directive.templateRef.createEmbeddedView({});
-			
+
 			expect(embeddedView).toBeTruthy();
 			expect(embeddedView.rootNodes.length).toBeGreaterThan(0);
 		});
@@ -203,10 +203,10 @@ describe('BoardColumnHeaderDirective', () => {
 			expect(firstDirective).toBeTruthy();
 			expect(secondDirective).toBeTruthy();
 			expect(thirdDirective).toBeTruthy();
-			
+
 			expect(firstDirective).not.toBe(secondDirective);
 			expect(secondDirective).not.toBe(thirdDirective);
-			
+
 			expect(firstDirective.templateRef).not.toBe(secondDirective.templateRef);
 			expect(secondDirective.templateRef).not.toBe(thirdDirective.templateRef);
 		});
@@ -217,7 +217,7 @@ describe('BoardColumnHeaderDirective', () => {
 			});
 
 			const simpleView = component.simpleHeaderDirective().templateRef.createEmbeddedView({});
-			
+
 			const emptyView = component.emptyHeaderDirective().templateRef.createEmbeddedView({
 				column: component.mockColumn
 			});
@@ -371,15 +371,15 @@ describe('BoardColumnHeaderDirective', () => {
 			});
 
 			expect(embeddedView.destroyed).toBe(false);
-			
+
 			embeddedView.destroy();
-			
+
 			expect(embeddedView.destroyed).toBe(true);
 		});
 
 		it('should handle multiple view creation and destruction', () => {
 			const views: any[] = [];
-			
+
 			for (let i = 0; i < 10; i++) {
 				const view = directive.templateRef.createEmbeddedView({
 					column: { ...component.mockColumn, id: i, title: `Column ${i}` }
@@ -388,10 +388,10 @@ describe('BoardColumnHeaderDirective', () => {
 			}
 
 			expect(views.length).toBe(10);
-			views.forEach(view => expect(view.destroyed).toBe(false));
+			views.forEach((view) => expect(view.destroyed).toBe(false));
 
-			views.forEach(view => view.destroy());
-			views.forEach(view => expect(view.destroyed).toBe(true));
+			views.forEach((view) => view.destroy());
+			views.forEach((view) => expect(view.destroyed).toBe(true));
 		});
 	});
 
@@ -400,11 +400,13 @@ describe('BoardColumnHeaderDirective', () => {
 			// Simulate rapid header updates (like in a real-time dashboard)
 			for (let i = 0; i < 50; i++) {
 				const view = directive.templateRef.createEmbeddedView({
-					column: { 
-						...component.mockColumn, 
-						id: i, 
+					column: {
+						...component.mockColumn,
+						id: i,
 						title: `Dynamic Column ${i}`,
-						cards: new Array(Math.floor(Math.random() * 20)).fill({}).map((_, idx) => ({ id: idx, title: `Card ${idx}` }))
+						cards: new Array(Math.floor(Math.random() * 20))
+							.fill({})
+							.map((_, idx) => ({ id: idx, title: `Card ${idx}` }))
 					}
 				});
 				view.detectChanges();
@@ -418,13 +420,9 @@ describe('BoardColumnHeaderDirective', () => {
 
 	describe('Error Handling', () => {
 		it('should handle template creation with safe empty contexts', () => {
-			const safeContexts = [
-				{},
-				{ column: {} },
-				{ column: { title: '', cards: [] } }
-			];
+			const safeContexts = [{}, { column: {} }, { column: { title: '', cards: [] } }];
 
-			safeContexts.forEach(context => {
+			safeContexts.forEach((context) => {
 				expect(() => {
 					const view = directive.templateRef.createEmbeddedView(context as any);
 					view.detectChanges();
