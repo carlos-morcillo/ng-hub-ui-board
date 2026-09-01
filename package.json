@@ -1,6 +1,6 @@
 {
 	"name": "ng-hub-ui-board",
-	"version": "22.5.0",
+	"version": "22.5.1",
 	"description": "An Angular-based Kanban board component with Trello-like drag-and-drop, customizable columns, and straightforward event handling.",
 	"main": "bundles/ng-hub-ui-board.umd.js",
 	"module": "fesm2022/ng-hub-ui-board.mjs",
@@ -66,7 +66,7 @@
 			"url": "https://www.carlosmorcillo.com"
 		}
 	],
-	"homepage": "https://hubui.dev/",
+	"homepage": "https://hubui.dev/en/board/overview/",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/carlos-morcillo/ng-hub-ui-board.git"
